@@ -41,12 +41,15 @@ Substitua `SEU_USUARIO` pelo proprietário real do repositório:
 
 ```bash
 brew tap SEU_USUARIO/intel
+brew trust SEU_USUARIO/intel
 brew update
 brew install SEU_USUARIO/intel/jq
 ```
 
 Homebrew lê o `bottle do` da fórmula do tap e baixa o `.bottle.tar.gz` do GitHub
 Release indicado por `root_url`. SHA-256 é verificado pelo próprio Homebrew.
+`brew tap` não confia no tap automaticamente: sem `brew trust`, o brew recusa
+carregar fórmulas de taps de terceiros ao resolver dependências.
 Não use `HOMEBREW_BOTTLE_DOMAIN`: este projeto é um tap com metadados próprios,
 não um espelho completo dos bottles de homebrew/core.
 

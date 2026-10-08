@@ -147,6 +147,8 @@ def main():
     if tap_path.exists() or tap_path.is_symlink():
         raise RuntimeError('Tap já existente no runner; não sobrescrito.')
     tap_path.symlink_to(ROOT, target_is_directory=True)
+    # Brew recusa carregar fórmulas de taps não confiáveis ao resolver dependências.
+    run('brew', 'trust', tap)
     for name in order:
         full = tap + '/' + name
         outside = [dep for dep in deps(full) if not dep.startswith(tap + '/')]

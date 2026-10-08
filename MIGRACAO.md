@@ -56,6 +56,7 @@ Substitua `SEU_USUARIO` pelo proprietário do repositório:
 ```bash
 git pull --ff-only
 brew tap SEU_USUARIO/intel
+brew trust SEU_USUARIO/intel
 brew update
 /usr/bin/python3 scripts/sync-installed.py migrate
 ```
