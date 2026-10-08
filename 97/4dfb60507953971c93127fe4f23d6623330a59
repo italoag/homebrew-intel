@@ -1,0 +1,14 @@
+.github/workflows/bottles.yml
+  h_ba256230c5d53f 26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "974dfb60507953971c93127fe4f23d6623330a59",
+  "prompts": {},
+  "humans": {
+    "h_ba256230c5d53f": {
+      "author": "Italo A. G. <182202+italoag@users.noreply.github.com>"
+    }
+  }
+}
