@@ -580,17 +580,26 @@ def adopt_bottles(release, full, formula_dir):
             target.write_text(fetched)
 
 
-def install_missing_deps(full, tap):
+def install_missing_deps(full, tap, order_index):
     # --build-bottle exige bottle em toda dep instalável e --force-bottle se
     # aplica à operação inteira: pré-instala as ausentes com install comum
     # (despeja bottle adotado/publicado ou compila como fallback local — só o
     # shard dono publica), deixando o install final tratar só do alvo.
+    # Com deps curtas, instalar um dependente antes de sua dep faria o brew
+    # resolver o nome no core e instalar a fórmula errada (keg de outro tap
+    # conflita depois): a ordem topológica do plano garante deps primeiro, e
+    # a lista precisa ser transitiva para cobrir deps indiretas.
     installed = set(run('brew', 'list', '--formula', capture=True).split())
-    for dep in deps(full):
-        dep_short = dep.split('/')[-1]
-        if dep_short not in installed:
-            run('brew', 'install', tap + '/' + dep_short)
-            installed.add(dep_short)
+    all_deps = run('brew', 'deps', '--formula', '--full-name',
+                   '--include-build', '--include-test', full,
+                   capture=True).split()
+    for dep_short in sorted({dep.split('/')[-1] for dep in all_deps},
+                            key=lambda d: order_index.get(d, 0)):
+        if dep_short in installed:
+            continue
+        run('brew', 'install', tap + '/' + dep_short)
+        # O brew pode puxar transitivas pelo caminho: relê a lista real.
+        installed = set(run('brew', 'list', '--formula', capture=True).split())
 
 
 def build_shard(idx):
@@ -605,6 +614,7 @@ def build_shard(idx):
     file_owner = plan_data['file_owner']
     build_set = set(plan_data['build_set'])
     members = plan_data['shards'][idx]
+    order_index = {short_name(n): i for i, n in enumerate(plan_data['order'])}
     # Retomada dentro do mesmo run: fragmentos e manifesto anteriores dizem o
     # que já foi publicado por qualquer shard e não precisa repetir.
     done = dict(load_manifest(release))
@@ -635,7 +645,7 @@ def build_shard(idx):
             # que outro shard ainda compila são construídos localmente (fallback
             # duplicado e seguro — só o shard dono publica).
             adopt_bottles(release, full, ROOT / 'Formula')
-            install_missing_deps(full, tap)
+            install_missing_deps(full, tap, order_index)
             tab = formula_info(full).get('installed') or []
             if tab and not all(item.get('poured_from_bottle') for item in tab):
                 # Já foi compilado como dep de outro membro: refaz com test deps.
@@ -678,7 +688,7 @@ def build_shard(idx):
             # Reutilizado ou inalterado: despeja o bottle oficial/publicado e
             # valida que funciona dentro do grafo do tap.
             adopt_bottles(release, full, ROOT / 'Formula')
-            install_missing_deps(full, tap)
+            install_missing_deps(full, tap, order_index)
             # --include-test traz as test deps que brew test exige instaladas.
             run('brew', 'install', '--force-bottle', '--include-test', full)
             verify_poured(full, name)
