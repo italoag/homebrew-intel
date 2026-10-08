@@ -22,7 +22,8 @@ def brew(*args, capture=True):
 
 
 def info(name):
-    return json.loads(brew('info', '--json=v2', name))['formulae'][0]
+    # --formula evita carregar cask homônimo (ex.: reviewdog/tap tem ambos).
+    return json.loads(brew('info', '--json=v2', '--formula', name))['formulae'][0]
 
 
 def platform_check():
@@ -159,6 +160,11 @@ def migration_plan():
     short_set = {key.split('/')[-1] for key in order_set}
     if any(full.removeprefix(tap + '/') not in short_set for full in closure):
         raise SystemExit('Dependência fora do snapshot: migração bloqueada.')
+    # Snapshot parcial: membro pendente pode não ter fórmula publicada no tap.
+    blocked = {full.removeprefix(tap + '/') for full in closure} & set(
+        snapshot.get('pending', []))
+    if blocked:
+        raise SystemExit('Aguardando publicação pela esteira: ' + ', '.join(sorted(blocked)))
     names = list(dict.fromkeys(key.split('/')[-1] for key in snapshot['order']
                                if tap + '/' + key.split('/')[-1] in closure))
     installed = json.loads(brew('info', '--json=v2', '--installed'))['formulae']

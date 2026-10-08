@@ -51,6 +51,10 @@ def main():
                 closure.add(tap + '/' + short)
             else:
                 raise SystemExit('Dependência fora do tap: ' + dep)
+    # Snapshot parcial: membros pendentes podem não ter fórmula publicada no tap.
+    blocked = {full.split('/')[-1] for full in closure} & set(state.get('pending', []))
+    if blocked:
+        raise SystemExit('Aguardando publicação pela esteira: ' + ', '.join(sorted(blocked)))
     reused = {key.split('/')[-1] for key in state.get('reused', [])}
     for full in sorted(closure):
         info = json.loads(brew('info', '--json=v2', full))['formulae'][0]

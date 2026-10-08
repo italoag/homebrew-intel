@@ -206,6 +206,20 @@ end
         self.assertEqual(base['b'] != changed['b'], True)
         self.assertEqual(base['c'] != changed['c'], True)
 
+    def test_member_fp_dropped_member_inherits_owner_fp(self):
+        # Membro externo descartado resolve para o dono core mesmo vindo antes.
+        order = ['x/t/mods', 'consumer', 'mods']
+        graph = {'x/t/mods': [], 'consumer': ['x/t/mods'], 'mods': []}
+        file_owner = {'mods': 'mods', 'consumer': 'consumer'}
+        normalized = {'x/t/mods': 'ext-src', 'mods': 'core-src',
+                      'consumer': 'consumer-src'}
+        fps = p.member_fps(order, graph, normalized, file_owner)
+        self.assertEqual(fps['x/t/mods'], fps['mods'])
+        # A fonte do membro descartado não influencia dependentes: só a do dono.
+        other = p.member_fps(order, graph,
+                             {**normalized, 'x/t/mods': 'ext-src-2'}, file_owner)
+        self.assertEqual(fps['consumer'], other['consumer'])
+
     def test_partition_covers_members_and_clusters_deps(self):
         order = ['m4', 'autoconf', 'wget', 'jq']
         graph = {'m4': [], 'autoconf': ['m4'], 'wget': [], 'jq': ['oniguruma'],

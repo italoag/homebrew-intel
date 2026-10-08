@@ -300,26 +300,33 @@ def owners(order):
 
 def member_fps(order, graph, normalized, file_owner):
     # Fingerprint por fórmula: fonte transformada + fingerprint das deps, para
-    # que mudança em uma dependência invalide os dependentes em cascata.
+    # que mudança em uma dependência invalide os dependentes em cascata. O
+    # subgrafo de donos tem ordem própria: uma dep descartada resolve para o
+    # dono core, que pode aparecer depois do dependente em order.
+    owner_names = [name for name in order if file_owner[short_name(name)] == name]
+    ograph = {name: {file_owner[short_name(dep)] for dep in graph[name]
+                     if file_owner[short_name(dep)] != name}
+              for name in owner_names}
     fps = {}
-    for name in order:
-        owner = file_owner[short_name(name)]
-        if owner != name:
-            fps[name] = fps[owner]
-            continue
-        dep_fps = sorted(fps[file_owner[short_name(dep)]] for dep in graph[name])
+    for name in topo(owner_names, ograph):
+        dep_fps = sorted(fps[dep] for dep in ograph[name])
         fps[name] = hashlib.sha256(
             (normalized[name] + json.dumps(dep_fps)).encode()).hexdigest()
+    for name in order:
+        if file_owner[short_name(name)] != name:
+            fps[name] = fps[file_owner[short_name(name)]]
     return fps
 
 
 def partition(order, graph, build_set, nshards):
     # Afinidade leve por dependências compartilhadas sem desequilibrar pesos.
     def weight(name):
+        if name not in build_set:
+            return 1  # só despeja um bottle existente
         for pat, w in HEAVY:
             if pat in name:
                 return w
-        return 1 if name not in build_set else 2 + len(graph[name])
+        return 2 + len(graph[name])
     owner_shard = {}
     shards = [[] for _ in range(nshards)]
     cost = [0] * nshards
@@ -415,11 +422,15 @@ def plan():
         print(f'Shard {i}: {len(members)} membros ({len(todo)} builds): '
               + ', '.join(todo)[:200], flush=True)
     if not build_set:
-        print('has_work=false', flush=True)
-        print('shard_ids=[]', flush=True)
-        return
-    print('has_work=true', flush=True)
-    print('shard_ids=' + json.dumps([i for i, s in enumerate(shards) if s]), flush=True)
+        print('Nada a construir; shards desnecessários.', flush=True)
+        output_lines = ['has_work=false', 'shard_ids=[]']
+    else:
+        output_lines = ['has_work=true',
+                        'shard_ids=' + json.dumps([i for i, s in enumerate(shards) if s])]
+    output_file = os.environ.get('GITHUB_OUTPUT')
+    if output_file:
+        with open(output_file, 'a') as stream:
+            stream.write('\n'.join(output_lines) + '\n')
 
 
 def load_plan():
@@ -456,7 +467,8 @@ def adopt_bottles(release, full, formula_dir):
     # bloco bottle e o brew despeja em vez de compilar a dep duplicada.
     asset_map = {asset['name']: asset['browser_download_url']
                  for asset in release_assets(release['id'])}
-    for dep in run('brew', 'deps', '--full-name', full, capture=True).split():
+    for dep in run('brew', 'deps', '--full-name', '--include-build',
+                   '--include-test', full, capture=True).split():
         dep_short = dep.split('/')[-1]
         asset_name = f'Formula-{dep_short}.rb'
         if asset_name not in asset_map:
@@ -510,7 +522,12 @@ def build_shard(idx):
             # que outro shard ainda compila são construídos localmente (fallback
             # duplicado e seguro — só o shard dono publica).
             adopt_bottles(release, full, ROOT / 'Formula')
-            run('brew', 'install', '--build-bottle', '--include-test', full)
+            tab = formula_info(full).get('installed') or []
+            if tab and not all(item.get('poured_from_bottle') for item in tab):
+                # Já foi compilado como dep de outro membro: refaz com test deps.
+                run('brew', 'reinstall', '--build-bottle', '--include-test', full)
+            else:
+                run('brew', 'install', '--build-bottle', '--include-test', full)
             run('brew', 'test', full)
             run('brew', 'linkage', '--test', full)
             out = WORK / f'pkg-{idx}' / short
@@ -543,6 +560,7 @@ def build_shard(idx):
         else:
             # Reutilizado ou inalterado: despeja o bottle oficial/publicado e
             # valida que funciona dentro do grafo do tap.
+            adopt_bottles(release, full, ROOT / 'Formula')
             run('brew', 'install', '--force-bottle', full)
             verify_poured(full, name)
             run('brew', 'test', full)

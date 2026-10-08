@@ -35,7 +35,7 @@ jobs:
         name: Inventory, fingerprints and shard plan
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: /usr/bin/python3 scripts/pipeline.py plan >> "$GITHUB_OUTPUT"
+        run: /usr/bin/python3 scripts/pipeline.py plan
   build:
     needs: plan
     if: needs.plan.outputs.has_work == 'true'
