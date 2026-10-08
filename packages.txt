@@ -1,0 +1,3 @@
+# Bootstrap pequeno; acrescente nomes canônicos de homebrew/core.
+# Não inclua casks, aliases, HEAD ou opções de compilação.
+jq

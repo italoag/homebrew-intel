@@ -1,0 +1,33 @@
+name: Intel Tahoe bottles
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 7 * * *'
+  push:
+    branches: [main]
+    paths: ['packages.txt', 'scripts/**', '.github/workflows/bottles.yml']
+permissions:
+  contents: write
+concurrency:
+  group: intel-bottles
+  cancel-in-progress: false
+jobs:
+  bottles:
+    if: github.ref == 'refs/heads/main'
+    runs-on: macos-26-intel
+    timeout-minutes: 360
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: '1'
+      HOMEBREW_NO_INSTALL_CLEANUP: '1'
+      HOMEBREW_NO_INSTALL_FROM_API: '1'
+      HOMEBREW_NO_ANALYTICS: '1'
+      HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: '1'
+      HOMEBREW_DEVELOPER: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build, publish, verify and promote snapshot
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: /usr/bin/python3 scripts/pipeline.py
