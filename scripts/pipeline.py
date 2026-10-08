@@ -624,6 +624,17 @@ def adopt_bottles(release, full, formula_dir):
             target.write_text(fetched)
 
 
+def brew_install(*args, cmd='install'):
+    # A imagem do runner já tem binários em /usr/local/bin (aws, azcopy...) que
+    # conflitam com brew link: o keg é construído, o install sai com erro só
+    # no link e link --overwrite sobrescreve na VM descartável. Se a falha for
+    # real (compile/download), o link falha igual e o erro continua fatal.
+    try:
+        run('brew', cmd, *args)
+    except subprocess.CalledProcessError:
+        run('brew', 'link', '--overwrite', args[-1])
+
+
 def install_missing_deps(full, tap, order_index):
     # --build-bottle exige bottle em toda dep instalável e --force-bottle se
     # aplica à operação inteira: pré-instala as ausentes com install comum
@@ -641,7 +652,7 @@ def install_missing_deps(full, tap, order_index):
                             key=lambda d: order_index.get(d, 0)):
         if dep_short in installed:
             continue
-        run('brew', 'install', tap + '/' + dep_short)
+        brew_install(tap + '/' + dep_short)
         # O brew pode puxar transitivas pelo caminho: relê a lista real.
         installed = set(run('brew', 'list', '--formula', capture=True).split())
 
@@ -693,9 +704,9 @@ def build_shard(idx):
             tab = formula_info(full).get('installed') or []
             if tab and not all(item.get('poured_from_bottle') for item in tab):
                 # Já foi compilado como dep de outro membro: refaz com test deps.
-                run('brew', 'reinstall', '--build-bottle', '--include-test', full)
+                brew_install('--build-bottle', '--include-test', full, cmd='reinstall')
             else:
-                run('brew', 'install', '--build-bottle', '--include-test', full)
+                brew_install('--build-bottle', '--include-test', full)
             run('brew', 'test', full)
             run('brew', 'linkage', '--test', full)
             out = WORK / f'pkg-{idx}' / short
@@ -734,7 +745,7 @@ def build_shard(idx):
             adopt_bottles(release, full, ROOT / 'Formula')
             install_missing_deps(full, tap, order_index)
             # --include-test traz as test deps que brew test exige instaladas.
-            run('brew', 'install', '--force-bottle', '--include-test', full)
+            brew_install('--force-bottle', '--include-test', full)
             verify_poured(full, name)
             run('brew', 'test', full)
             run('brew', 'linkage', '--test', full)
