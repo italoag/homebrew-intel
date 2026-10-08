@@ -5,30 +5,62 @@ on:
     - cron: '23 7 * * *'
   push:
     branches: [main]
-    paths: ['packages.txt', 'scripts/**', '.github/workflows/bottles.yml']
+    paths: ['packages.txt', 'taps.txt', 'scripts/**', '.github/workflows/bottles.yml']
 permissions:
   contents: write
 concurrency:
   group: intel-bottles
   cancel-in-progress: false
+env:
+  HOMEBREW_NO_AUTO_UPDATE: '1'
+  HOMEBREW_NO_INSTALL_CLEANUP: '1'
+  HOMEBREW_NO_INSTALL_FROM_API: '1'
+  HOMEBREW_NO_ANALYTICS: '1'
+  HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: '1'
+  HOMEBREW_DEVELOPER: '1'
+  HOMEBREW_NO_ENV_HINTS: '1'
 jobs:
-  bottles:
+  plan:
     if: github.ref == 'refs/heads/main'
     runs-on: macos-26-intel
-    timeout-minutes: 360
-    env:
-      HOMEBREW_NO_AUTO_UPDATE: '1'
-      HOMEBREW_NO_INSTALL_CLEANUP: '1'
-      HOMEBREW_NO_INSTALL_FROM_API: '1'
-      HOMEBREW_NO_ANALYTICS: '1'
-      HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: '1'
-      HOMEBREW_DEVELOPER: '1'
-      HOMEBREW_NO_ENV_HINTS: '1'
+    timeout-minutes: 90
+    outputs:
+      has_work: ${{ steps.plan.outputs.has_work }}
+      shard_ids: ${{ steps.plan.outputs.shard_ids }}
     steps:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - name: Build, publish, verify and promote snapshot
+      - id: plan
+        name: Inventory, fingerprints and shard plan
         env:
-          GH_TOKEN: ${{ github.token }}
-        run: /usr/bin/python3 scripts/pipeline.py
+          GITHUB_TOKEN: ${{ github.token }}
+        run: /usr/bin/python3 scripts/pipeline.py plan >> "$GITHUB_OUTPUT"
+  build:
+    needs: plan
+    if: needs.plan.outputs.has_work == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ${{ fromJSON(needs.plan.outputs.shard_ids) }}
+    runs-on: macos-26-intel
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build and publish shard ${{ matrix.shard }} members
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: /usr/bin/python3 scripts/pipeline.py build ${{ matrix.shard }}
+  publish:
+    needs: [plan, build]
+    if: always() && needs.plan.outputs.has_work == 'true'
+    runs-on: macos-26-intel
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Merge manifests, assemble tap and promote snapshot
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: /usr/bin/python3 scripts/pipeline.py publish

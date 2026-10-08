@@ -195,6 +195,28 @@ end
                 installed = [call.args[0][-1] for call in install.call_args_list]
                 self.assertEqual(installed, ['user/intel/jq'])
 
+    def test_member_fp_cascades_through_dependents(self):
+        order = ['a', 'b', 'c']
+        graph = {'a': [], 'b': ['a'], 'c': ['b']}
+        owner = {'a': 'a', 'b': 'b', 'c': 'c'}
+        base = p.member_fps(order, graph, {k: 'src-' + k for k in order}, owner)
+        changed = p.member_fps(order, graph,
+                               {'a': 'src-a2', 'b': 'src-b', 'c': 'src-c'}, owner)
+        self.assertEqual(base['a'] != changed['a'], True)
+        self.assertEqual(base['b'] != changed['b'], True)
+        self.assertEqual(base['c'] != changed['c'], True)
+
+    def test_partition_covers_members_and_clusters_deps(self):
+        order = ['m4', 'autoconf', 'wget', 'jq']
+        graph = {'m4': [], 'autoconf': ['m4'], 'wget': [], 'jq': ['oniguruma'],
+                 'oniguruma': []}
+        order = ['m4', 'oniguruma', 'autoconf', 'wget', 'jq']
+        shards = p.partition(order, graph, {'autoconf', 'wget', 'jq'}, 2)
+        flat = [n for shard in shards for n in shard]
+        self.assertEqual(sorted(flat), sorted(order))
+        autoconf_shard = next(i for i, s in enumerate(shards) if 'autoconf' in s)
+        self.assertIn('m4', shards[autoconf_shard])
+
     def test_client_missing_dependency_bottle_never_installs(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

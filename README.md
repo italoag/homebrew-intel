@@ -86,29 +86,29 @@ automaticamente pacotes ou dados do seu Mac.
 
 ## Como funciona
 
-1. Atualiza brew e obtém as fórmulas atuais de homebrew/core.
-2. Resolve recursivamente dependências diretas de runtime, build e testes,
-   respeitando a plataforma do runner. Detecta ciclos e interrompe com diagnóstico.
-3. Quando a versão atual já publica bottle Intel pelo mantenedor (tahoe/all ou
-   tags mais antigas que o brew despeja), o bloco `bottle` oficial é preservado
-   e o binário é apenas baixado. Sem bottle Intel, o bloco é removido e a fórmula
-   é compilada. Redireciona declarações de dependência e referências literais
-   `Formula[...]` para o tap privado de manutenção.
-4. Verifica com brew que a árvore ativa não escapou para outro tap.
-5. Compara um fingerprint de fontes, grafo, lista, scripts, workflow e versão brew
-   com o último snapshot. Sem alterações relevantes, não compila.
-6. Quando há alterações, recompila o conjunto inteiro em ordem de dependência.
-   O runner descartável tem seus pacotes Homebrew pré-instalados removidos para
-   evitar mascarar dependências. **Nunca execute pipeline.py no Mac pessoal.**
-7. Executa `brew test` e `brew linkage --test`, cria bottles e incorpora metadados
-   oficiais com `brew bottle --merge --write --no-commit`.
-8. Publica um release com identificador exclusivo por run/tentativa, sem substituir
-   assets de snapshots anteriores. Renomeia assets conforme a URL real do bottle.
-9. Desinstala o conjunto no runner e reinstala via URLs públicas. Verifica
-   `poured_from_bottle` e repete testes/linkage no conjunto final.
-10. Apenas depois promove fórmulas e snapshot para main. Se houver falha, o tap
-    anterior permanece publicado. Um release não referenciado pode ficar para
-    investigação; não apague releases que ainda são referenciados por clientes.
+O workflow tem três jobs: **plan** → **build** (matrix de 4 shards) → **publish**.
+
+1. `plan` resolve recursivamente dependências diretas de runtime, build e testes
+   em homebrew/core e nas taps de `taps.txt`. Detecta ciclos, remove
+   `no_autobump!`, reescreve deps para o tap e verifica com brew que a árvore
+   não escapou para outro tap.
+2. Quando a versão atual já publica bottle Intel pelo mantenedor, o bloco
+   `bottle` oficial é preservado e o binário é apenas baixado. Sem bottle
+   Intel, a fórmula é compilada.
+3. Cada membro recebe um fingerprint (fonte transformada + fingerprint das
+   deps). Mudança em uma dep invalida os dependentes em cascata — só o que
+   mudou entra no build_set, particionado em 4 shards com afinidade de deps.
+4. Cada shard `build` instala deps despejando bottles já publicados (do release
+   ou adotados de shards irmãos) e compila o que falta localmente. Ao concluir
+   cada membro, publica na hora o `.bottle.tar.gz`, o `Formula-<nome>.rb` e seu
+   fragmento de manifesto no release rolante `tahoe-bottles` — o checkpoint
+   faz qualquer trabalho concluído sobreviver a timeout ou falha do shard.
+5. Reexecutar um job falho ou disparar nova run continua de onde parou:
+   manifesto e fragmentos dizem o que já existe e só o restante é refeito.
+6. `publish` mescla manifestos, monta `Formula/` (asset novo, arquivo promovido
+   ou fonte reutilizada), remove assets órfãos e grava `snapshot.json` com
+   `pending` para o que ainda falta. Só então commita em main; shard falho
+   promove apenas o que ficou pronto e a run seguinte retoma o restante.
 
 ## Escopo e limites
 
@@ -122,14 +122,16 @@ automaticamente pacotes ou dados do seu Mac.
   helpers externos, requisitos exclusivos de ARM ou APIs específicas de
   homebrew/core podem exigir adaptação manual. Não há promessa de que toda
   fórmula continuará compilando em Intel. Falha não promove o snapshot.
-- O primeiro build pode ser grande. Atualizações recompilam toda a closure:
-  a escolha conservadora permite validar dependências e consumidores juntos.
-  Grafos como LLVM/Rust/Java podem exceder disco ou tempo do runner. Divida o
-  catálogo em taps independentes ou evolua a esteira para jobs por fórmula e
-  bootstrap explícito se necessário. Não liste todos os pacotes logo no início.
-- Limite de job configurado: 360 minutos. Repositórios privados podem gerar
-  cobrança por minutos macOS e exigem estratégia de autenticação para downloads.
-  Esta configuração pressupõe distribuição **pública** de binários.
+- O primeiro build ainda é grande: shards dividem o trabalho em 4 runners e
+  deps compartilhadas podem ser compiladas em mais de um shard (duplicação
+  segura; só o dono publica). Uma fórmula que sozinha exceda 360 minutos
+  (ex.: LLVM em hardware lento) continua sendo o limite duro do job.
+- O release `tahoe-bottles` é rolante e acumula assets entre runs — é o
+  mecanismo de retomada. Não apague o release nem assets referenciados no
+  manifesto; o publish remove sozinho o que ficou órfão.
+- Limite de job configurado: 360 minutos por shard. Repositórios privados podem
+  gerar cobrança por minutos macOS e exigem estratégia de autenticação para
+  downloads. Esta configuração pressupõe distribuição **pública** de binários.
 - Agendamentos do GitHub podem atrasar e ser desativados por inatividade em
   repositórios públicos. Confira a execução periódica. Proteção de main que
   proíba push do bot impede promoção; nesse cenário use PR automatizada/App
