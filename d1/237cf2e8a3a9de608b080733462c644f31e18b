@@ -1,0 +1,14 @@
+packages.txt
+  h_ba256230c5d53f 4-278
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d1237cf2e8a3a9de608b080733462c644f31e18b",
+  "prompts": {},
+  "humans": {
+    "h_ba256230c5d53f": {
+      "author": "Italo A. G. <182202+italoag@users.noreply.github.com>"
+    }
+  }
+}
