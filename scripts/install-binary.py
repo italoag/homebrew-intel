@@ -25,26 +25,42 @@ def main():
         raise SystemExit('Execute o primeiro workflow com sucesso antes de instalar.')
     state = json.loads(state_file.read_text())
     tap = state['tap']
-    names = sys.argv[2:]
-    if any(name not in state['order'] for name in names):
-        raise SystemExit('Pacote fora do snapshot. Acrescente a packages.txt e aguarde o workflow.')
-    targets = [tap + '/' + name for name in names]
-    order_set = set(state['order'])
+    order_index = {}
+    for key in state['order']:
+        order_index.setdefault(key.split('/')[-1], key)
+    resolved = []
+    for name in sys.argv[2:]:
+        if name in state['order']:
+            resolved.append(name)
+        elif name in order_index:
+            resolved.append(order_index[name])
+        else:
+            raise SystemExit('Pacote fora do snapshot. Acrescente a packages.txt e aguarde o workflow.')
+    targets = [tap + '/' + key.split('/')[-1] for key in resolved]
+    # Dep curta sempre resolve para core; nunca pode apontar membro de tap externo.
+    core_set = {key for key in state['order'] if '/' not in key}
     closure = set(targets)
     for target in targets:
         for dep in brew('deps', '--full-name', target).split():
             short = dep.removeprefix('homebrew/core/')
             if dep.startswith(tap + '/'):
                 closure.add(dep)
-            elif short in order_set:
+            elif short in core_set:
                 # Dep implícita (ex.: extrator .7z -> p7zip) resolve pelo nome
                 # curto; o keg do tap a satisfaz desde que instalado antes.
                 closure.add(tap + '/' + short)
             else:
                 raise SystemExit('Dependência fora do tap: ' + dep)
+    reused = {key.split('/')[-1] for key in state.get('reused', [])}
     for full in sorted(closure):
         info = json.loads(brew('info', '--json=v2', full))['formulae'][0]
         bottles = (info.get('bottle') or {}).get('stable', {}).get('files', {})
+        if full.split('/')[-1] in reused:
+            # Fórmula servida pelo bottle oficial do mantenedor (URL upstream).
+            if not any('arm64' not in tag and 'aarch64' not in tag
+                       and 'linux' not in tag for tag in bottles):
+                raise SystemExit('Bottle reutilizado ausente: ' + full)
+            continue
         bottle = bottles.get('tahoe') or bottles.get('all')
         if not bottle or not bottle['url'].startswith(
                 'https://github.com/' + tap.split('/')[0] + '/homebrew-' +
@@ -56,7 +72,8 @@ def main():
                HOMEBREW_NO_INSTALL_CLEANUP='1', HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK='1')
     # Instala o fechamento em ordem de dependência para que deps implícitas de
     # nome curto (ex.: p7zip de um .7z) sejam satisfeitas pelo keg do tap.
-    planned = [tap + '/' + n for n in state['order'] if tap + '/' + n in closure]
+    planned = [tap + '/' + n.split('/')[-1] for n in state['order']
+               if tap + '/' + n.split('/')[-1] in closure]
     if sys.argv[1] == 'upgrade':
         installed = {item.get('full_name') for item in
                      json.loads(brew('info', '--json=v2', '--installed'))['formulae']}

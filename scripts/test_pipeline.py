@@ -136,6 +136,65 @@ end
                 installed = [call.args[0][-1] for call in install.call_args_list]
                 self.assertEqual(installed, ['user/intel/p7zip', 'user/intel/imagemagick'])
 
+    def test_transform_keeps_reusable_bottle_and_redirects_external_dep(self):
+        source = ('class Crush < Formula\n'
+                  '  bottle do\n'
+                  '    sha256 tahoe: "official"\n'
+                  '  end\n'
+                  '  depends_on "charmbracelet/tap/mods"\n'
+                  'end\n')
+        names = {'charmbracelet/tap/mods'}
+        result = p.transform(source, 'user/intel', names, keep_bottle=True)
+        self.assertIn('bottle do', result)
+        self.assertIn('sha256 tahoe: "official"', result)
+        self.assertIn('depends_on "user/intel/mods"', result)
+
+    def test_canonical_allows_members_of_external_source_taps_only(self):
+        self.assertEqual(p.canonical('anomalyco/tap/opencode', {'anomalyco/tap'}),
+                         'anomalyco/tap/opencode')
+        with self.assertRaises(RuntimeError):
+            p.canonical('anomalyco/tap/opencode')
+        with self.assertRaises(RuntimeError):
+            p.canonical('anomalyco/tap/opencode', {'other/tap'})
+
+    def test_scan_adds_external_tap_formula_with_full_package_name(self):
+        installed = {'name': 'crush', 'tap': 'charmbracelet/tap',
+                     'installed': [{'version': '0.1'}]}
+        upstream = {'name': 'crush', 'full_name': 'charmbracelet/tap/crush',
+                    'urls': {'stable': {'url': 'https://example.org/crush.tar.gz'}},
+                    'bottle': {'stable': {'files': {}}}}
+        row = sync.classify(installed, upstream)
+        self.assertTrue(row['candidate'])
+        self.assertEqual(row['package'], 'charmbracelet/tap/crush')
+        upstream['full_name'] = 'charmbracelet/tap/renamed'
+        self.assertFalse(sync.classify(installed, upstream)['candidate'])
+
+    def test_client_installs_reused_bottle_without_release_url(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'scripts').mkdir()
+            (root / 'snapshot.json').write_text(json.dumps({
+                'tap': 'user/intel', 'order': ['jq'], 'tag': 'tahoe-1',
+                'reused': ['jq']}))
+            bottle = {'bottle': {'stable': {'files': {'sequoia': {
+                'url': 'https://ghcr.io/v2/homebrew/core/jq/blobs/sha256:x'}}}}}
+            def fake_brew(*args):
+                if args == ('--prefix',):
+                    return '/usr/local\n'
+                if args[0] == 'deps':
+                    return ''
+                return json.dumps({'formulae': [bottle]})
+            with patch.object(client, '__file__', str(root / 'scripts/install-binary.py')), \
+                 patch.object(client.sys, 'argv', ['script', 'install', 'jq']), \
+                 patch.object(client.platform, 'system', return_value='Darwin'), \
+                 patch.object(client.platform, 'machine', return_value='x86_64'), \
+                 patch.object(client.subprocess, 'check_output', return_value='26.7\n'), \
+                 patch.object(client, 'brew', side_effect=fake_brew), \
+                 patch.object(client.subprocess, 'run') as install:
+                client.main()
+                installed = [call.args[0][-1] for call in install.call_args_list]
+                self.assertEqual(installed, ['user/intel/jq'])
+
     def test_client_missing_dependency_bottle_never_installs(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

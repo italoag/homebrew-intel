@@ -17,6 +17,9 @@ inventário, atualiza `packages.txt` e prepara/executa a migração após o buil
 2. Copie o conteúdo desta pasta, incluindo `.github`, para o repositório.
 3. Comece com o `jq` de exemplo em `packages.txt`. Depois do primeiro sucesso,
    acrescente seus pacotes reais, um nome canônico de `homebrew/core` por linha.
+   Fórmulas de taps de terceiros entram como `owner/tap/nome`; para taps com
+   remote fora do padrão `github.com/owner/homebrew-<tap>`, registre o remote
+   em `taps.txt` (`owner/tap URL`) — `sync-installed.py scan` gera o arquivo.
 4. Em Settings → Actions → General, permita a execução do workflow e permissões
    de escrita em contents para `GITHUB_TOKEN`. Uma política da organização pode
    exigir ajuste pelo administrador. Nenhum PAT precisa ser criado.
@@ -86,8 +89,11 @@ automaticamente pacotes ou dados do seu Mac.
 1. Atualiza brew e obtém as fórmulas atuais de homebrew/core.
 2. Resolve recursivamente dependências diretas de runtime, build e testes,
    respeitando a plataforma do runner. Detecta ciclos e interrompe com diagnóstico.
-3. Remove metadados de bottles upstream e redireciona declarações de dependência
-   e referências literais `Formula[...]` para o tap privado de manutenção.
+3. Quando a versão atual já publica bottle Intel pelo mantenedor (tahoe/all ou
+   tags mais antigas que o brew despeja), o bloco `bottle` oficial é preservado
+   e o binário é apenas baixado. Sem bottle Intel, o bloco é removido e a fórmula
+   é compilada. Redireciona declarações de dependência e referências literais
+   `Formula[...]` para o tap privado de manutenção.
 4. Verifica com brew que a árvore ativa não escapou para outro tap.
 5. Compara um fingerprint de fontes, grafo, lista, scripts, workflow e versão brew
    com o último snapshot. Sem alterações relevantes, não compila.
@@ -108,8 +114,10 @@ automaticamente pacotes ou dados do seu Mac.
 
 - **Não é um espelho universal.** A lista explícita é o catálogo desejado.
   Para obter candidatos no Mac: `brew leaves`. Revise a lista antes de adicionar.
-- Somente fórmulas canônicas de homebrew/core, versões stable e opções padrão.
-  Casks não entram: em geral já distribuem binários e possuem outro ciclo.
+- Somente fórmulas canônicas de homebrew/core ou dos taps declarados em
+  `packages.txt`/`taps.txt`, versões stable e opções padrão. Nomes de fórmulas
+  que colidirem entre taps abortam o run. Casks não entram: em geral já
+  distribuem binários e possuem outro ciclo.
 - Fórmulas com ciclos de bootstrap/teste, dependências geradas dinamicamente,
   helpers externos, requisitos exclusivos de ARM ou APIs específicas de
   homebrew/core podem exigir adaptação manual. Não há promessa de que toda

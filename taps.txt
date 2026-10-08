@@ -1,0 +1,16 @@
+yassinebenaid/bunster https://github.com/yassinebenaid/homebrew-bunster
+charmbracelet/tap https://github.com/charmbracelet/homebrew-tap
+dotenvx/brew https://github.com/dotenvx/homebrew-brew
+ycd/tap https://github.com/ycd/homebrew-tap
+fluxcd/tap https://github.com/fluxcd/homebrew-tap
+carvel-dev/carvel https://github.com/carvel-dev/homebrew.git
+kurtosis-tech/tap https://github.com/kurtosis-tech/homebrew-tap
+alexsjones/llmfit https://github.com/AlexsJones/homebrew-llmfit
+bgreenwell/lstr https://github.com/bgreenwell/homebrew-lstr
+anomalyco/tap https://github.com/anomalyco/homebrew-tap.git
+datolabs-io/opsy https://github.com/datolabs-io/opsy
+reviewdog/tap https://github.com/reviewdog/homebrew-tap
+lusingander/tap https://github.com/lusingander/homebrew-tap
+ethereum-optimism/tap https://github.com/ethereum-optimism/homebrew-tap
+tenderly/tenderly https://github.com/tenderly/homebrew-tenderly
+lucasgelfond/zerobrew https://github.com/lucasgelfond/homebrew-zerobrew

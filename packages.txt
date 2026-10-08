@@ -276,3 +276,27 @@ yamale
 yamllint
 z3
 zig
+
+# Detectadas no inventário local (taps de terceiros)
+yassinebenaid/bunster/bunster
+charmbracelet/tap/crush
+dotenvx/brew/dotenvx
+ycd/tap/dstp
+fluxcd/tap/flux
+carvel-dev/carvel/imgpkg
+carvel-dev/carvel/kapp
+carvel-dev/carvel/kbld
+carvel-dev/carvel/kctrl
+kurtosis-tech/tap/kurtosis-cli
+carvel-dev/carvel/kwt
+alexsjones/llmfit/llmfit
+bgreenwell/lstr/lstr
+charmbracelet/tap/mods
+anomalyco/tap/opencode
+datolabs-io/opsy/opsy
+reviewdog/tap/reviewdog
+lusingander/tap/serie
+ethereum-optimism/tap/supersim
+tenderly/tenderly/tenderly
+charmbracelet/tap/wishlist
+lucasgelfond/zerobrew/zerobrew
