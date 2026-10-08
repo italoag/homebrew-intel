@@ -1,0 +1,30 @@
+.github/workflows/bottles.yml
+  h_ba256230c5d53f 1-33
+.gitignore
+  h_ba256230c5d53f 1-3
+MIGRACAO.md
+  h_ba256230c5d53f 1-148
+README.md
+  h_ba256230c5d53f 1-151
+packages.txt
+  h_ba256230c5d53f 1-3
+scripts/install-binary.py
+  h_ba256230c5d53f 1-53
+scripts/pipeline.py
+  h_ba256230c5d53f 1-219
+scripts/sync-installed.py
+  h_ba256230c5d53f 1-225
+scripts/test_pipeline.py
+  h_ba256230c5d53f 1-133
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "77feb69ab925c13c52d95a90bab0256214812c47",
+  "prompts": {},
+  "humans": {
+    "h_ba256230c5d53f": {
+      "author": "Italo A. G. <182202+italoag@users.noreply.github.com>"
+    }
+  }
+}
