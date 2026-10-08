@@ -463,6 +463,22 @@ def write_formula_dir(plan_data):
             target.write_text(normalized[name])
 
 
+def repair_bottle_urls(text, asset_names):
+    # Assets publicados com basename codificado foram gravados pelo GitHub com %
+    # sanitizado para . (openssl%403 -> openssl.403) e a URL do .rb dá 404:
+    # reescreve para o nome efetivamente gravado quando ele existe no release.
+    pattern = re.compile(r'(url "https://[^"]*/)([^"?]+)(")')
+    def repair(match):
+        raw = match.group(2)
+        if urllib.parse.unquote(raw) in asset_names or raw in asset_names:
+            return match.group(0)
+        fixed = re.sub(r'[^\w.\-]', '.', raw)
+        if fixed in asset_names:
+            return match.group(1) + urllib.parse.quote(fixed) + match.group(3)
+        return match.group(0)
+    return pattern.sub(repair, text)
+
+
 def adopt_bottles(release, full, formula_dir):
     # Dependência de outro shard: se o dono já publicou, adota o arquivo com o
     # bloco bottle e o brew despeja em vez de compilar a dep duplicada.
@@ -475,10 +491,11 @@ def adopt_bottles(release, full, formula_dir):
         if asset_name not in asset_map:
             continue
         target = formula_dir / (dep_short + '.rb')
-        fetched = download(asset_map[asset_name])
-        if not target.exists() or target.read_bytes() != fetched:
+        fetched = repair_bottle_urls(download(asset_map[asset_name]).decode(),
+                                   asset_map)
+        if not target.exists() or target.read_text() != fetched:
             print('Adotando bottle publicado por outro shard:', dep_short, flush=True)
-            target.write_bytes(fetched)
+            target.write_text(fetched)
 
 
 def install_missing_deps(full, tap):
@@ -563,15 +580,18 @@ def build_shard(idx):
             archive = archives[0]
             if hashlib.sha256(archive.read_bytes()).hexdigest() != bottle['sha256']:
                 raise RuntimeError('Checksum inválido: ' + name)
-            filename = Path(urllib.parse.urlparse(bottle['url']).path).name
+            # O basename da URL vem codificado (openssl%403-...): decodifica para
+            # o nome real que o GitHub grava e que o brew decodifica ao baixar.
+            filename = urllib.parse.unquote(
+                Path(urllib.parse.urlparse(bottle['url']).path).name)
             target = archive.with_name(filename)
             if target != archive:
                 archive.rename(target)
             # Checkpoint imediato: bottle, metadado da fórmula e manifesto do shard.
-            upload_asset(release['id'], target, filename)
+            uploaded = upload_asset(release['id'], target, filename)
+            fragment[short] = {'fp': fps[name], 'asset': uploaded['name']}
             upload_asset(release['id'], ROOT / 'Formula' / (short + '.rb'),
                          f'Formula-{short}.rb')
-            fragment[short] = {'fp': fps[name], 'asset': filename}
         else:
             # Reutilizado ou inalterado: despeja o bottle oficial/publicado e
             # valida que funciona dentro do grafo do tap.
@@ -631,7 +651,10 @@ def publish():
         asset_name = f'Formula-{short}.rb'
         target = formula_dir / (short + '.rb')
         if asset_name in assets:
-            target.write_bytes(download(assets[asset_name]['browser_download_url']))
+            source = repair_bottle_urls(
+                download(assets[asset_name]['browser_download_url']).decode(),
+                assets)
+            target.write_text(source)
         elif not target.exists() and reusable[key]:
             # Arquivo de membro reutilizado é autossuficiente (bottle upstream);
             # membro novo sem bottle construído fica ausente até o build.
