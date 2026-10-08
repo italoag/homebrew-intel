@@ -96,8 +96,10 @@ end
 '''
         result = p.transform(source, 'user/intel', {'oniguruma'})
         self.assertNotIn('bottle do', result)
-        self.assertIn('depends_on "user/intel/oniguruma"', result)
-        self.assertIn('Formula["user/intel/oniguruma"]', result)
+        # Membros do core ficam com nome curto: o keg satisfaz a dep e
+        # dep.name continua compatível com o código upstream.
+        self.assertIn('depends_on "oniguruma"', result)
+        self.assertIn('Formula["oniguruma"]', result)
         self.assertIn('uses_from_macos "zlib"', result)
         self.assertIn('sha256 "keep"', result)
 
@@ -147,6 +149,11 @@ end
         result = p.transform(source, 'user/intel', names, keep_bottle=True)
         self.assertIn('bottle do', result)
         self.assertIn('sha256 tahoe: "official"', result)
+        self.assertIn('depends_on "user/intel/mods"', result)
+
+    def test_transform_qualifies_short_name_provided_only_by_external_tap(self):
+        source = 'class C < Formula\n  depends_on "mods"\nend\n'
+        result = p.transform(source, 'user/intel', {'charmbracelet/tap/mods'})
         self.assertIn('depends_on "user/intel/mods"', result)
 
     def test_canonical_allows_members_of_external_source_taps_only(self):

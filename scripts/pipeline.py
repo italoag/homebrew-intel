@@ -95,7 +95,7 @@ def topo(roots, graph):
     return order
 
 
-def transform(source, tap, names, keep_bottle=False):
+def transform(source, tap, names, keep_bottle=False, short_core=True):
     # O bloco bottle canônico é delimitado por end com a mesma indentação. Quando a
     # versão atual já tem bottle Intel do mantenedor, o bloco oficial é preservado.
     if not keep_bottle:
@@ -108,7 +108,20 @@ def transform(source, tap, names, keep_bottle=False):
     def replace(match):
         raw = match[3]
         member = raw if raw in names else raw.removeprefix('homebrew/core/')
-        target = tap + '/' + short_name(member) if member in names else raw
+        if member not in names and '/' not in member and short_core:
+            # Nome curto que só um tap externo autorizado fornece no fechamento
+            # (depends_on "x" resolvendo para owner/tap/x): qualifica para o
+            # tap gerado porque a origem não existe fora do plano.
+            member = next((c for c in names if c.endswith('/' + member)), member)
+        if member not in names:
+            return match[0]
+        # Membros do core ficam com o nome curto: a dep é satisfeita pelo keg
+        # instalado e o código upstream que compara dep.name (ex.: deps.find
+        # { |dep| dep.name.start_with?("openssl@") }) continua válido.
+        # short_core=False reproduz o formato legado usado antes desta regra,
+        # para validar fingerprints publicados sem forçar rebuild.
+        target = (tap + '/' + short_name(member)
+                  if '/' in member or not short_core else member)
         return match[1] + match[2] + target + match[2]
     return re.sub(pattern, replace, source)
 
@@ -299,11 +312,12 @@ def owners(order):
     return file_owner, dropped
 
 
-def member_fps(order, graph, normalized, file_owner, patch_shas=None):
-    # Fingerprint por fórmula: fonte transformada + patches embutidos +
-    # fingerprint das deps, para que mudança em uma dependência invalide os
-    # dependentes em cascata. O subgrafo de donos tem ordem própria: uma dep
-    # descartada resolve para o dono core, que pode aparecer depois em order.
+def member_fps(order, graph, sources, file_owner, patch_shas=None):
+    # Fingerprint por fórmula: fonte UPSTREAM (invariante a mudanças de
+    # normalização nossas) + patches embutidos + fingerprint das deps, para que
+    # mudança em uma dependência invalide os dependentes em cascata. O subgrafo
+    # de donos tem ordem própria: uma dep descartada resolve para o dono core,
+    # que pode aparecer depois em order.
     patch_shas = patch_shas or {}
     owner_names = [name for name in order if file_owner[short_name(name)] == name]
     ograph = {name: {file_owner[short_name(dep)] for dep in graph[name]
@@ -313,7 +327,7 @@ def member_fps(order, graph, normalized, file_owner, patch_shas=None):
     for name in topo(owner_names, ograph):
         dep_fps = sorted(fps[dep] for dep in ograph[name])
         # Sem o termo quando não há patch: preserva o fp de quem já publicou.
-        payload = normalized[name] + json.dumps(dep_fps) + (
+        payload = sources[name] + json.dumps(dep_fps) + (
             json.dumps(patch_shas[name], sort_keys=True) if name in patch_shas else '')
         fps[name] = hashlib.sha256(payload.encode()).hexdigest()
     for name in order:
@@ -414,9 +428,40 @@ def plan():
         dest = ROOT / rel
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_text(content)
-    fps = member_fps(order, graph, normalized, file_owner, patch_shas)
+    fps = member_fps(order, graph, sources, file_owner, patch_shas)
     release = release_for_tag(create=True)
     manifest = load_manifest(release)
+    if manifest:
+        # Migração de fingerprint: se a fonte upstream e as deps de um membro
+        # publicado não mudaram (fp legado confere), só atualiza o fp —
+        # o bottle já publicado continua válido e não precisa rebuild.
+        legacy_norm = {n: transform(s, tap, set(graph), reusable[n],
+                                    short_core=False)
+                       for n, s in sources.items()}
+        legacy_fps = member_fps(order, graph, legacy_norm, file_owner)
+        tables = [('manifest.json', manifest)]
+        for asset in release_assets(release['id']):
+            if re.fullmatch(r'manifest-\d+\.json', asset['name']):
+                tables.append((asset['name'], json.loads(
+                    download(asset['browser_download_url']))))
+        migrated = 0
+        for asset_name, table in tables:
+            dirty = False
+            for name in order:
+                short = short_name(name)
+                entry = table.get(short)
+                if (entry and entry.get('fp') == legacy_fps[name]
+                        and entry['fp'] != fps[name]):
+                    table[short] = {**entry, 'fp': fps[name]}
+                    migrated += 1
+                    dirty = True
+            if dirty:
+                path = WORK / asset_name
+                path.write_text(json.dumps(table, indent=2))
+                upload_asset(release['id'], path, asset_name)
+        if migrated:
+            print(f'{migrated} checkpoints migrados para o novo fingerprint',
+                  flush=True)
     assets = {asset['name'] for asset in release_assets(release['id'])}
     build_set = set()
     for name in order:
