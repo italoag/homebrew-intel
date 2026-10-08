@@ -55,7 +55,10 @@ def deps(name):
 
 
 def formula_info(name):
-    return json.loads(run('brew', 'info', '--json=v2', name, capture=True))['formulae'][0]
+    # --formula evita carregar cask homônimo (ex.: reviewdog/tap tem ambos; o
+    # cask usa DSL deprecado que aborta a carga em modo desenvolvedor).
+    return json.loads(run('brew', 'info', '--json=v2', '--formula', name,
+                          capture=True))['formulae'][0]
 
 
 def canonical(name, external_taps=()):
