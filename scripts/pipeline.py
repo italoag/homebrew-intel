@@ -50,8 +50,9 @@ def run(*args, cwd=None, capture=False):
 
 def deps(name):
     # Dependências de teste fazem parte do fechamento para permitir brew test.
-    return run('brew', 'deps', '--direct', '--full-name', '--include-build',
-               '--include-test', name, capture=True).split()
+    # --formula evita carregar cask homônimo (ex.: reviewdog/tap).
+    return run('brew', 'deps', '--formula', '--direct', '--full-name',
+               '--include-build', '--include-test', name, capture=True).split()
 
 
 def formula_info(name):
@@ -267,7 +268,7 @@ def build_graph(roots, external_taps):
         if info['full_name'].removeprefix('homebrew/core/') != name:
             raise RuntimeError('Use nome canônico em vez de alias: ' + name)
         graph[name] = [canonical(dep, external_taps) for dep in deps(full_ref)]
-        sources[name] = run('brew', 'cat', full_ref, capture=True)
+        sources[name] = run('brew', 'cat', '--formula', full_ref, capture=True)
         files = ((info.get('bottle') or {}).get('stable') or {}).get('files') or {}
         # Bottle Intel reutilizável: qualquer tag macOS x86_64 que o brew despeja.
         reusable[name] = any('arm64' not in tag and 'aarch64' not in tag
@@ -467,7 +468,7 @@ def adopt_bottles(release, full, formula_dir):
     # bloco bottle e o brew despeja em vez de compilar a dep duplicada.
     asset_map = {asset['name']: asset['browser_download_url']
                  for asset in release_assets(release['id'])}
-    for dep in run('brew', 'deps', '--full-name', '--include-build',
+    for dep in run('brew', 'deps', '--formula', '--full-name', '--include-build',
                    '--include-test', full, capture=True).split():
         dep_short = dep.split('/')[-1]
         asset_name = f'Formula-{dep_short}.rb'
