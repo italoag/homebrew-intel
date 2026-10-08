@@ -299,11 +299,12 @@ def owners(order):
     return file_owner, dropped
 
 
-def member_fps(order, graph, normalized, file_owner):
-    # Fingerprint por fórmula: fonte transformada + fingerprint das deps, para
-    # que mudança em uma dependência invalide os dependentes em cascata. O
-    # subgrafo de donos tem ordem própria: uma dep descartada resolve para o
-    # dono core, que pode aparecer depois do dependente em order.
+def member_fps(order, graph, normalized, file_owner, patch_shas=None):
+    # Fingerprint por fórmula: fonte transformada + patches embutidos +
+    # fingerprint das deps, para que mudança em uma dependência invalide os
+    # dependentes em cascata. O subgrafo de donos tem ordem própria: uma dep
+    # descartada resolve para o dono core, que pode aparecer depois em order.
+    patch_shas = patch_shas or {}
     owner_names = [name for name in order if file_owner[short_name(name)] == name]
     ograph = {name: {file_owner[short_name(dep)] for dep in graph[name]
                      if file_owner[short_name(dep)] != name}
@@ -311,12 +312,38 @@ def member_fps(order, graph, normalized, file_owner):
     fps = {}
     for name in topo(owner_names, ograph):
         dep_fps = sorted(fps[dep] for dep in ograph[name])
-        fps[name] = hashlib.sha256(
-            (normalized[name] + json.dumps(dep_fps)).encode()).hexdigest()
+        # Sem o termo quando não há patch: preserva o fp de quem já publicou.
+        payload = normalized[name] + json.dumps(dep_fps) + (
+            json.dumps(patch_shas[name], sort_keys=True) if name in patch_shas else '')
+        fps[name] = hashlib.sha256(payload.encode()).hexdigest()
     for name in order:
         if file_owner[short_name(name)] != name:
             fps[name] = fps[file_owner[short_name(name)]]
     return fps
+
+
+def collect_patches(order, normalized, file_owner):
+    # patch do file "Patches/..." end referencia arquivos da raiz do tap de
+    # origem (ex.: python@3.14 -> Patches/python/3.13-sysconfig.diff). brew cat
+    # traz só o .rb; copia os arquivos para o tap gerado no mesmo caminho.
+    patches, patch_shas = {}, {}
+    tap_dirs = {}
+    for name in order:
+        if file_owner[short_name(name)] != name:
+            continue
+        refs = re.findall(r'(?m)^\s*file\s+"([^"]+)"', normalized[name])
+        for rel in refs:
+            origin = 'homebrew/core' if '/' not in name else name.rsplit('/', 1)[0]
+            if origin not in tap_dirs:
+                tap_dirs[origin] = Path(
+                    run('brew', '--repository', origin, capture=True).strip())
+            src = tap_dirs[origin] / rel
+            if not src.is_file():
+                raise RuntimeError(f'Patch referenciado ausente em {origin}: {rel}')
+            patches[rel] = src.read_text()
+            patch_shas.setdefault(name, {})[rel] = hashlib.sha256(
+                patches[rel].encode()).hexdigest()
+    return patches, patch_shas
 
 
 def partition(order, graph, build_set, nshards):
@@ -382,7 +409,12 @@ def plan():
     normalized = {name: transform(src, tap, set(graph), reusable[name])
                   for name, src in sources.items()}
     file_owner, dropped = owners(order)
-    fps = member_fps(order, graph, normalized, file_owner)
+    patches, patch_shas = collect_patches(order, normalized, file_owner)
+    for rel, content in patches.items():
+        dest = ROOT / rel
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_text(content)
+    fps = member_fps(order, graph, normalized, file_owner, patch_shas)
     release = release_for_tag(create=True)
     manifest = load_manifest(release)
     assets = {asset['name'] for asset in release_assets(release['id'])}
@@ -410,7 +442,7 @@ def plan():
                  'normalized': normalized, 'reusable': reusable, 'fps': fps,
                  'build_set': sorted(build_set), 'shards': shards,
                  'file_owner': file_owner, 'dropped': sorted(dropped),
-                 'core_commit': core_commit}
+                 'patches': patches, 'core_commit': core_commit}
     plan_path = WORK / 'plan.json'
     plan_path.write_text(json.dumps(plan_data))
     upload_asset(release['id'], plan_path, 'plan.json')
@@ -450,6 +482,11 @@ def write_formula_dir(plan_data):
     for stale in formula_dir.glob('*.rb'):
         if stale.stem not in keep:
             stale.unlink()
+    # Patch files embutidos vivem no plan (o checkout do shard é novo).
+    for rel, content in (plan_data.get('patches') or {}).items():
+        dest = ROOT / rel
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_text(content)
     normalized = plan_data['normalized']
     build_set = set(plan_data['build_set'])
     for name in plan_data['order']:
@@ -661,6 +698,15 @@ def publish():
             target.write_text(plan_data['normalized'][key])
         if stale:
             pending.append(short)
+    # Patch files embutidos viajam no plan; remove os não mais referenciados.
+    keep_patches = set(plan_data.get('patches') or {})
+    for stale in (ROOT / 'Patches').rglob('*') if (ROOT / 'Patches').is_dir() else []:
+        if stale.is_file() and str(stale.relative_to(ROOT)) not in keep_patches:
+            stale.unlink()
+    for rel, content in (plan_data.get('patches') or {}).items():
+        dest = ROOT / rel
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_text(content)
     keep = {'plan.json', 'manifest.json'}
     keep.update(f'manifest-{i}.json' for i in range(SHARDS))
     keep.update(f'Formula-{s}.rb' for s in member_shorts)
@@ -684,7 +730,10 @@ def publish():
     (ROOT / 'snapshot.json').write_text(json.dumps(snapshot, indent=2) + '\n')
     run('git', 'config', 'user.name', 'github-actions[bot]')
     run('git', 'config', 'user.email', '41898282+github-actions[bot]@users.noreply.github.com')
-    run('git', 'add', 'Formula', 'snapshot.json', 'LICENSE.homebrew-core.txt')
+    add_paths = ['Formula', 'snapshot.json', 'LICENSE.homebrew-core.txt']
+    if (ROOT / 'Patches').is_dir():
+        add_paths.append('Patches')
+    run('git', 'add', *add_paths)
     if subprocess.run(['git', 'diff', '--cached', '--quiet']).returncode == 0:
         print('Nenhuma alteração para promover.', flush=True)
         return
