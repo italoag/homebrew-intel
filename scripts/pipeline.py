@@ -292,6 +292,11 @@ def build_graph(roots, external_taps):
         # fórmula declarar o alias (ex.: depends_on "pkg-config" -> pkgconf).
         aux['aliases'][name] = [a.split('/')[-1] for a in info.get('aliases') or []]
         aux['renames'][name] = [o.split('/')[-1] for o in info.get('oldnames') or []]
+        # disabled é irrecuperável (brew recusa o install); deprecated só avisa.
+        aux.setdefault('disabled', []).extend(
+            [name] if info.get('disabled') else [])
+        aux.setdefault('deprecated', []).extend(
+            [name] if info.get('deprecated') else [])
         pending.extend(graph[name])
     return graph, sources, reusable, aux
 
@@ -444,6 +449,12 @@ def plan():
     external_taps = {name.rsplit('/', 1)[0] for name in roots if '/' in name}
     tap_source_taps(external_taps)
     graph, sources, reusable, aux = build_graph(roots, external_taps)
+    if aux.get('disabled'):
+        raise RuntimeError('Fórmulas desabilitadas upstream; remova de '
+                           'packages.txt: ' + ', '.join(sorted(aux['disabled'])))
+    if aux.get('deprecated'):
+        print('Aviso: deprecated upstream: ' + ', '.join(sorted(aux['deprecated'])),
+              flush=True)
     order = topo(roots, graph)
     # Ignora alterações exclusivamente nos bottles upstream.
     normalized = {name: transform(src, tap, set(graph), reusable[name])
@@ -524,6 +535,9 @@ def plan():
         if file_owner[short_name(name)] == name:
             (formula_dir / (short_name(name) + '.rb')).write_text(normalized[name])
     link_own_tap(owner, repository, tap)
+    # Avalia toda fórmula gerada e valida symlinks de alias: DSL/sintaxe
+    # quebrada falha aqui, antes de gastar minutos de shard.
+    run('brew', 'readall', '--os=mac', '--arch=intel', '--aliases', tap)
     verify_closure(order, file_owner, dropped, graph, tap)
     plan_data = {'tap': tap, 'order': order, 'graph': graph, 'roots': roots,
                  'normalized': normalized, 'reusable': reusable, 'fps': fps,
@@ -683,6 +697,7 @@ def build_shard(idx):
     if installed:
         run('brew', 'uninstall', '--force', '--ignore-dependencies', *installed)
     fragment = {}
+    failed = []
     out_dir = WORK / f'out-{idx}'
     out_dir.mkdir(exist_ok=True)
     frag_path = out_dir / f'manifest-{idx}.json'
@@ -695,67 +710,84 @@ def build_shard(idx):
         if (done.get(short) or {}).get('fp') == fps[name]:
             print(f'[{idx}] {short}: já publicado; pulando', flush=True)
             continue
-        if name in build_set and not reusable[name]:
-            # Deps resolvem pelo tap: members com bottle publicado despejam; os
-            # que outro shard ainda compila são construídos localmente (fallback
-            # duplicado e seguro — só o shard dono publica).
-            adopt_bottles(release, full, ROOT / 'Formula')
-            install_missing_deps(full, tap, order_index)
-            tab = formula_info(full).get('installed') or []
-            if tab and not all(item.get('poured_from_bottle') for item in tab):
-                # Já foi compilado como dep de outro membro: refaz com test deps.
-                brew_install('--build-bottle', '--include-test', full, cmd='reinstall')
-            else:
-                brew_install('--build-bottle', '--include-test', full)
-            run('brew', 'test', full)
-            run('brew', 'linkage', '--test', full)
-            out = WORK / f'pkg-{idx}' / short
-            out.mkdir(parents=True, exist_ok=True)
-            run('brew', 'bottle', '--json', '--no-rebuild',
-                '--root-url=' + root_url, full, cwd=out)
-            metadata = list(out.glob('*.bottle.json'))
-            if len(metadata) != 1:
-                raise RuntimeError('Metadados de bottle inesperados: ' + name)
-            run('brew', 'bottle', '--merge', '--write', '--no-commit', metadata[0])
-            files = formula_info(full)['bottle']['stable']['files']
-            bottle = files.get('tahoe') or files.get('all')
-            if bottle is None:
-                raise RuntimeError('Bottle Intel Tahoe ausente: ' + name)
-            archives = list(out.glob('*.bottle.tar.gz'))
-            if len(archives) != 1:
-                raise RuntimeError('Arquivo de bottle inesperado: ' + name)
-            archive = archives[0]
-            if hashlib.sha256(archive.read_bytes()).hexdigest() != bottle['sha256']:
-                raise RuntimeError('Checksum inválido: ' + name)
-            # O basename da URL vem codificado (openssl%403-...): decodifica para
-            # o nome real que o GitHub grava e que o brew decodifica ao baixar.
-            filename = urllib.parse.unquote(
-                Path(urllib.parse.urlparse(bottle['url']).path).name)
-            target = archive.with_name(filename)
-            if target != archive:
-                archive.rename(target)
-            # Checkpoint imediato: bottle, metadado da fórmula e manifesto do shard.
-            uploaded = upload_asset(release['id'], target, filename)
-            fragment[short] = {'fp': fps[name], 'asset': uploaded['name']}
-            upload_asset(release['id'], ROOT / 'Formula' / (short + '.rb'),
-                         f'Formula-{short}.rb')
+        try:
+            process_member(name, idx, tap, full, short, build_set, reusable,
+                           release, fragment, order_index, root_url, fps)
+        except (subprocess.CalledProcessError, RuntimeError) as err:
+            # Falha isola o membro: ele fica pendente e o shard segue — todo o
+            # trabalho publicado sobrevive e o re-run refaz só os falhos.
+            failed.append(short)
+            print(f'[{idx}] {short}: FALHOU — {err}', flush=True)
         else:
-            # Reutilizado ou inalterado: despeja o bottle oficial/publicado e
-            # valida que funciona dentro do grafo do tap.
-            adopt_bottles(release, full, ROOT / 'Formula')
-            install_missing_deps(full, tap, order_index)
-            # --include-test traz as test deps que brew test exige instaladas.
-            brew_install('--force-bottle', '--include-test', full)
-            verify_poured(full, name)
-            run('brew', 'test', full)
-            run('brew', 'linkage', '--test', full)
-            if reusable[name]:
-                upload_asset(release['id'], ROOT / 'Formula' / (short + '.rb'),
-                             f'Formula-{short}.rb')
-                fragment[short] = {'fp': fps[name], 'reused': True}
+            print(f'[{idx}] {short}: ok', flush=True)
         frag_path.write_text(json.dumps(fragment, indent=2))
         upload_asset(release['id'], frag_path, f'manifest-{idx}.json')
-        print(f'[{idx}] {short}: ok', flush=True)
+    if failed:
+        raise RuntimeError(
+            f'Shard {idx}: membros falharam e seguem pendentes: '
+            + ', '.join(failed))
+
+
+def process_member(name, idx, tap, full, short, build_set, reusable, release,
+                   fragment, order_index, root_url, fps):
+    if name in build_set and not reusable[name]:
+        # Deps resolvem pelo tap: members com bottle publicado despejam; os
+        # que outro shard ainda compila são construídos localmente (fallback
+        # duplicado e seguro — só o shard dono publica).
+        adopt_bottles(release, full, ROOT / 'Formula')
+        install_missing_deps(full, tap, order_index)
+        tab = formula_info(full).get('installed') or []
+        if tab and not all(item.get('poured_from_bottle') for item in tab):
+            # Já foi compilado como dep de outro membro: refaz com test deps.
+            brew_install('--build-bottle', '--include-test', full, cmd='reinstall')
+        else:
+            brew_install('--build-bottle', '--include-test', full)
+        run('brew', 'test', full)
+        run('brew', 'linkage', '--test', full)
+        out = WORK / f'pkg-{idx}' / short
+        out.mkdir(parents=True, exist_ok=True)
+        run('brew', 'bottle', '--json', '--no-rebuild',
+            '--root-url=' + root_url, full, cwd=out)
+        metadata = list(out.glob('*.bottle.json'))
+        if len(metadata) != 1:
+            raise RuntimeError('Metadados de bottle inesperados: ' + name)
+        run('brew', 'bottle', '--merge', '--write', '--no-commit', metadata[0])
+        files = formula_info(full)['bottle']['stable']['files']
+        bottle = files.get('tahoe') or files.get('all')
+        if bottle is None:
+            raise RuntimeError('Bottle Intel Tahoe ausente: ' + name)
+        archives = list(out.glob('*.bottle.tar.gz'))
+        if len(archives) != 1:
+            raise RuntimeError('Arquivo de bottle inesperado: ' + name)
+        archive = archives[0]
+        if hashlib.sha256(archive.read_bytes()).hexdigest() != bottle['sha256']:
+            raise RuntimeError('Checksum inválido: ' + name)
+        # O basename da URL vem codificado (openssl%403-...): decodifica para
+        # o nome real que o GitHub grava e que o brew decodifica ao baixar.
+        filename = urllib.parse.unquote(
+            Path(urllib.parse.urlparse(bottle['url']).path).name)
+        target = archive.with_name(filename)
+        if target != archive:
+            archive.rename(target)
+        # Checkpoint imediato: bottle, metadado da fórmula e manifesto do shard.
+        uploaded = upload_asset(release['id'], target, filename)
+        fragment[short] = {'fp': fps[name], 'asset': uploaded['name']}
+        upload_asset(release['id'], ROOT / 'Formula' / (short + '.rb'),
+                     f'Formula-{short}.rb')
+    else:
+        # Reutilizado ou inalterado: despeja o bottle oficial/publicado e
+        # valida que funciona dentro do grafo do tap.
+        adopt_bottles(release, full, ROOT / 'Formula')
+        install_missing_deps(full, tap, order_index)
+        # --include-test traz as test deps que brew test exige instaladas.
+        brew_install('--force-bottle', '--include-test', full)
+        verify_poured(full, name)
+        run('brew', 'test', full)
+        run('brew', 'linkage', '--test', full)
+        if reusable[name]:
+            upload_asset(release['id'], ROOT / 'Formula' / (short + '.rb'),
+                         f'Formula-{short}.rb')
+            fragment[short] = {'fp': fps[name], 'reused': True}
 
 
 def publish():
