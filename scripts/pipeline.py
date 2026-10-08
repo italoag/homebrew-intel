@@ -56,6 +56,8 @@ def transform(source, tap, names):
     source = re.sub(r'(?ms)^  bottle do\n.*?^  end\n', '', source)
     if re.search(r'^\s*bottle\b', source, re.M):
         raise RuntimeError('Formato de bottle não suportado; revisar importação.')
+    # no_autobump! só é permitido em taps oficiais; metadado de manutenção upstream.
+    source = re.sub(r'(?m)^\s*no_autobump![^\n]*\n', '', source)
     pattern = r'((?:depends_on|uses_from_macos)\s+|Formula\[)([\"\x27])([^\"\x27]+)\2'
     def replace(match):
         name = match[3].removeprefix('homebrew/core/')
