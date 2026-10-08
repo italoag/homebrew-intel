@@ -1,0 +1,24 @@
+MIGRACAO.md
+  s_a6c2d66b4b0258::t_170e979b57f2da 59
+scripts/pipeline.py
+  s_a6c2d66b4b0258::t_8ae00e778cc340 150-151
+README.md
+  s_a6c2d66b4b0258::t_6483959f3a3c52 44
+  s_a6c2d66b4b0258::t_b5de2a73ab687e 51-52
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "469ec53f92adbf41473cb1a3cb7cccddf29fe99e",
+  "prompts": {},
+  "sessions": {
+    "s_a6c2d66b4b0258": {
+      "agent_id": {
+        "tool": "windsurf",
+        "id": "malleable-nigella",
+        "model": "unknown"
+      },
+      "human_author": "Italo A. G. <182202+italoag@users.noreply.github.com>"
+    }
+  }
+}
