@@ -29,12 +29,20 @@ def main():
     if any(name not in state['order'] for name in names):
         raise SystemExit('Pacote fora do snapshot. Acrescente a packages.txt e aguarde o workflow.')
     targets = [tap + '/' + name for name in names]
+    order_set = set(state['order'])
     closure = set(targets)
     for target in targets:
-        closure.update(brew('deps', '--full-name', target).split())
+        for dep in brew('deps', '--full-name', target).split():
+            short = dep.removeprefix('homebrew/core/')
+            if dep.startswith(tap + '/'):
+                closure.add(dep)
+            elif short in order_set:
+                # Dep implícita (ex.: extrator .7z -> p7zip) resolve pelo nome
+                # curto; o keg do tap a satisfaz desde que instalado antes.
+                closure.add(tap + '/' + short)
+            else:
+                raise SystemExit('Dependência fora do tap: ' + dep)
     for full in sorted(closure):
-        if not full.startswith(tap + '/'):
-            raise SystemExit('Dependência fora do tap: ' + full)
         info = json.loads(brew('info', '--json=v2', full))['formulae'][0]
         bottles = (info.get('bottle') or {}).get('stable', {}).get('files', {})
         bottle = bottles.get('tahoe') or bottles.get('all')
@@ -46,7 +54,15 @@ def main():
     # --force-bottle sozinho NÃO constitui garantia geral de ausência de build.
     env = dict(os.environ, HOMEBREW_NO_AUTO_UPDATE='1',
                HOMEBREW_NO_INSTALL_CLEANUP='1', HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK='1')
-    subprocess.run(['brew', sys.argv[1], '--force-bottle', *targets], env=env, check=True)
+    # Instala o fechamento em ordem de dependência para que deps implícitas de
+    # nome curto (ex.: p7zip de um .7z) sejam satisfeitas pelo keg do tap.
+    planned = [tap + '/' + n for n in state['order'] if tap + '/' + n in closure]
+    if sys.argv[1] == 'upgrade':
+        installed = {item.get('full_name') for item in
+                     json.loads(brew('info', '--json=v2', '--installed'))['formulae']}
+        planned = [item for item in planned if item in installed or item in targets]
+    for item in planned:
+        subprocess.run(['brew', sys.argv[1], '--force-bottle', item], env=env, check=True)
 
 
 if __name__ == '__main__':

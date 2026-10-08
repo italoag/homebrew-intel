@@ -153,7 +153,12 @@ def main():
     run('brew', 'trust', tap)
     for name in order:
         full = tap + '/' + name
-        outside = [dep for dep in deps(full) if not dep.startswith(tap + '/')]
+        # Deps implícitas por extensão/VCS (ex.: url .7z -> p7zip) não têm texto
+        # para reescrever: o brew as resolve pelo nome curto, e o keg do tap
+        # instalado antes na ordem do grafo satisfaz a exigência.
+        outside = [dep for dep in deps(full)
+                   if not dep.startswith(tap + '/')
+                   and dep.removeprefix('homebrew/core/') not in graph]
         if outside:
             raise RuntimeError(f'Dependências sem redirecionamento em {full}: {outside}')
     # Apenas VM descartável: evita satisfazer dependências com kegs de outro tap.

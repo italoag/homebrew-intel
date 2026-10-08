@@ -105,6 +105,37 @@ end
         with self.assertRaises(RuntimeError):
             p.canonical('another/tap/thing')
 
+    def test_transform_removes_no_autobump(self):
+        source = ('class Readline < Formula\n'
+                  '  no_autobump! because: :incompatible_version_format\n'
+                  'end\n')
+        self.assertNotIn('no_autobump', p.transform(source, 'user/intel', set()))
+
+    def test_implicit_extractor_dep_maps_to_tap_and_installs_in_order(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'scripts').mkdir()
+            (root / 'snapshot.json').write_text(json.dumps({
+                'tap': 'user/intel', 'order': ['p7zip', 'imagemagick'], 'tag': 'tahoe-1'}))
+            bottle = {'bottle': {'stable': {'files': {'tahoe': {
+                'url': 'https://github.com/user/homebrew-intel/releases/download/tahoe-1/x.bottle.tar.gz'}}}}}
+            def fake_brew(*args):
+                if args == ('--prefix',):
+                    return '/usr/local\n'
+                if args[0] == 'deps':
+                    return 'p7zip\n'
+                return json.dumps({'formulae': [bottle]})
+            with patch.object(client, '__file__', str(root / 'scripts/install-binary.py')), \
+                 patch.object(client.sys, 'argv', ['script', 'install', 'imagemagick']), \
+                 patch.object(client.platform, 'system', return_value='Darwin'), \
+                 patch.object(client.platform, 'machine', return_value='x86_64'), \
+                 patch.object(client.subprocess, 'check_output', return_value='26.7\n'), \
+                 patch.object(client, 'brew', side_effect=fake_brew), \
+                 patch.object(client.subprocess, 'run') as install:
+                client.main()
+                installed = [call.args[0][-1] for call in install.call_args_list]
+                self.assertEqual(installed, ['user/intel/p7zip', 'user/intel/imagemagick'])
+
     def test_client_missing_dependency_bottle_never_installs(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

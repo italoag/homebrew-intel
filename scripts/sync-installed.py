@@ -116,12 +116,20 @@ def migration_plan():
     missing = set(roots) - set(snapshot['order'])
     if missing:
         raise SystemExit('A esteira ainda não publicou: ' + ', '.join(sorted(missing)))
+    order_set = set(snapshot['order'])
     closure = {tap + '/' + name for name in roots}
     for name in roots:
-        closure.update(brew('deps', '--full-name', tap + '/' + name).split())
-    if any(not full.startswith(tap + '/') for full in closure):
-        raise SystemExit('Dependência fora do tap: migração bloqueada.')
-    if any(full.removeprefix(tap + '/') not in snapshot['order'] for full in closure):
+        for dep in brew('deps', '--full-name', tap + '/' + name).split():
+            short = dep.removeprefix('homebrew/core/')
+            if dep.startswith(tap + '/'):
+                closure.add(dep)
+            elif short in order_set:
+                # Dep implícita (ex.: extrator .7z -> p7zip) resolve pelo nome
+                # curto; o keg do tap a satisfaz na ordem do snapshot.
+                closure.add(tap + '/' + short)
+            else:
+                raise SystemExit('Dependência fora do tap: ' + dep + '; migração bloqueada.')
+    if any(full.removeprefix(tap + '/') not in order_set for full in closure):
         raise SystemExit('Dependência fora do snapshot: migração bloqueada.')
     names = [name for name in snapshot['order'] if tap + '/' + name in closure]
     installed = json.loads(brew('info', '--json=v2', '--installed'))['formulae']
