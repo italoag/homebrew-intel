@@ -481,6 +481,19 @@ def adopt_bottles(release, full, formula_dir):
             target.write_bytes(fetched)
 
 
+def install_missing_deps(full, tap):
+    # --build-bottle exige bottle em toda dep instalável e --force-bottle se
+    # aplica à operação inteira: pré-instala as ausentes com install comum
+    # (despeja bottle adotado/publicado ou compila como fallback local — só o
+    # shard dono publica), deixando o install final tratar só do alvo.
+    installed = set(run('brew', 'list', '--formula', capture=True).split())
+    for dep in deps(full):
+        dep_short = dep.split('/')[-1]
+        if dep_short not in installed:
+            run('brew', 'install', tap + '/' + dep_short)
+            installed.add(dep_short)
+
+
 def build_shard(idx):
     checks()
     owner, repository, tap = repo_tap()
@@ -523,6 +536,7 @@ def build_shard(idx):
             # que outro shard ainda compila são construídos localmente (fallback
             # duplicado e seguro — só o shard dono publica).
             adopt_bottles(release, full, ROOT / 'Formula')
+            install_missing_deps(full, tap)
             tab = formula_info(full).get('installed') or []
             if tab and not all(item.get('poured_from_bottle') for item in tab):
                 # Já foi compilado como dep de outro membro: refaz com test deps.
@@ -562,7 +576,9 @@ def build_shard(idx):
             # Reutilizado ou inalterado: despeja o bottle oficial/publicado e
             # valida que funciona dentro do grafo do tap.
             adopt_bottles(release, full, ROOT / 'Formula')
-            run('brew', 'install', '--force-bottle', full)
+            install_missing_deps(full, tap)
+            # --include-test traz as test deps que brew test exige instaladas.
+            run('brew', 'install', '--force-bottle', '--include-test', full)
             verify_poured(full, name)
             run('brew', 'test', full)
             run('brew', 'linkage', '--test', full)
