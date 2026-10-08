@@ -271,6 +271,7 @@ def link_own_tap(owner, repository, tap):
 
 def build_graph(roots, external_taps):
     graph, sources, reusable = {}, {}, {}
+    aux = {'aliases': {}, 'renames': {}}
     pending = list(roots)
     while pending:
         name = pending.pop()
@@ -286,8 +287,13 @@ def build_graph(roots, external_taps):
         # Bottle Intel reutilizável: qualquer tag macOS x86_64 que o brew despeja.
         reusable[name] = any('arm64' not in tag and 'aarch64' not in tag
                              and 'linux' not in tag for tag in files)
+        # Aliases/renames vivem no tap de origem (Aliases/*, formula_renames.json)
+        # e precisam ser copiados: o brew só cria opt/<alias> se o tap da
+        # fórmula declarar o alias (ex.: depends_on "pkg-config" -> pkgconf).
+        aux['aliases'][name] = [a.split('/')[-1] for a in info.get('aliases') or []]
+        aux['renames'][name] = [o.split('/')[-1] for o in info.get('oldnames') or []]
         pending.extend(graph[name])
-    return graph, sources, reusable
+    return graph, sources, reusable, aux
 
 
 def owners(order):
@@ -334,6 +340,26 @@ def member_fps(order, graph, sources, file_owner, patch_shas=None):
         if file_owner[short_name(name)] != name:
             fps[name] = fps[file_owner[short_name(name)]]
     return fps
+
+
+def write_aux_files(aliases, renames):
+    # Alias vira symlink Aliases/<alias> -> ../Formula/<alvo>.rb (formato do
+    # homebrew-core); renames vira formula_renames.json na raiz do tap.
+    aliases_dir = ROOT / 'Aliases'
+    for stale in aliases_dir.iterdir() if aliases_dir.is_dir() else []:
+        if stale.name not in aliases:
+            stale.unlink()
+    for alias, target in aliases.items():
+        link = aliases_dir / alias
+        link.parent.mkdir(parents=True, exist_ok=True)
+        if link.is_symlink() or link.exists():
+            link.unlink()
+        link.symlink_to('../Formula/' + target + '.rb')
+    renames_path = ROOT / 'formula_renames.json'
+    if renames:
+        renames_path.write_text(json.dumps(renames, indent=2, sort_keys=True) + '\n')
+    elif renames_path.exists():
+        renames_path.unlink()
 
 
 def collect_patches(order, normalized, file_owner):
@@ -417,12 +443,28 @@ def plan():
     roots = read_roots()
     external_taps = {name.rsplit('/', 1)[0] for name in roots if '/' in name}
     tap_source_taps(external_taps)
-    graph, sources, reusable = build_graph(roots, external_taps)
+    graph, sources, reusable, aux = build_graph(roots, external_taps)
     order = topo(roots, graph)
     # Ignora alterações exclusivamente nos bottles upstream.
     normalized = {name: transform(src, tap, set(graph), reusable[name])
                   for name, src in sources.items()}
     file_owner, dropped = owners(order)
+    alias_map, renames = {}, {}
+    for name in order:
+        if file_owner[short_name(name)] != name:
+            continue
+        short = short_name(name)
+        for alias in aux['aliases'].get(name, []):
+            previous = alias_map.setdefault(alias, short)
+            if previous != short:
+                raise RuntimeError(
+                    f'Alias {alias} reivindicado por {previous} e {short}')
+        for old in aux['renames'].get(name, []):
+            previous = renames.setdefault(old, short)
+            if previous != short:
+                raise RuntimeError(
+                    f'Rename {old} reivindicado por {previous} e {short}')
+    write_aux_files(alias_map, renames)
     patches, patch_shas = collect_patches(order, normalized, file_owner)
     for rel, content in patches.items():
         dest = ROOT / rel
@@ -487,7 +529,8 @@ def plan():
                  'normalized': normalized, 'reusable': reusable, 'fps': fps,
                  'build_set': sorted(build_set), 'shards': shards,
                  'file_owner': file_owner, 'dropped': sorted(dropped),
-                 'patches': patches, 'core_commit': core_commit}
+                 'patches': patches, 'aliases': alias_map, 'renames': renames,
+                 'core_commit': core_commit}
     plan_path = WORK / 'plan.json'
     plan_path.write_text(json.dumps(plan_data))
     upload_asset(release['id'], plan_path, 'plan.json')
@@ -527,11 +570,12 @@ def write_formula_dir(plan_data):
     for stale in formula_dir.glob('*.rb'):
         if stale.stem not in keep:
             stale.unlink()
-    # Patch files embutidos vivem no plan (o checkout do shard é novo).
+    # Patch files e aliases vivem no plan (o checkout do shard é novo).
     for rel, content in (plan_data.get('patches') or {}).items():
         dest = ROOT / rel
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_text(content)
+    write_aux_files(plan_data.get('aliases') or {}, plan_data.get('renames') or {})
     normalized = plan_data['normalized']
     build_set = set(plan_data['build_set'])
     for name in plan_data['order']:
@@ -762,6 +806,7 @@ def publish():
         dest = ROOT / rel
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_text(content)
+    write_aux_files(plan_data.get('aliases') or {}, plan_data.get('renames') or {})
     keep = {'plan.json', 'manifest.json'}
     keep.update(f'manifest-{i}.json' for i in range(SHARDS))
     keep.update(f'Formula-{s}.rb' for s in member_shorts)
@@ -786,8 +831,9 @@ def publish():
     run('git', 'config', 'user.name', 'github-actions[bot]')
     run('git', 'config', 'user.email', '41898282+github-actions[bot]@users.noreply.github.com')
     add_paths = ['Formula', 'snapshot.json', 'LICENSE.homebrew-core.txt']
-    if (ROOT / 'Patches').is_dir():
-        add_paths.append('Patches')
+    for extra in ('Patches', 'Aliases', 'formula_renames.json'):
+        if (ROOT / extra).exists():
+            add_paths.append(extra)
     run('git', 'add', *add_paths)
     if subprocess.run(['git', 'diff', '--cached', '--quiet']).returncode == 0:
         print('Nenhuma alteração para promover.', flush=True)
