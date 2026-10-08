@@ -1,0 +1,33 @@
+scripts/test_pipeline.py
+  s_a6c2d66b4b0258::t_401483057cb287 209-222
+.github/workflows/bottles.yml
+  s_a6c2d66b4b0258::t_b989d77a43c4db 38
+scripts/install-binary.py
+  s_a6c2d66b4b0258::t_f9d5b4a5044e55 54-57
+scripts/sync-installed.py
+  s_a6c2d66b4b0258::t_76be1671c08b11 25-26
+  s_a6c2d66b4b0258::t_2d5ff524a956e6 163-167
+scripts/pipeline.py
+  s_a6c2d66b4b0258::t_d19b152bcdc18f 470-471
+  s_a6c2d66b4b0258::t_710c1770fa000b 525-530
+  s_a6c2d66b4b0258::t_78b86c00ba410b 324-325,329
+  s_a6c2d66b4b0258::t_76f6aeec25bc36 425-433
+  s_a6c2d66b4b0258::t_4c03ab7159bf55 303-309,311-312,315-317
+  s_a6c2d66b4b0258::t_fdef75583f736b 563
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "207e152ecac5b434c66386db873649c5479bbf22",
+  "prompts": {},
+  "sessions": {
+    "s_a6c2d66b4b0258": {
+      "agent_id": {
+        "tool": "windsurf",
+        "id": "malleable-nigella",
+        "model": "unknown"
+      },
+      "human_author": "Italo A. G. <182202+italoag@users.noreply.github.com>"
+    }
+  }
+}
