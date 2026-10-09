@@ -537,7 +537,7 @@ def plan():
     link_own_tap(owner, repository, tap)
     # Avalia toda fórmula gerada e valida symlinks de alias: DSL/sintaxe
     # quebrada falha aqui, antes de gastar minutos de shard.
-    run('brew', 'readall', '--os=mac', '--arch=intel', '--aliases', tap)
+    run('brew', 'readall', '--os=tahoe', '--arch=intel', '--aliases', tap)
     verify_closure(order, file_owner, dropped, graph, tap)
     plan_data = {'tap': tap, 'order': order, 'graph': graph, 'roots': roots,
                  'normalized': normalized, 'reusable': reusable, 'fps': fps,
