@@ -1,0 +1,9 @@
+{
+  "aztfy": "aztfexport",
+  "clawdbot-cli": "openclaw-cli",
+  "glib-utils": "glib",
+  "python-certifi": "certifi",
+  "python-cryptography": "cryptography",
+  "rtx": "mise",
+  "rustfmt": "rust"
+}

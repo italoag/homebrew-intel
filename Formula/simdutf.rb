@@ -1,0 +1,50 @@
+class Simdutf < Formula
+  desc "Unicode conversion routines, fast"
+  homepage "https://simdutf.github.io/simdutf/"
+  url "https://github.com/simdutf/simdutf/archive/refs/tags/v9.2.1.tar.gz"
+  sha256 "582f9d0dcf578f6d4766fa29ea12a7f2f02bd3c6ad9e0cf35a8e0ec8478eba4b"
+  license any_of: ["Apache-2.0", "MIT"]
+  revision 1
+  compatibility_version 6
+  head "https://github.com/simdutf/simdutf.git", branch: "master"
+
+  livecheck do
+    url :stable
+    regex(/^v?(\d+(?:\.\d+)+)$/i)
+  end
+
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "a9af43034539d817643c4cdd6679c6f1e632b54ae927eb68f352f1be3dddf003"
+  end
+
+
+  depends_on "italoag/intel/aklomp-base64" => :build
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/icu4c@78"
+
+  uses_from_macos "python" => :build
+
+  deny_network_access!
+
+  def install
+    # C++20 is needed by `node`
+    args = %W[
+      -DBUILD_SHARED_LIBS=ON
+      -DCMAKE_INSTALL_RPATH=#{rpath}
+      -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON
+      -DCPM_LOCAL_PACKAGES_ONLY=ON
+      -DPython3_EXECUTABLE=#{which("python3")}
+      -DSIMDUTF_BENCHMARKS=ON
+      -DSIMDUTF_CXX_STANDARD=20
+    ]
+    system "cmake", "-S", ".", "-B", "build", *args, *std_cmake_args
+    system "cmake", "--build", "build"
+    system "cmake", "--install", "build"
+    bin.install "build/benchmarks/benchmark" => "sutf-benchmark"
+  end
+
+  test do
+    system bin/"sutf-benchmark", "--random-utf8", "10240", "-I", "100"
+  end
+end
