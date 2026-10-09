@@ -4,17 +4,18 @@ class AwsCCal < Formula
   url "https://github.com/awslabs/aws-c-cal/archive/refs/tags/v1.0.0.tar.gz"
   sha256 "9c6d424d206dd7822aa44fa39ce31575dcbaa83133620abdac8e56e4cea9667c"
   license "Apache-2.0"
+  revision 1
   compatibility_version 2
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "106493baf525314b28279d1708c3e7ef73b3566e4cc2d4664a50815c736235a7"
+    sha256 cellar: :any, tahoe: "456c5598032fdb8d74b60b1d315ce98deb94d28da5f895b4fbcbf981d7c93459"
   end
 
 
   depends_on "cmake" => :build
   depends_on "aws-c-common"
-  depends_on "openssl@3"
+  depends_on "openssl@4"
 
   deny_network_access!
 

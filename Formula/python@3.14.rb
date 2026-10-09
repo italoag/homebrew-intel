@@ -4,6 +4,7 @@ class PythonAT314 < Formula
   url "https://www.python.org/ftp/python/3.14.8/Python-3.14.8.tgz"
   sha256 "a65b20a728f169f4e66ae143f40b1bd3d33c38d770251663f627c9767b79b210"
   license "Python-2.0"
+  revision 1
   compatibility_version 1
 
   livecheck do
@@ -13,7 +14,7 @@ class PythonAT314 < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "b026250775271a88e7aa799a04783529506f9478ee7a5c34e439bc331de8b8ba"
+    sha256 tahoe: "ac4237f34544754187efdd8bdce0e0a09a7014cf9e52f315fe5490af24062790"
   end
 
 
@@ -24,7 +25,7 @@ class PythonAT314 < Formula
   depends_on "pkgconf" => :build
   depends_on "ca-certificates" => :no_linkage
   depends_on "mpdecimal"
-  depends_on "openssl@3"
+  depends_on "openssl@4"
   depends_on "sqlite"
   depends_on "xz"
   depends_on "zstd"

@@ -4,6 +4,7 @@ class S2n < Formula
   url "https://github.com/aws/s2n-tls/archive/refs/tags/v1.7.11.tar.gz"
   sha256 "c3894e86bc09c1923f9ed42edc310d8dd1ca4d0461f037acc56762a274ebe2b1"
   license "Apache-2.0"
+  revision 1
   head "https://github.com/aws/s2n-tls.git", branch: "main"
 
   livecheck do
@@ -13,12 +14,12 @@ class S2n < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "0fe3c0ec021c47313cce4d3c698fde525ff2a54150faf6842cfa16c146052867"
+    sha256 cellar: :any, tahoe: "75ac212614c2a62a4bb0998d5f0ca2bf40f1b3ed8f1c9917c9d08fb2e10405d8"
   end
 
 
   depends_on "cmake" => :build
-  depends_on "openssl@3"
+  depends_on "openssl@4"
 
   def install
     system "cmake", "-S", ".", "-B", "build_static", "-DBUILD_SHARED_LIBS=OFF", *std_cmake_args

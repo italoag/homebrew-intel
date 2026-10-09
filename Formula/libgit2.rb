@@ -4,7 +4,7 @@ class Libgit2 < Formula
   url "https://github.com/libgit2/libgit2/archive/refs/tags/v1.9.7.tar.gz"
   sha256 "1a4fbe7589e814777ae76b64734ad80f4ecad22cd33a22682a2aaea4ae5375e7"
   license "GPL-2.0-only" => { with: "GCC-exception-2.0" }
-  revision 1
+  revision 2
   compatibility_version 1
   head "https://github.com/libgit2/libgit2.git", branch: "main"
 
@@ -15,7 +15,7 @@ class Libgit2 < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "c813f7a7fa7d630cf4b32e7f59509e032644441d462d8a5dc6a56758ed618000"
+    sha256 cellar: :any, tahoe: "3f25e8a4564a72a8020c5821d1c42a04cea4dab885e58b7ccb5ff7cab2bb4465"
   end
 
 
@@ -23,7 +23,7 @@ class Libgit2 < Formula
   depends_on "pkgconf" => :build
   depends_on "libssh2"
   depends_on "llhttp"
-  depends_on "openssl@3"
+  depends_on "openssl@4"
 
   on_linux do
     depends_on "pcre2" # Uses regcomp_l on macOS which needs xlocale.h

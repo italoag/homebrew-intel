@@ -4,11 +4,12 @@ class AwsCEventStream < Formula
   url "https://github.com/awslabs/aws-c-event-stream/archive/refs/tags/v1.0.0.tar.gz"
   sha256 "c3817ab04bf9c70fa3582a31243666a9a643ebe45f121f58d5fef5ff4787f8e0"
   license "Apache-2.0"
+  revision 1
   compatibility_version 2
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "4b3e39de99d320b614879efe0f403cce1b6d015e5237110b0cae31af8f418578"
+    sha256 cellar: :any, tahoe: "c3ada142bff6cb95cb6c55872e6fbb5b36bdefe6bf647688b2f76733f15ba818"
   end
 
 
