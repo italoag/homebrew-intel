@@ -1,14 +1,14 @@
 class Pygobject3 < Formula
   desc "GNOME Python bindings (based on GObject Introspection)"
   homepage "https://pygobject.gnome.org"
-  url "https://download.gnome.org/sources/pygobject/3.58/pygobject-3.58.0.tar.gz"
-  sha256 "45068697de3ffe46840ca369705f23118b34db4f7deb63f6eff079a6734ddcca"
+  url "https://download.gnome.org/sources/pygobject/3.58/pygobject-3.58.1.tar.gz"
+  sha256 "4c80598ade17fbaa7798e01a25d0bf29ce109740786026a074c5c62bb3e79d23"
   license "LGPL-2.1-or-later"
   compatibility_version 1
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "681e85d37388780a4c354b827d3647893a855365592fa0e7cd7ce992e671398e"
+    sha256 cellar: :any, tahoe: "e822bcee1866f9c236526835f2bc7cdf0b7d39e4ff5db3117fc93a08ccc40316"
   end
 
 

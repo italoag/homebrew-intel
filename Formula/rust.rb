@@ -2,6 +2,7 @@ class Rust < Formula
   desc "Safe, concurrent, practical language"
   homepage "https://www.rust-lang.org/"
   license any_of: ["Apache-2.0", "MIT"]
+  revision 1
   compatibility_version 1
   head "https://github.com/rust-lang/rust.git", branch: "main"
 
@@ -85,14 +86,14 @@ class Rust < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "50954df114a1f99a434a2a71d6c30089f60661a1173e5704ef58dca465f3b90d"
+    sha256 cellar: :any, tahoe: "8e027737ab98a8c4d959fb858650d4baeebe07df6994d4b1e475f102ad11ada8"
   end
 
 
   depends_on "libgit2"
   depends_on "libssh2"
   depends_on "llvm"
-  depends_on "openssl@3"
+  depends_on "openssl@4"
   depends_on "pkgconf"
   depends_on "sqlite"
 

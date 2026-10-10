@@ -1,34 +1,31 @@
-class PythonAT314 < Formula
+class PythonAT313 < Formula
   desc "Interpreted, interactive, object-oriented programming language"
   homepage "https://www.python.org/"
-  url "https://www.python.org/ftp/python/3.14.8/Python-3.14.8.tgz"
-  sha256 "a65b20a728f169f4e66ae143f40b1bd3d33c38d770251663f627c9767b79b210"
+  url "https://www.python.org/ftp/python/3.13.16/Python-3.13.16.tgz"
+  sha256 "cfac63bddf956deafb1172ca131ae5dcaafd6f95056086e233fca205593ed427"
   license "Python-2.0"
-  revision 2
   compatibility_version 1
 
   livecheck do
     url "https://www.python.org/downloads/source/"
-    regex(%r{href=.*?/Python[._-]v?(3\.14(?:\.\d+)*)\.t}i)
+    regex(%r{href=.*?/Python[._-]v?(3\.13(?:\.\d+)*)\.t}i)
   end
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "82dc5efeb386a2f8158460524b9db533345487afc64c60b3a63aa555a6f4eb54"
+    sha256 tahoe: "355ad63c639377bf9d0bd7424043521daa77b7665e29bc0a07707cb0f6b7e760"
   end
 
 
   # https://devguide.python.org/versions/#versions
-  deprecate! date: "2030-11-01", because: :deprecated_upstream
-  disable! date: "2031-11-01", because: :deprecated_upstream
+  deprecate! date: "2029-11-01", because: :deprecated_upstream
+  disable! date: "2030-11-01", because: :deprecated_upstream
 
   depends_on "pkgconf" => :build
-  depends_on "ca-certificates" => :no_linkage
   depends_on "mpdecimal"
-  depends_on "openssl@4"
+  depends_on "openssl@3"
   depends_on "sqlite"
   depends_on "xz"
-  depends_on "zstd"
 
   uses_from_macos "bzip2"
   uses_from_macos "expat", since: :sequoia
@@ -40,8 +37,8 @@ class PythonAT314 < Formula
     depends_on "zlib-ng-compat"
   end
 
-  link_overwrite "lib/python3.14/site-packages/pip*"
-  link_overwrite "lib/python3.14/site-packages/wheel*"
+  link_overwrite "lib/python3.13/site-packages/pip*"
+  link_overwrite "lib/python3.13/site-packages/wheel*"
 
   pypi_packages package_name:   "",
                 extra_packages: %w[flit-core pip wheel]
@@ -64,40 +61,6 @@ class PythonAT314 < Formula
   resource "wheel" do
     url "https://files.pythonhosted.org/packages/d0/20/50ed6bdf27dec98b568a8ae25dc599f35baa3d9709f9e83fd1edb56b9a90/wheel-0.48.0.tar.gz"
     sha256 "94800765601e9171bf5d58d066e640662842bcedcbab982b2c90787a2c987322"
-  end
-
-  # Backports needed for OpenSSL 4 support
-  # Ref: https://github.com/python/cpython/issues/148600
-  # Ref: https://github.com/python/cpython/pull/149783
-  patch do
-    url "https://github.com/python/cpython/commit/3364e7e62fa24d0e19133fb0f90b1c24ef1110c5.patch?full_index=1"
-    sha256 "3b52614eea77dfdb527ace4e734dfe396c99af9176f7ee9ae0ab03a70df2de3f"
-    type :backport
-    resolves "https://github.com/python/cpython/pull/146217"
-  end
-  patch do
-    url "https://github.com/python/cpython/commit/c5e4ae03004767104dcf2d2c7b19f663700cc129.patch?full_index=1"
-    sha256 "f2f6c479b6251cef684c71a5c89ca2fbae0180f813e5a84f1d88b735f3a6e171"
-    type :backport # using https://github.com/python/cpython/pull/149783
-    resolves "https://github.com/python/cpython/pull/148601"
-  end
-  patch do
-    url "https://github.com/python/cpython/commit/3c2a3014af7d73cc34f2498f60fdf863d9bc7c6c.patch?full_index=1"
-    sha256 "8a8cdbeb9fd127926599ff0fe8d25a28325cf31dba041de7c1dd9ed69efd327d"
-    type :backport # using https://github.com/python/cpython/pull/149783
-    resolves "https://github.com/python/cpython/pull/149102"
-  end
-  patch do
-    url "https://github.com/python/cpython/commit/1e21cf6fee3830012e458c0fe5dbc6fcd45ace92.patch?full_index=1"
-    sha256 "5526b5b6158e07d18c3c657dc4ad6753321c81f7b6c08c1d005e7625764d6f6d"
-    type :backport
-    resolves "https://github.com/python/cpython/pull/149366"
-  end
-  patch do
-    url "https://github.com/python/cpython/commit/4974d8e8f387df97abd2521067f9b7a31c9c78fe.patch?full_index=1"
-    sha256 "e9da44793e0c2bd4bc719846b2557883e5d2367ddcb341f067fdb4dd54c4aec8"
-    type :backport # using PR commit to avoid conflict
-    resolves "https://github.com/python/cpython/pull/149356"
   end
 
   # Modify default sysconfig to match the brew install layout.
@@ -127,10 +90,7 @@ class PythonAT314 < Formula
 
   def python3 = bin/"python#{version.major_minor}"
 
-  deny_network_access!
-
   def install
-    openssl = deps.find { |dep| dep.name.start_with?("openssl@") }.name
     # Unset these so that installing pip and setuptools puts them where we want
     # and not into some other Python the user has installed.
     ENV["PYTHONHOME"] = nil
@@ -155,7 +115,7 @@ class PythonAT314 < Formula
       --datadir=#{share}
       --without-ensurepip
       --enable-loadable-sqlite-extensions
-      --with-openssl=#{formula_opt_prefix(openssl)}
+      --with-openssl=#{formula_opt_prefix("openssl@3")}
       --enable-optimizations
       --with-system-expat
       --with-system-libmpdec
@@ -194,7 +154,7 @@ class PythonAT314 < Formula
     # `brew install enchant && pip install pyenchant`
     inreplace "./Lib/ctypes/macholib/dyld.py" do |f|
       f.gsub! "DEFAULT_LIBRARY_FALLBACK = [",
-              "DEFAULT_LIBRARY_FALLBACK = [ '#{HOMEBREW_PREFIX}/lib', '#{formula_opt_lib(openssl)}',"
+              "DEFAULT_LIBRARY_FALLBACK = [ '#{HOMEBREW_PREFIX}/lib', '#{formula_opt_lib("openssl@3")}',"
       f.gsub! "DEFAULT_FRAMEWORK_FALLBACK = [", "DEFAULT_FRAMEWORK_FALLBACK = [ '#{HOMEBREW_PREFIX}/Frameworks',"
     end
 
@@ -234,7 +194,6 @@ class PythonAT314 < Formula
       # Prevent third-party packages from building against fragile Cellar paths
       bad_cellar_path_files = [
         lib_cellar/"_sysconfigdata__darwin_darwin.py",
-        lib_cellar/"_sysconfig_vars__darwin_darwin.json",
         lib_cellar/"config-#{version.major_minor}-darwin/Makefile",
         pc_dir/"python-#{version.major_minor}.pc",
         pc_dir/"python-#{version.major_minor}-embed.pc",
@@ -345,11 +304,6 @@ class PythonAT314 < Formula
            "--target=#{root_site_packages}",
            bundled/"pip-#{resource("pip").version}-py3-none-any.whl",
            libexec/"wheel-#{resource("wheel").version}-py3-none-any.whl"
-
-    # Use brewed ca-certificates PEM file instead of the bundled copy
-    certifi = root_site_packages/"pip/_vendor/certifi"
-    rm certifi/"cacert.pem"
-    certifi.install_symlink Formula["ca-certificates"].pkgetc/"cert.pem" => "cacert.pem"
 
     # pip install with --target flag will just place the bin folder into the
     # target, so move its contents into the appropriate location
@@ -524,7 +478,6 @@ class PythonAT314 < Formula
     system python3, "-c", "import pyexpat"
     system python3, "-c", "import readline"
     system python3, "-c", "import zlib"
-    system python3, "-c", "import _zstd"
 
     # tkinter is provided in a separate formula
     assert_match "ModuleNotFoundError: No module named '_tkinter'",
