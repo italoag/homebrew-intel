@@ -4,19 +4,20 @@ class Pygobject3 < Formula
   url "https://download.gnome.org/sources/pygobject/3.58/pygobject-3.58.1.tar.gz"
   sha256 "4c80598ade17fbaa7798e01a25d0bf29ce109740786026a074c5c62bb3e79d23"
   license "LGPL-2.1-or-later"
+  revision 1
   compatibility_version 1
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "e822bcee1866f9c236526835f2bc7cdf0b7d39e4ff5db3117fc93a08ccc40316"
+    sha256 cellar: :any, tahoe: "8f8cbc2598af743bc44f66329b9fd7f9f8c76b2dc585853e169e88b6e222527a"
   end
 
 
   depends_on "meson" => :build
   depends_on "ninja" => :build
   depends_on "pkgconf" => :build
-  depends_on "python@3.13" => [:build, :test]
   depends_on "python@3.14" => [:build, :test]
+  depends_on "python@3.15" => [:build, :test]
 
   depends_on "cairo"
   depends_on "glib"

@@ -13,7 +13,7 @@ class OpensslAT4 < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "8e0ce21a00705e6067fe5c468f2e08b800666370673ff4067b7c44a420a2ea6a"
+    sha256 tahoe: "678f61b1f60f34d2742cfa53ea1f9a0127467f77da09bf8c4c34f70104b8f59a"
   end
 
 
@@ -40,7 +40,7 @@ class OpensslAT4 < Formula
     if OS.mac?
       arch_args += %W[darwin64-#{Hardware::CPU.arch}-cc enable-ec_nistp_64_gcc_128]
     elsif Hardware::CPU.intel?
-      arch_args << (Hardware::CPU.is_64_bit? ? "linux-x86_64" : "linux-elf")
+      arch_args << "linux-x86_64"
     elsif Hardware::CPU.arm?
       arch_args << (Hardware::CPU.is_64_bit? ? "linux-aarch64" : "linux-armv4")
     end

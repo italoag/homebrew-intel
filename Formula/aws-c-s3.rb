@@ -4,11 +4,12 @@ class AwsCS3 < Formula
   url "https://github.com/awslabs/aws-c-s3/archive/refs/tags/v1.3.1.tar.gz"
   sha256 "95a3a100c1259990a5272bef9ffcbc92afe9afd5e0d112f4d496fd5673fbfa9a"
   license "Apache-2.0"
+  revision 1
   compatibility_version 6
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "c7a47d846e54afccadbf9709d2e0bd9df0e74a862a5febd14bb7c3a21c7563db"
+    sha256 cellar: :any, tahoe: "31a4ea02367a801d9203d6529a8289106b9672dbc547f75e725139c0a8f5ed15"
   end
 
 
