@@ -13,7 +13,7 @@ class DartSass < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "d47f13f55c800900810be84dfc25dd8ef1e7051fd65fa714ec90c39ff12dfb10"
+    sha256 cellar: :any, tahoe: "8a56c4ffc43a3f4ccbe42b092f8b5fb71e22cab3e679e56bac9623f171e61919"
   end
 
 

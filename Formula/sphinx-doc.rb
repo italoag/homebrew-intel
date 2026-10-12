@@ -11,12 +11,12 @@ class SphinxDoc < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "a2e1ac6e270e419389fdb5aa55427af8b7066c1bb861dd34f1d07cfedef30e5c"
+    sha256 cellar: :any_skip_relocation, tahoe: "a05d1b32ed30d65cca3dd0a52b94d912018601d51ab7126bc5ae48a181d202c1"
   end
 
 
   depends_on "certifi"
-  depends_on "python@3.14"
+  depends_on "python@3.15"
 
   pypi_packages exclude_packages: "certifi",
                 extra_packages:   "numpydoc"

@@ -17,7 +17,7 @@ class Pango < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "7614ec5ba2583db3a627da3976de253060728d72bdf42bb913f7f3e6305a805b"
+    sha256 cellar: :any, tahoe: "066b6d4846254352a0fd0743df89ec26dc863faf69ff0be2faf4c3ddfb30e8ba"
   end
 
 

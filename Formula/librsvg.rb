@@ -16,7 +16,7 @@ class Librsvg < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "9cfbf0f2d08d9cc38d3640edd34a683b34b7f7bc6eeda2ec49671ecf13bde7e8"
+    sha256 cellar: :any, tahoe: "8905d30fcadd867a9f2f5138b33038f3a820e8b7f856e65a0efe97de11e9b60d"
   end
 
 

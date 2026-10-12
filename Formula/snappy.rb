@@ -9,7 +9,7 @@ class Snappy < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "0296dcaaa93b6f625e0ccd44bde04a18cd960e44a6946f3a76887f58e03328af"
+    sha256 cellar: :any, tahoe: "e1028721e6d1795b8e25b5c32c596a846179791c0610e3ca7433f6cf65d73b31"
   end
 
 

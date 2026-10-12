@@ -4,19 +4,20 @@ class Py3cairo < Formula
   url "https://github.com/pygobject/pycairo/releases/download/v1.29.2/pycairo-1.29.2.tar.gz"
   sha256 "3e69fff74fe64f5ba2dfa31f67c6bdf26413342574047437d2ac520d35e9a489"
   license any_of: ["LGPL-2.1-only", "MPL-1.1"]
+  revision 1
   compatibility_version 1
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "f20b51c1bfaeca1112764c4eefdbd112d5e85f23e1409795085b231747ee35c7"
+    sha256 cellar: :any, tahoe: "f28c75cd87adf23ddff4392bb56b25f437ea120e4f7ca5987972a3bdf952c600"
   end
 
 
   depends_on "meson" => :build
   depends_on "ninja" => :build
   depends_on "pkgconf" => :build
-  depends_on "python@3.13" => [:build, :test]
   depends_on "python@3.14" => [:build, :test]
+  depends_on "python@3.15" => [:build, :test]
   depends_on "cairo"
 
   def pythons
