@@ -3,16 +3,15 @@ class Awscli < Formula
 
   desc "Official Amazon AWS command-line interface"
   homepage "https://aws.amazon.com/cli/"
-  url "https://github.com/aws/aws-cli/archive/refs/tags/2.37.12.tar.gz"
-  sha256 "6017e96c81b533894e26c3623fad446acdf11115cf695dce78da010874758899"
+  url "https://github.com/aws/aws-cli/archive/refs/tags/2.38.0.tar.gz"
+  sha256 "470a6962ce20add742ffb76f28e47350425bca04ce7ef014c730abe5d1dd0a7b"
   license "Apache-2.0"
-  revision 2
   compatibility_version 1
   head "https://github.com/aws/aws-cli.git", branch: "v2"
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "63492fae4156ac4b09bfd9d2b9e959a837e1befec1f12a5e7971f5254d459913"
+    sha256 cellar: :any, tahoe: "ff7d252d421ab031ab47ef6fc2580c0caad5c865ee324ec53998003767e363cb"
   end
 
 
@@ -25,7 +24,7 @@ class Awscli < Formula
   depends_on "aws-c-mqtt"
   depends_on "aws-c-s3"
   depends_on "aws-checksums"
-  depends_on "python@3.14"
+  depends_on "python@3.15"
 
   uses_from_macos "mandoc"
 
