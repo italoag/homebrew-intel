@@ -1,11 +1,10 @@
 class Simdutf < Formula
   desc "Unicode conversion routines, fast"
   homepage "https://simdutf.github.io/simdutf/"
-  url "https://github.com/simdutf/simdutf/archive/refs/tags/v9.2.1.tar.gz"
-  sha256 "582f9d0dcf578f6d4766fa29ea12a7f2f02bd3c6ad9e0cf35a8e0ec8478eba4b"
+  url "https://github.com/simdutf/simdutf/archive/refs/tags/v9.3.0.tar.gz"
+  sha256 "f05b3549465f1bb3c5033a05395c372c0982ed1d166608185b3cc8c5c7e98071"
   license any_of: ["Apache-2.0", "MIT"]
-  revision 1
-  compatibility_version 6
+  compatibility_version 7
   head "https://github.com/simdutf/simdutf.git", branch: "master"
 
   livecheck do
@@ -15,13 +14,13 @@ class Simdutf < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "a9af43034539d817643c4cdd6679c6f1e632b54ae927eb68f352f1be3dddf003"
+    sha256 cellar: :any, tahoe: "3de9a50145ae1101e7e159fbdf67db03da35ab5df234a5351cfa7df3f4251dbe"
   end
 
 
-  depends_on "italoag/intel/aklomp-base64" => :build
-  depends_on "italoag/intel/cmake" => :build
-  depends_on "italoag/intel/icu4c@78"
+  depends_on "aklomp-base64" => :build
+  depends_on "cmake" => :build
+  depends_on "icu4c@78"
 
   uses_from_macos "python" => :build
 

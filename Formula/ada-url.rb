@@ -4,24 +4,25 @@ class AdaUrl < Formula
   url "https://github.com/ada-url/ada/archive/refs/tags/v4.0.0.tar.gz"
   sha256 "6d6c7ef7dd2e329320d34eb2ab29ccdc879ee3935af9dfb894a6640e58dc381d"
   license any_of: ["Apache-2.0", "MIT"]
+  revision 1
   compatibility_version 2
   head "https://github.com/ada-url/ada.git", branch: "main"
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "047f0d0e82481657c870cc058ee86a2a8d2e56034644562f13f23d0741d580bb"
+    sha256 cellar: :any, tahoe: "6c0fec08c7bf7ad42491b0d9fd9aac6fe71a71dfbe1d384920a9d536b0289f25"
   end
 
 
-  depends_on "italoag/intel/cmake" => :build
-  depends_on "italoag/intel/cxxopts" => :build
-  depends_on "italoag/intel/fmt"
-  depends_on "italoag/intel/simdutf"
+  depends_on "cmake" => :build
+  depends_on "cxxopts" => :build
+  depends_on "fmt"
+  depends_on "simdutf"
 
   uses_from_macos "python" => :build
 
   on_macos do
-    depends_on "italoag/intel/llvm" if DevelopmentTools.clang_build_version <= 1500
+    depends_on "llvm" if DevelopmentTools.clang_build_version <= 1500
   end
 
   fails_with :clang do

@@ -4,11 +4,11 @@ class Merve < Formula
   url "https://github.com/nodejs/merve/archive/refs/tags/v1.2.2.tar.gz"
   sha256 "8f19c2132447b9113545ffd399cb2bc1e61c6166743921b04883f8e1d778d69e"
   license "Apache-2.0"
-  revision 3
+  revision 4
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "b5e966c9dfe5b0b18d9e693f2bf136c6dca826e3b6c7e6e06276b7905614e12d"
+    sha256 cellar: :any, tahoe: "f8c78d71ba8397527ec79867185196650b444678f7d386ee29181c67ef7cf832"
   end
 
 

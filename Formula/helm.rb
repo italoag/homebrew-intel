@@ -2,14 +2,14 @@ class Helm < Formula
   desc "Kubernetes package manager"
   homepage "https://helm.sh/"
   url "https://github.com/helm/helm.git",
-      tag:      "v4.3.0",
-      revision: "bec5b06ed841fe5269972d864d5177944fd5970f"
+      tag:      "v4.3.1",
+      revision: "c0d08d0d6d9424d4a14febb5e8a3e51b0dd00dff"
   license "Apache-2.0"
   head "https://github.com/helm/helm.git", branch: "main"
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "d1fc959dd733aed2a9bd51fd0003933479508e86d021ca842838a4a7244051a7"
+    sha256 cellar: :any_skip_relocation, tahoe: "91bf8fff1d60db70fa39f860863d26b7d6e56423228db7daa5a124e6c08b145e"
   end
 
 

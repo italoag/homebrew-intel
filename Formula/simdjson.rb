@@ -8,7 +8,7 @@ class Simdjson < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "c49ba6e9dd29fc3a23d4cce3409d16b2aea86679791cbcc9691f57fb358eeea7"
+    sha256 cellar: :any, tahoe: "1bba46a4827052fc7e8175f82e20c4acf96f11e9ca558492744558a4db8ed61e"
   end
 
 
