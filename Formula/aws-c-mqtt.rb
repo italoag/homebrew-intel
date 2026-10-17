@@ -1,8 +1,8 @@
 class AwsCMqtt < Formula
   desc "C99 implementation of the MQTT 3.1.1 specification"
   homepage "https://github.com/awslabs/aws-c-mqtt"
-  url "https://github.com/awslabs/aws-c-mqtt/archive/refs/tags/v1.1.1.tar.gz"
-  sha256 "b0423915888c33b065bb3dee5569e8a70abe06c8e2345df8a736c3b18805b294"
+  url "https://github.com/awslabs/aws-c-mqtt/archive/refs/tags/v1.1.2.tar.gz"
+  sha256 "7ef8f2a031992cc42564bba4e3f937fec925247051da6e0c730aa964639d284f"
   license "Apache-2.0"
   compatibility_version 4
 
@@ -13,7 +13,7 @@ class AwsCMqtt < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "0456200f4ab56ceb25c0d3a9f2d5b32de3f486fd15e8d52ae76aa7a9496e65a6"
+    sha256 cellar: :any, tahoe: "90856f2ab8ec18409a7b2cb139734746ef47a79824119ddc03b43c4b3c155d7d"
   end
 
 

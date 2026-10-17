@@ -13,7 +13,7 @@ class CargoC < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "7491c832a4c23fd4ac41d4ffd443608999ec4ad3ecaffcac0029926a04c5e737"
+    sha256 cellar: :any, tahoe: "75cdf1cbf332bfb7876b308a1f0dd8106b3f1e5c988ee2c52879a3ce73befc86"
   end
 
 

@@ -14,7 +14,7 @@ class Gtk4 < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "cff2672210b0cfda7ff5e4150f8bcadc59ac4b9bdef59209bd528beb322ff3e3"
+    sha256 tahoe: "ac2aea8cf99e12cd3cfdac74e5c2f963442feba79a0015de4a55a0427aaf38fc"
   end
 
 

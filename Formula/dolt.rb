@@ -1,8 +1,8 @@
 class Dolt < Formula
   desc "Git for Data"
   homepage "https://www.dolthub.com"
-  url "https://github.com/dolthub/dolt/archive/refs/tags/v2.4.2.tar.gz"
-  sha256 "e77792ac8ed5ce3c226a7c73ac4735e7624a02b75e494b5aace199f976e0a1c1"
+  url "https://github.com/dolthub/dolt/archive/refs/tags/v2.5.0.tar.gz"
+  sha256 "cdd3096b116d27ef43523430d3c13461f0dc92f8f756e40d0b4709689aa3ace3"
   license "Apache-2.0"
   version_scheme 1
   head "https://github.com/dolthub/dolt.git", branch: "main"
@@ -14,7 +14,7 @@ class Dolt < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "ab843c0152ec5566e0def3f3b65a77d7bb6e57ec3ce2d188ea484d9c1c215ec5"
+    sha256 cellar: :any, tahoe: "4364010a58caa27f2a212e2b91231fbab252f2101338e0f84577827a3b85d7e7"
   end
 
 
