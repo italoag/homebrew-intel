@@ -1,9 +1,9 @@
 class Sqlite < Formula
   desc "Command-line interface for SQLite"
   homepage "https://sqlite.org/index.html"
-  url "https://www.sqlite.org/2026/sqlite-autoconf-3540000.tar.gz"
-  version "3.54.0"
-  sha256 "134ec0802dda5795816e25d25872d20b312cb3973438c49b30bc40b7705ea9ed"
+  url "https://www.sqlite.org/2026/sqlite-autoconf-3540100.tar.gz"
+  version "3.54.1"
+  sha256 "926ef8d3eab93fbf6e06011901273eec076b25594a4e1cdadd50c987f4f6d64e"
   license "blessing"
   compatibility_version 1
 
@@ -17,7 +17,7 @@ class Sqlite < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "b2fcfa87d18f1590cbf7d22edde8ef75f75593746c1ca95b6dd6688f6d7517cc"
+    sha256 cellar: :any, tahoe: "3bf026b25d2d4942d8e7c27174fbda9b7456f2f99e4dbf587b59364043530989"
   end
 
 

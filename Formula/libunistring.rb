@@ -1,16 +1,16 @@
 class Libunistring < Formula
   desc "C string library for manipulating Unicode strings"
   homepage "https://www.gnu.org/software/libunistring/"
-  url "https://ftpmirror.gnu.org/libunistring/libunistring-1.4.2.tar.gz"
-  mirror "https://ftp.gnu.org/gnu/libunistring/libunistring-1.4.2.tar.gz"
-  mirror "http://ftp.gnu.org/gnu/libunistring/libunistring-1.4.2.tar.gz"
-  sha256 "e82664b170064e62331962126b259d452d53b227bb4a93ab20040d846fec01d8"
+  url "https://ftpmirror.gnu.org/libunistring/libunistring-1.5.tar.gz"
+  mirror "https://ftp.gnu.org/gnu/libunistring/libunistring-1.5.tar.gz"
+  mirror "http://ftp.gnu.org/gnu/libunistring/libunistring-1.5.tar.gz"
+  sha256 "5b0ecd46cbf225375f20ab4056197e66a7ac590e2684c069af407ae3383c9d81"
   license any_of: ["GPL-2.0-or-later", "LGPL-3.0-or-later"]
   compatibility_version 1
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "70d87dc217baa11eec794913af4695fc029449ac75b71e46b18499d6d3d11eed"
+    sha256 cellar: :any, tahoe: "77a9b0f6cf6ffd69ad259aae6be20e6d3fd4e5d5101570a275cd42b510ad2e45"
   end
 
 

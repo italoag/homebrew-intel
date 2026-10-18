@@ -5,37 +5,37 @@
 class Dotenvx < Formula
   desc "Secure dotenv—from the creator of `dotenv`"
   homepage "https://github.com/dotenvx/dotenvx"
-  url "https://github.com/dotenvx/dotenvx/archive/refs/tags/v2.35.0.tar.gz"
-  version "2.35.0"
-  sha256 "284e52c5934b6912fe6142f44c167a2d23918a1c39903f284b0ad55adcf0b88a"
+  url "https://github.com/dotenvx/dotenvx/archive/refs/tags/v2.38.0.tar.gz"
+  version "2.38.0"
+  sha256 "369800cd954045f9ac654d35902496ac7349e9c88165cff03b7c99d08fae1df0"
   license "BSD-3-Clause"
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "a5f7f8873e8a04db01474d308b3e7d1fc1cce082b5d8626f41034fd387e0b124"
+    sha256 cellar: :any_skip_relocation, tahoe: "97b1a8a68a0c0a52f429c4704bec0564ae943f587f92f49652d2b42da6d5a8ae"
   end
 
   on_macos do
     on_intel do
-      url "https://github.com/dotenvx/dotenvx/releases/download/v2.35.0/dotenvx-2.35.0-darwin-amd64.tar.gz"
-      sha256 "ad8782358b7b24ae5f036f218a3362b50a260ec968b5796abfc1462b408f1a2a"
+      url "https://github.com/dotenvx/dotenvx/releases/download/v2.38.0/dotenvx-2.38.0-darwin-amd64.tar.gz"
+      sha256 "06411fe3da34d487af815fa148533ca3fb44d97bb139a22d77e24c40c6e49264"
     end
 
     on_arm do
-      url "https://github.com/dotenvx/dotenvx/releases/download/v2.35.0/dotenvx-2.35.0-darwin-arm64.tar.gz"
-      sha256 "1200e1c77c17b5d79c21405c6d8864e375684f9f6ee930cb756dc7808fb76bd6"
+      url "https://github.com/dotenvx/dotenvx/releases/download/v2.38.0/dotenvx-2.38.0-darwin-arm64.tar.gz"
+      sha256 "02ef074074f0ef969bff921ac58cfcc59deebb5003137743b4f88c228904c472"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/dotenvx/dotenvx/releases/download/v2.35.0/dotenvx-2.35.0-linux-amd64.tar.gz"
-      sha256 "e169d0641a2752fdbf07848b6c120ae3d8a069ed19056a95cdf64335dc6ff918"
+      url "https://github.com/dotenvx/dotenvx/releases/download/v2.38.0/dotenvx-2.38.0-linux-amd64.tar.gz"
+      sha256 "351191fe8aa5526e8dc2db17e8954ab654a57950b8296622c25802f985ba018e"
     end
 
     on_arm do
-      url "https://github.com/dotenvx/dotenvx/releases/download/v2.35.0/dotenvx-2.35.0-linux-arm64.tar.gz"
-      sha256 "d6f5b6f5623d5a04f56716d294bf4c69ee62ff8890cb61fda77e49031cc0bfbc"
+      url "https://github.com/dotenvx/dotenvx/releases/download/v2.38.0/dotenvx-2.38.0-linux-arm64.tar.gz"
+      sha256 "7520837e28a4092f4ea1a36c95db212e479ce3aaabf40cc711334619749cc0a3"
     end
   end
 

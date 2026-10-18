@@ -5,11 +5,12 @@ class Coreutils < Formula
   mirror "https://ftp.gnu.org/gnu/coreutils/coreutils-9.12.tar.xz"
   sha256 "a480198559733e9b3da999e90543ac6f888a2caa544d8d664c5a1f17e528e210"
   license "GPL-3.0-or-later"
+  revision 1
   compatibility_version 1
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "38ffa9482bd7a501662c1e7303a086c061ceb963d73e23e95279bac70bf7fe6d"
+    sha256 tahoe: "760699d236e01ee76372094ae5bd82fa02d9eec8cd7c86ead3947e240675cf53"
   end
 
 
@@ -27,6 +28,10 @@ class Coreutils < Formula
   depends_on "texinfo" => :build
   depends_on "gmp"
   uses_from_macos "gperf" => :build
+
+  on_macos do
+    depends_on "openssl@4"
+  end
 
   on_sonoma :or_older do
     conflicts_with "md5sha1sum", because: "both install `md5sum` and `sha1sum` binaries"
@@ -68,6 +73,11 @@ class Coreutils < Formula
       --with-libgmp
       --without-selinux
     ]
+
+    if OS.mac?
+      ENV.append "CPPFLAGS", "-I#{formula_opt_include("openssl@4")}"
+      ENV.append "LDFLAGS", "-L#{formula_opt_lib("openssl@4")}"
+    end
 
     system "./configure", *args, *std_configure_args
     system "make", "install"

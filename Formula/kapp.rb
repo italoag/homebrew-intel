@@ -1,28 +1,28 @@
 class Kapp < Formula
   desc "Kapp"
   homepage "https://carvel.dev/kapp/"
-  version "v0.65.4"
+  version "v0.65.5"
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "f6510a5180e5dbd38f5d1668f973a1d78a156c4446ce22341a2ce00a3e37a0fc"
+    sha256 cellar: :any_skip_relocation, tahoe: "30cb799dd05548ca31cb13753d5854bf2fd756d4f8b4269dc0b660aaa2c8676b"
   end
 
   if OS.mac?
     if Hardware::CPU.arm?
-      url "https://github.com/carvel-dev/kapp/releases/download/v0.65.4/kapp-darwin-arm64"
-      sha256 "a7ecd6a2ac62fdce02bb40784f2701e2421539e4bae6c3cd58dc8e943170c666"
+      url "https://github.com/carvel-dev/kapp/releases/download/v0.65.5/kapp-darwin-arm64"
+      sha256 "7172d01b3fbbef469c7abe1dc0db009092634b967f06970677ddfa17566aaca9"
     else
-      url "https://github.com/carvel-dev/kapp/releases/download/v0.65.4/kapp-darwin-amd64"
-      sha256 "d2f6a45c09703f2aff01422cc130f00f702094757c17804ab18de4dda2249ada"
+      url "https://github.com/carvel-dev/kapp/releases/download/v0.65.5/kapp-darwin-amd64"
+      sha256 "df079c7a5cec7f1ea62ebb230e07f597d67e9ea4231ada0c19186d7b7114b48a"
     end
   elsif OS.linux?
     if Hardware::CPU.arm?
-      url "https://github.com/carvel-dev/kapp/releases/download/v0.65.4/kapp-linux-arm64"
-      sha256 "e41693ac3d69e1143c7e5fe870712ca05ed810e1e0bc5b00f77ca22ba0f18ae1"
+      url "https://github.com/carvel-dev/kapp/releases/download/v0.65.5/kapp-linux-arm64"
+      sha256 "d9329cd6c8ca47387d065ef241c73da20152888d9184a55a0a4a3dc4b66962ed"
     else
-      url "https://github.com/carvel-dev/kapp/releases/download/v0.65.4/kapp-linux-amd64"
-      sha256 "bf7df0647d7645572d45185bb8bf6a40dd1e631ff4ee1522bc8ce56db53bd243"
+      url "https://github.com/carvel-dev/kapp/releases/download/v0.65.5/kapp-linux-amd64"
+      sha256 "96ef4d7da52628888542d741080c04fbdbdf313b8fbae9f63f3a35c53119461a"
     end
   end
 

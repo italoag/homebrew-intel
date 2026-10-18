@@ -12,7 +12,7 @@ class Gettext < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "a9c18e66ca6cbfe9e24cdf9708171236a921d6e2536b1fabcc87240848d0ec0a"
+    sha256 tahoe: "58312b38d793e52027f46ffce34872399801efec2f2f991d212c29ee96410487"
   end
 
 

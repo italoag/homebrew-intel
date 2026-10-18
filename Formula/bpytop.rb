@@ -11,7 +11,7 @@ class Bpytop < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "32bc772b8cd0be2e5b3632b1e3ce9bda71f0e4a29926d6f11f9ea879eff92890"
+    sha256 cellar: :any_skip_relocation, tahoe: "39899d8d7d62413b249ff3296fab89edb6e7f9d152b577818518c71fee3dfb58"
   end
 
 
