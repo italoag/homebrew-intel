@@ -18,7 +18,7 @@ class Glib < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "a5aece7ce30cf843e78d4fbde7e195033546646be8479da798438ae14f11bbae"
+    sha256 tahoe: "9dd2570e257b0b7c1d2b36c50f6834b3740179b6865e4e4b568e6512440c720c"
   end
 
 
@@ -28,7 +28,7 @@ class Glib < Formula
   depends_on "ninja" => :build
   depends_on "pkgconf" => [:build, :test]
   depends_on "python-setuptools" => :build # for gobject-introspection
-  depends_on "python@3.14" => :build
+  depends_on "python@3.15" => :build
   depends_on "pcre2"
 
   uses_from_macos "flex" => :build # for gobject-introspection
