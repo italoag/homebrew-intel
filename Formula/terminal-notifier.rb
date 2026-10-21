@@ -8,7 +8,7 @@ class TerminalNotifier < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "a8b1e64ee27eccb1ca63db39abbabe9fa7bc246f0d4c2466e31d59317b937c33"
+    sha256 cellar: :any_skip_relocation, tahoe: "b74e5011e2c6df989af0b098b928ac0faa766097d6517f6a06534e815d553fcd"
   end
 
 

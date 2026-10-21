@@ -1,11 +1,11 @@
 class Go < Formula
   desc "Open source programming language to build simple/reliable/efficient software"
   homepage "https://go.dev/"
-  url "https://go.dev/dl/go1.27.2.src.tar.gz"
-  mirror "https://fossies.org/linux/misc/go1.27.2.src.tar.gz"
-  sha256 "03495da2ba64894d40f5c4992e49454fa78b50690604ff92b6afff5081b76e62"
+  url "https://go.dev/dl/go1.27.3.src.tar.gz"
+  mirror "https://fossies.org/linux/misc/go1.27.3.src.tar.gz"
+  sha256 "6e7749035cf360f06b2575d162ea79df9fda8ef671889e5c375f8e50777f26bb"
   license "BSD-3-Clause"
-  compatibility_version 12
+  compatibility_version 13
   head "https://go.googlesource.com/go.git", branch: "master"
 
   livecheck do
@@ -23,7 +23,7 @@ class Go < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "5483275862b469e16a09a8af90c46dd5321f72b9f11b7e4daed33ee72bd37a32"
+    sha256 cellar: :any_skip_relocation, tahoe: "dfc6e3c78e06d425b0583cf8be27f5489a0325ed450eb125fcddc36d294f282d"
   end
 
 

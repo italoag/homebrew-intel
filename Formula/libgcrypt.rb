@@ -13,7 +13,7 @@ class Libgcrypt < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "e295c2fbb8baba0512d17b2c36bd5a8d511aeff90cd3aa860b63325107f85b44"
+    sha256 cellar: :any, tahoe: "d5c7d94f296a065278e96d3c26cb7bbefcef268db7dbd529c608af8d29017c0e"
   end
 
 

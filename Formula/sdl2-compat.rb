@@ -8,7 +8,7 @@ class Sdl2Compat < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "4fc7a3c335b65d4b9fa38f49cc7ff9ed19556b5df2fd8c1c8544182751ad3408"
+    sha256 cellar: :any, tahoe: "6acc23c37f971dd020b39304d43d2296734e386805b7ebe0dcf5e063e2105bf6"
   end
 
 

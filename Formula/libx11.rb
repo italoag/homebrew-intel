@@ -8,7 +8,7 @@ class Libx11 < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "791203869d9765300e89aabd8d7b2d2243eec15824ec01cab674dd02331d8148"
+    sha256 tahoe: "a87267aa071efbb1f1adf8335e05f56656f0fd1dc475f475a50261ef19328341"
   end
 
 
