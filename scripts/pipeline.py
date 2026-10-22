@@ -423,7 +423,13 @@ def collect_patches(order, normalized, file_owner):
 
 
 def partition(order, graph, build_set, nshards):
-    # Afinidade leve por dependências compartilhadas sem desequilibrar pesos.
+    # Afinidade por PESO de dependências compartilhadas: uma dep cara num
+    # shard (llvm=40) deve puxar seus dependentes para o mesmo shard, senão
+    # o dependente compila a dep localmente — llvm duplicado desperdiça
+    # horas de runner. O desconto é o peso real da dep (capado em 40): vale
+    # pagar um cluster pesado para não duplicar uma compilação inteira. Deps
+    # leves compartilhadas quase não movem, então o balanceamento segue
+    # dominando fora das cadeias caras.
     def weight(name):
         if name not in build_set:
             return 1  # só despeja um bottle existente
@@ -435,8 +441,9 @@ def partition(order, graph, build_set, nshards):
     shards = [[] for _ in range(nshards)]
     cost = [0] * nshards
     for name in order:
-        best = min(range(nshards), key=lambda i: cost[i] - 2 * sum(
-            1 for dep in graph[name] if owner_shard.get(dep) == i))
+        best = min(range(nshards), key=lambda i: cost[i] - sum(
+            min(weight(dep), 40)
+            for dep in graph[name] if owner_shard.get(dep) == i))
         owner_shard[name] = best
         shards[best].append(name)
         cost[best] += weight(name)
@@ -697,7 +704,35 @@ def brew_install(*args, cmd='install'):
         run('brew', 'link', '--overwrite', short)
 
 
-def install_missing_deps(full, tap, order_index):
+def wait_for_publish(release, dep_short, timeout=2700, interval=120):
+    # Dep pertence a outro shard e está no build_set desta run: o dono vai
+    # publicá-la; compilar localmente duplicaria o trabalho (llvm@21 = horas).
+    # Espera a entrada no manifesto e adota o .rb promovido ao aparecer; se o
+    # dono falhar ou atrasar demais, cai para a compilação local habitual.
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        assets = release_assets(release['id'])
+        asset_map = {asset['name']: asset['browser_download_url']
+                     for asset in assets}
+        entry = (combined_manifest(release, assets, ttl=0)
+                 .get(dep_short) or {})
+        if entry.get('reused') or entry.get('asset') in asset_map:
+            asset_name = f'Formula-{dep_short}.rb'
+            if asset_name in asset_map:
+                target = ROOT / 'Formula' / (dep_short + '.rb')
+                fetched = repair_bottle_urls(
+                    download(asset_map[asset_name]).decode(), asset_map)
+                target.write_text(fetched)
+            print(f'Dep publicada por outro shard; adotada: {dep_short}',
+                  flush=True)
+            return True
+        print(f'Aguardando dep de outro shard: {dep_short}', flush=True)
+        time.sleep(interval)
+    return False
+
+
+def install_missing_deps(full, tap, order_index, release=None,
+                         dep_owner=None, my_shard=None, build_set_shorts=()):
     # --build-bottle exige bottle em toda dep instalável e --force-bottle se
     # aplica à operação inteira: pré-instala as ausentes com install comum
     # (despeja bottle adotado/publicado ou compila como fallback local — só o
@@ -714,6 +749,9 @@ def install_missing_deps(full, tap, order_index):
                             key=lambda d: order_index.get(d, 0)):
         if dep_short in installed:
             continue
+        if (release and dep_short in build_set_shorts
+                and dep_owner.get(dep_short, my_shard) != my_shard):
+            wait_for_publish(release, dep_short)
         try:
             brew_install(tap + '/' + dep_short)
         except subprocess.CalledProcessError:
@@ -744,6 +782,8 @@ def build_shard(idx):
     build_set = set(plan_data['build_set'])
     members = plan_data['shards'][idx]
     order_index = {short_name(n): i for i, n in enumerate(plan_data['order'])}
+    dep_owner = {short_name(n): i for i, shard in enumerate(plan_data['shards'])
+                 for n in shard}
     # Retomada dentro do mesmo run: fragmentos e manifesto anteriores dizem o
     # que já foi publicado por qualquer shard e não precisa repetir.
     assets = release_assets(release['id'])
@@ -780,7 +820,8 @@ def build_shard(idx):
             continue
         try:
             process_member(name, idx, tap, full, short, build_set, reusable,
-                           release, fragment, order_index, root_url, fps)
+                           release, fragment, order_index, root_url, fps,
+                           dep_owner)
         except (subprocess.CalledProcessError, RuntimeError) as err:
             # Falha isola o membro: ele fica pendente e o shard segue — todo o
             # trabalho publicado sobrevive e o re-run refaz só os falhos.
@@ -797,13 +838,14 @@ def build_shard(idx):
 
 
 def process_member(name, idx, tap, full, short, build_set, reusable, release,
-                   fragment, order_index, root_url, fps):
+                   fragment, order_index, root_url, fps, dep_owner):
     if name in build_set and not reusable[name]:
         # Deps resolvem pelo tap: members com bottle publicado despejam; os
-        # que outro shard ainda compila são construídos localmente (fallback
-        # duplicado e seguro — só o shard dono publica).
+        # que outro shard ainda compila são aguardados/adotados (ou, em último
+        # caso, construídos localmente — só o shard dono publica).
         adopt_bottles(release, full, ROOT / 'Formula')
-        install_missing_deps(full, tap, order_index)
+        install_missing_deps(full, tap, order_index, release, dep_owner, idx,
+                             {short_name(n) for n in build_set})
         tab = formula_info(full).get('installed') or []
         if tab and not all(item.get('poured_from_bottle') for item in tab):
             # Já foi compilado como dep de outro membro: refaz com test deps.
@@ -846,7 +888,8 @@ def process_member(name, idx, tap, full, short, build_set, reusable, release,
         # Reutilizado ou inalterado: despeja o bottle oficial/publicado e
         # valida que funciona dentro do grafo do tap.
         adopt_bottles(release, full, ROOT / 'Formula')
-        install_missing_deps(full, tap, order_index)
+        install_missing_deps(full, tap, order_index, release, dep_owner, idx,
+                             {short_name(n) for n in build_set})
         # --include-test traz as test deps que brew test exige instaladas.
         brew_install('--force-bottle', '--include-test', full)
         verify_poured(full, name)
