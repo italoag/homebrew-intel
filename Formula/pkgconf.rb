@@ -15,7 +15,7 @@ class Pkgconf < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "880e00473129089324381a2c6f766633e1231da9ac0f73b64440f87a377540dd"
+    sha256 tahoe: "808757968f621c22b3d12eec6e10649cb7ccfddb79bd40899ae35285919025da"
   end
 
 

@@ -8,7 +8,7 @@ class Libheif < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "da3623939b8cf45c8962b3776f74b8cd14eb020e9ee419ec64f52004aff68769"
+    sha256 cellar: :any, tahoe: "0b8453c3325a7af7572f30f3394fbe6f719aab049879f6bc7ea8bd884ea0faf4"
   end
 
 

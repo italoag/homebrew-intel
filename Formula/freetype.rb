@@ -14,7 +14,7 @@ class Freetype < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "bafcd957fab5c586d1dbf99ad2bc5fc65d92bfb85224cf98f7d5c6a27512e3ea"
+    sha256 cellar: :any, tahoe: "804f10e4330dc3c3627386f576093860601d67a43ca5788f641707ef81e19c4b"
   end
 
 

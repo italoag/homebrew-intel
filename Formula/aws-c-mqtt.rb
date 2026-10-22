@@ -13,7 +13,7 @@ class AwsCMqtt < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "90856f2ab8ec18409a7b2cb139734746ef47a79824119ddc03b43c4b3c155d7d"
+    sha256 cellar: :any, tahoe: "78975e834290ef2e576c244b2d60a43b1f73f287ff12f38becd05f64c0dbcc10"
   end
 
 

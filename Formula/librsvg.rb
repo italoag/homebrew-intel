@@ -1,8 +1,8 @@
 class Librsvg < Formula
   desc "Library to render SVG files using Cairo"
   homepage "https://wiki.gnome.org/Projects/LibRsvg"
-  url "https://download.gnome.org/sources/librsvg/2.63/librsvg-2.63.2.tar.xz"
-  sha256 "852b18e1a00b8605528825a27dc7748bff2a5dd254028f59dc22a34ea57e81b6"
+  url "https://download.gnome.org/sources/librsvg/2.63/librsvg-2.63.3.tar.xz"
+  sha256 "55311c2293612e4a2e38cd9bdb6160a1c85c158adc7c97e423e1e65949afb6a4"
   license "LGPL-2.1-or-later"
   compatibility_version 1
 
@@ -16,7 +16,7 @@ class Librsvg < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "9cc3d96862ca185e50bfac082ce052b1d3f4962f62bf333f710ae6df5f1c9a55"
+    sha256 cellar: :any, tahoe: "46cdf1c27283433ea220258cd515308d11d55bb7f80e1b0b5726373b660b5b89"
   end
 
 
