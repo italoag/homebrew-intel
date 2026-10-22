@@ -1,0 +1,14 @@
+taps.txt
+  h_ba256230c5d53f 1-4,6,8,11,13,15-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ebe2d43ff76d13db375e685cf32f5613e36be3f4",
+  "prompts": {},
+  "humans": {
+    "h_ba256230c5d53f": {
+      "author": "Italo A. G. <182202+italoag@users.noreply.github.com>"
+    }
+  }
+}
