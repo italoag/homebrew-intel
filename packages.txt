@@ -52,6 +52,7 @@ dos2unix
 double-conversion
 edencommon
 ethereum
+exiftool
 fb303
 fbthrift
 ffmpeg
@@ -253,6 +254,7 @@ terminal-notifier
 tesseract
 tree-sitter
 ttyd
+tuios
 ucl
 unar
 unbound
