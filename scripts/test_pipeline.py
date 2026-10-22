@@ -156,6 +156,25 @@ end
         result = p.transform(source, 'user/intel', {'charmbracelet/tap/mods'})
         self.assertIn('depends_on "user/intel/mods"', result)
 
+    def test_strip_bottle_block_removes_only_the_bottle(self):
+        source = ('class P < Formula\n'
+                  '  url "https://example.org/p.tar.gz"\n'
+                  '  bottle do\n'
+                  '    root_url "https://github.com/u/homebrew-intel/releases/download/tahoe-bottles"\n'
+                  '    sha256 tahoe: "abc"\n'
+                  '  end\n'
+                  '  depends_on "openssl@3"\n'
+                  'end\n')
+        stripped = p.strip_bottle_block(source)
+        self.assertNotIn('bottle do', stripped)
+        self.assertNotIn('sha256 tahoe', stripped)
+        self.assertIn('url "https://example.org/p.tar.gz"', stripped)
+        self.assertIn('depends_on "openssl@3"', stripped)
+        # Sem bloco bottle (ou bloco que não casa com o formato padrão) é no-op.
+        self.assertEqual(p.strip_bottle_block(stripped), stripped)
+        weird = 'class W < Formula\n    bottle do\n    end\nend\n'
+        self.assertIn('bottle do', p.strip_bottle_block(weird))
+
     def test_canonical_allows_members_of_external_source_taps_only(self):
         self.assertEqual(p.canonical('anomalyco/tap/opencode', {'anomalyco/tap'}),
                          'anomalyco/tap/opencode')

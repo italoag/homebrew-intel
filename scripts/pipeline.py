@@ -19,6 +19,7 @@ import re
 import shutil
 import subprocess
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -27,7 +28,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 WORK = ROOT / '.work'
 TAG = 'tahoe-bottles'  # release rolante: assets persistem entre runs (retomada)
-SHARDS = 4
+SHARDS = 6
 HEAVY = (('llvm', 40), ('lld', 40), ('rust', 45), ('openjdk', 35), ('gcc', 30),
          ('qt', 30), ('node', 30), ('ffmpeg', 25), ('go', 25), ('gtk', 20),
          ('boost', 20), ('emacs', 20), ('python@', 15), ('postgresql', 15),
@@ -202,6 +203,36 @@ def load_manifest(release):
         if asset['name'] == 'manifest.json':
             return json.loads(download(asset['browser_download_url']))
     return {}
+
+
+_manifest_cache = {}
+
+
+def combined_manifest(release, assets=None, ttl=600):
+    # Manifesto principal + fragmentos dos shards: retrato combinado do que já
+    # foi publicado. Cache de 10min: adopt consulta a cada membro (~80x) e sem
+    # cache estouraria o rate limit do token; bottles publicados por outros
+    # shards aparecem com atraso máximo do TTL — na pior hipótese a dep compila
+    # localmente em vez de despejar (correto, só menos eficiente).
+    assets = assets if assets is not None else release_assets(release['id'])
+    now = time.monotonic()
+    cached = _manifest_cache.get('data')
+    if cached is not None and now - _manifest_cache['t'] < ttl:
+        return dict(cached)
+    manifest = dict(load_manifest(release))
+    for asset in assets:
+        if re.fullmatch(r'manifest-\d+\.json', asset['name']):
+            manifest.update(json.loads(
+                download(asset['browser_download_url'])))
+    _manifest_cache.update({'t': now, 'data': dict(manifest)})
+    return manifest
+
+
+def strip_bottle_block(source):
+    # Remove o bloco bottle: sem ele o brew compila da fonte em vez de baixar —
+    # usado quando o asset referenciado não existe no release (evita 404).
+    stripped = re.sub(r'(?ms)^  bottle do\n.*?^  end\n', '', source)
+    return stripped if 'bottle do' not in stripped else source
 
 
 def checks():
@@ -621,14 +652,21 @@ def repair_bottle_urls(text, asset_names):
 
 def adopt_bottles(release, full, formula_dir):
     # Dependência de outro shard: se o dono já publicou, adota o arquivo com o
-    # bloco bottle e o brew despeja em vez de compilar a dep duplicada.
-    asset_map = {asset['name']: asset['browser_download_url']
-                 for asset in release_assets(release['id'])}
+    # bloco bottle e o brew despeja em vez de compilar a dep duplicada. Só
+    # adota quando o asset existe de verdade (manifesto reconsultado a cada
+    # chamada): um Formula-*.rb promovido pode apontar para um bottle ainda
+    # não publicado pelo dono — adotar sem checar vira 404 na hora do install.
+    assets = release_assets(release['id'])
+    asset_map = {asset['name']: asset['browser_download_url'] for asset in assets}
+    manifest = combined_manifest(release, assets)
     for dep in run('brew', 'deps', '--formula', '--full-name', '--include-build',
                    '--include-test', full, capture=True).split():
         dep_short = dep.split('/')[-1]
         asset_name = f'Formula-{dep_short}.rb'
         if asset_name not in asset_map:
+            continue
+        entry = manifest.get(dep_short) or {}
+        if not (entry.get('reused') or entry.get('asset') in asset_map):
             continue
         target = formula_dir / (dep_short + '.rb')
         fetched = repair_bottle_urls(download(asset_map[asset_name]).decode(),
@@ -638,15 +676,25 @@ def adopt_bottles(release, full, formula_dir):
             target.write_text(fetched)
 
 
+def keg_installed(short):
+    return subprocess.run(['brew', 'list', '--formula', '--versions', short],
+                          cwd=ROOT, stdout=subprocess.DEVNULL,
+                          stderr=subprocess.DEVNULL).returncode == 0
+
+
 def brew_install(*args, cmd='install'):
     # A imagem do runner já tem binários em /usr/local/bin (aws, azcopy...) que
     # conflitam com brew link: o keg é construído, o install sai com erro só
-    # no link e link --overwrite sobrescreve na VM descartável. Se a falha for
-    # real (compile/download), o link falha igual e o erro continua fatal.
+    # no link e link --overwrite sobrescreve na VM descartável. O retry só faz
+    # sentido com o keg instalado — falha de compile/download não tem o que
+    # linkar e o erro original precisa propagar.
     try:
         run('brew', cmd, *args)
     except subprocess.CalledProcessError:
-        run('brew', 'link', '--overwrite', args[-1])
+        short = args[-1].split('/')[-1]
+        if not keg_installed(short):
+            raise
+        run('brew', 'link', '--overwrite', short)
 
 
 def install_missing_deps(full, tap, order_index):
@@ -666,7 +714,19 @@ def install_missing_deps(full, tap, order_index):
                             key=lambda d: order_index.get(d, 0)):
         if dep_short in installed:
             continue
-        brew_install(tap + '/' + dep_short)
+        try:
+            brew_install(tap + '/' + dep_short)
+        except subprocess.CalledProcessError:
+            # O .rb promovido/adotado pode apontar para um bottle que o dono
+            # ainda não publicou (ou que sumiu): sem o bloco bottle o brew
+            # compila a dep da fonte em vez de falhar no download. Se o keg
+            # já existe, a falha foi no link e brew_install já tentou o retry.
+            dep_rb = ROOT / 'Formula' / (dep_short + '.rb')
+            if (not dep_rb.is_file() or keg_installed(dep_short)
+                    or 'bottle do' not in dep_rb.read_text()):
+                raise
+            dep_rb.write_text(strip_bottle_block(dep_rb.read_text()))
+            run('brew', 'install', tap + '/' + dep_short)
         # O brew pode puxar transitivas pelo caminho: relê a lista real.
         installed = set(run('brew', 'list', '--formula', capture=True).split())
 
@@ -686,11 +746,19 @@ def build_shard(idx):
     order_index = {short_name(n): i for i, n in enumerate(plan_data['order'])}
     # Retomada dentro do mesmo run: fragmentos e manifesto anteriores dizem o
     # que já foi publicado por qualquer shard e não precisa repetir.
-    done = dict(load_manifest(release))
-    for asset in release_assets(release['id']):
-        if re.fullmatch(r'manifest-\d+\.json', asset['name']):
-            done.update(json.loads(download(asset['browser_download_url'])))
+    assets = release_assets(release['id'])
+    asset_names = {asset['name'] for asset in assets}
+    done = combined_manifest(release, assets)
     write_formula_dir(plan_data)
+    # Sanitiza .rb promovidos cujo bottle aponta para asset ausente no release
+    # (órfão de publish anterior ou dep que outro shard ainda não publicou):
+    # sem o bloco bottle o brew compila a dep da fonte em vez de falhar no 404.
+    our_bottles = f'releases/download/{TAG}'
+    for dep_rb in (ROOT / 'Formula').glob('*.rb'):
+        source = dep_rb.read_text()
+        if (our_bottles in source and 'bottle do' in source
+                and (done.get(dep_rb.stem) or {}).get('asset') not in asset_names):
+            dep_rb.write_text(strip_bottle_block(source))
     link_own_tap(owner, repository, tap)
     # Apenas VM descartável: evita satisfazer dependências com kegs de outro tap.
     installed = run('brew', 'list', '--formula', capture=True).split()
@@ -807,10 +875,7 @@ def publish():
     reusable = plan_data['reusable']
     fps = plan_data['fps']
     file_owner = plan_data['file_owner']
-    manifest = dict(load_manifest(release))
-    for name, asset in assets.items():
-        if re.fullmatch(r'manifest-\d+\.json', name):
-            manifest.update(json.loads(download(asset['browser_download_url'])))
+    manifest = combined_manifest(release, list(assets.values()))
     # short -> chave do membro dono do arquivo Formula/<short>.rb.
     member_shorts = {short_name(name): name for name in order
                      if file_owner[short_name(name)] == name}
@@ -833,6 +898,12 @@ def publish():
             source = repair_bottle_urls(
                 download(assets[asset_name]['browser_download_url']).decode(),
                 assets)
+            # O bottle referenciado sumiu do release? Publicar o .rb assim
+            # quebraria todo install com 404: remove o bloco bottle e o
+            # cliente compila da fonte até o rebuild completar.
+            if (f'releases/download/{TAG}' in source and 'bottle do' in source
+                    and entry.get('asset') not in assets):
+                source = strip_bottle_block(source)
             target.write_text(source)
         elif not target.exists() and reusable[key]:
             # Arquivo de membro reutilizado é autossuficiente (bottle upstream);
@@ -854,10 +925,17 @@ def publish():
     keep.update(f'manifest-{i}.json' for i in range(SHARDS))
     keep.update(f'Formula-{s}.rb' for s in member_shorts)
     keep.update(entry['asset'] for entry in manifest.values() if entry.get('asset'))
+    # Bottle de membro atual nunca é órfão: o Formula-*.rb promovido pode
+    # referenciá-lo mesmo quando a entrada do manifesto perdeu o campo asset —
+    # deletar aqui deixava o tap inteiro quebrado com 404 até o próximo build.
+    member_prefixes = tuple(short + '-' for short in member_shorts)
     for asset in assets.values():
-        if asset['name'] not in keep:
-            print('Removendo asset órfão:', asset['name'], flush=True)
-            api(f"/repos/{repo()}/releases/assets/{asset['id']}", method='DELETE')
+        name = asset['name']
+        if name in keep or (name.endswith('.bottle.tar.gz')
+                            and name.startswith(member_prefixes)):
+            continue
+        print('Removendo asset órfão:', name, flush=True)
+        api(f"/repos/{repo()}/releases/assets/{asset['id']}", method='DELETE')
     manifest_path = WORK / 'manifest.json'
     manifest_path.parent.mkdir(exist_ok=True)
     manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True))
