@@ -13,6 +13,7 @@ Bottles e manifestos moram no release tahoe-bottles; qualquer trabalho já
 publicado sobrevive a timeout/falha, e a run seguinte refaz só o que falta.
 """
 import hashlib
+import http.client
 import json
 import os
 import re
@@ -138,11 +139,21 @@ def api(path, data=None, binary=False, method=None):
         req.add_header('Content-Type', 'application/octet-stream')
     elif body is not None:
         req.add_header('Content-Type', 'application/json')
-    try:
-        with urllib.request.urlopen(req) as res:
-            return json.loads(res.read() or b'null')
-    except urllib.error.HTTPError as err:
-        raise ApiError(err.code, path, err.read().decode(errors='replace'))
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(req) as res:
+                return json.loads(res.read() or b'null')
+        except urllib.error.HTTPError as err:
+            # Status HTTP é resposta real (404, 422...): propaga como ApiError;
+            # só 5xx merece retentativa por ser falha transitória do servidor.
+            if err.code < 500 or attempt == 2:
+                raise ApiError(err.code, path,
+                               err.read().decode(errors='replace'))
+            time.sleep(5 * (attempt + 1))
+        except (OSError, http.client.HTTPException):
+            if attempt == 2:
+                raise
+            time.sleep(5 * (attempt + 1))
 
 
 def repo():
@@ -173,11 +184,25 @@ def release_assets(release_id):
         page += 1
 
 
-def download(url):
+def download(url, attempts=4):
+    # Downloads passam por CDN do GitHub: quedas transitórias de conexão
+    # (RemoteDisconnected, reset, timeout) não podem derrubar o shard.
     req = urllib.request.Request(url)
     req.add_header('Authorization', 'Bearer ' + os.environ['GITHUB_TOKEN'])
-    with urllib.request.urlopen(req) as res:
-        return res.read()
+    for attempt in range(attempts):
+        try:
+            with urllib.request.urlopen(req) as res:
+                return res.read()
+        except urllib.error.HTTPError as err:
+            # 404/403 são respostas reais (asset ausente, sem acesso): falha
+            # na hora para os fallbacks de strip/source-build agirem.
+            if err.code < 500 or attempt == attempts - 1:
+                raise
+            time.sleep(5 * (attempt + 1))
+        except (OSError, http.client.HTTPException):
+            if attempt == attempts - 1:
+                raise
+            time.sleep(5 * (attempt + 1))
 
 
 def upload_asset(release_id, path, name=None):
@@ -822,9 +847,12 @@ def build_shard(idx):
             process_member(name, idx, tap, full, short, build_set, reusable,
                            release, fragment, order_index, root_url, fps,
                            dep_owner)
-        except (subprocess.CalledProcessError, RuntimeError) as err:
+        except Exception as err:
             # Falha isola o membro: ele fica pendente e o shard segue — todo o
             # trabalho publicado sobrevive e o re-run refaz só os falhos.
+            # Qualquer exceção por membro (brew, rede, dado inesperado) vira
+            # pendente; KeyboardInterrupt/SystemExit seguem fatais e permitem
+            # cancelamento do job.
             failed.append(short)
             print(f'[{idx}] {short}: FALHOU — {err}', flush=True)
         else:
