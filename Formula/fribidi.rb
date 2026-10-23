@@ -7,7 +7,7 @@ class Fribidi < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "9f34746791650b4193c751bba96aa5cdd63a4458a2928ecfe73e05475f3df3c9"
+    sha256 cellar: :any, tahoe: "b2c7401ce80d2c6c6f204ff182fa153eb7b408e32d2b284e6faf78296108076f"
   end
 
 

@@ -1,8 +1,8 @@
 class Azcopy < Formula
   desc "Azure Storage data transfer utility"
   homepage "https://github.com/Azure/azure-storage-azcopy"
-  url "https://github.com/Azure/azure-storage-azcopy/archive/refs/tags/v10.34.0.tar.gz"
-  sha256 "65ba78cd16bb65ec6adaaa5cb6df7bcb7d4ddd376cdd297d453308080ee88d41"
+  url "https://github.com/Azure/azure-storage-azcopy/archive/refs/tags/v10.34.1.tar.gz"
+  sha256 "15cc463239fe1f7893247ed8f8fd4ae6cab3f119fd2b5209c0e1126c6f3974d3"
   license "MIT"
   head "https://github.com/Azure/azure-storage-azcopy.git", branch: "main"
 
@@ -13,7 +13,7 @@ class Azcopy < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "0b3ba6d5fbd326b8c5e8b229566b83b3550f606746d187d0ac816f854490d7cb"
+    sha256 cellar: :any_skip_relocation, tahoe: "733f82e441cfc7e6d718271a43f2fa6e766b2a5f3f10250acfde8526d2048cc8"
   end
 
 

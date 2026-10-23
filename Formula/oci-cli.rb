@@ -8,10 +8,6 @@ class OciCli < Formula
   license any_of: ["UPL-1.0", "Apache-2.0"]
   head "https://github.com/oracle/oci-cli.git", branch: "master"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "b9261f53d82bb04d55d3e87a218f58cf62de73b43b4c4e826f0b269a623ac4f8"
-  end
 
 
   depends_on "certifi" => :no_linkage

@@ -5,10 +5,6 @@ class Lftp < Formula
   sha256 "68116cc184ab660a78a4cef323491e89909e5643b59c7b5f0a14f7c2b20e0a29"
   license "GPL-3.0-or-later"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "0483109e58bd5ccf1dad21bfe520967f9478233c72c2d34cb29e1398fd00e696"
-  end
 
 
   depends_on "libidn2"

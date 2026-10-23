@@ -9,7 +9,7 @@ class Maturin < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "b8912f7fe67a86eef277f27d94185dd46d400f6092f6897e077aab7b10f89fbd"
+    sha256 cellar: :any, tahoe: "3874e49cfa1d41eaee15e0119d04ad81d6143190dc60898c748cf71e6fcbeb70"
   end
 
 

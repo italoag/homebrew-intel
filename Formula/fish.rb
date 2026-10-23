@@ -14,7 +14,7 @@ class Fish < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "5576625c8958d4ba6ae9e0fef5425f958d3b7e65e794db8a212c92836f9e1ce5"
+    sha256 cellar: :any, tahoe: "875bcd50e63a3aa1bb78e2af5d79a79237f03ad444672bd8a84b4c5978ea0318"
   end
 
 
@@ -23,13 +23,21 @@ class Fish < Formula
   depends_on "sphinx-doc" => :build
   depends_on "pcre2"
 
+  deny_network_access!
+
+  def fetch
+    system "cargo", "fetch", *std_cargo_fetch_args
+  end
+
   def install
-    system "cmake", "-S", ".", "-B", "build", *std_cmake_args,
-                    "-DCMAKE_INSTALL_SYSCONFDIR=#{etc}",
-                    "-DWITH_DOCS=ON",
-                    "-Dextra_functionsdir=#{HOMEBREW_PREFIX}/share/fish/vendor_functions.d",
-                    "-Dextra_completionsdir=#{HOMEBREW_PREFIX}/share/fish/vendor_completions.d",
-                    "-Dextra_confdir=#{HOMEBREW_PREFIX}/share/fish/vendor_conf.d"
+    args = %W[
+      -DCMAKE_INSTALL_SYSCONFDIR=#{etc}
+      -DWITH_DOCS=ON
+      -Dextra_functionsdir=#{HOMEBREW_PREFIX}/share/fish/vendor_functions.d
+      -Dextra_completionsdir=#{HOMEBREW_PREFIX}/share/fish/vendor_completions.d
+      -Dextra_confdir=#{HOMEBREW_PREFIX}/share/fish/vendor_conf.d
+    ]
+    system "cmake", "-S", ".", "-B", "build", *args, *std_cmake_args
     system "cmake", "--build", "build"
     system "cmake", "--install", "build"
   end

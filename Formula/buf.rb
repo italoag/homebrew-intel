@@ -1,8 +1,8 @@
 class Buf < Formula
   desc "New way of working with Protocol Buffers"
   homepage "https://buf.build"
-  url "https://github.com/bufbuild/buf/archive/refs/tags/v1.74.0.tar.gz"
-  sha256 "09f5e4f103ff418bbce2f98ea342852b590f45357c8f3492e827a5976cb9075c"
+  url "https://github.com/bufbuild/buf/archive/refs/tags/v1.75.0.tar.gz"
+  sha256 "e1b688283938b19ff072789d37f371e9bdfbc866ebb719b20c1f1bdc4a9ca8ff"
   license "Apache-2.0"
   head "https://github.com/bufbuild/buf.git", branch: "main"
 
@@ -16,7 +16,7 @@ class Buf < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "2726062ca1c58044b6eb4565135684b387badfe3990497ef810208405de3aa58"
+    sha256 cellar: :any_skip_relocation, tahoe: "94555dbf95aa12385e1410ba5152c2ffa77982f14b2c01ffea4f7fe4a3b2740c"
   end
 
 

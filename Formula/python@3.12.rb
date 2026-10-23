@@ -11,10 +11,6 @@ class PythonAT312 < Formula
     regex(%r{href=.*?/Python[._-]v?(3\.12(?:\.\d+)*)\.t}i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "9470b3e535fd1b486f9b752cd4b8cdfc001fe80333af5f14f30984286accd1d7"
-  end
 
 
   # https://devguide.python.org/versions/#versions
