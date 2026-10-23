@@ -1,15 +1,15 @@
 class Harfbuzz < Formula
   desc "OpenType text shaping engine"
   homepage "https://github.com/harfbuzz/harfbuzz"
-  url "https://github.com/harfbuzz/harfbuzz/releases/download/14.6.0/harfbuzz-14.6.0.tar.xz"
-  sha256 "d07a007327277708a2a73ae437887cdbaf282937f6d03ca5467723e9099af586"
+  url "https://github.com/harfbuzz/harfbuzz/releases/download/15.0.0/harfbuzz-15.0.0.tar.xz"
+  sha256 "968536e9abd782f07f7954044c0c4020199fcdd39b41d221ec42d2a3be4a44df"
   license "MIT"
   compatibility_version 1
   head "https://github.com/harfbuzz/harfbuzz.git", branch: "main"
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "e697e95aca61cd117a268f5a3c9e6398943d795577dcd2adc2dd932aabbcfba5"
+    sha256 cellar: :any, tahoe: "1e5f218ee067f1f1d61c75b22aaa2f2e22fb7c4d64cfc8ede1b72086ab73fe7d"
   end
 
 
@@ -17,7 +17,7 @@ class Harfbuzz < Formula
   depends_on "meson" => :build
   depends_on "ninja" => :build
   depends_on "pkgconf" => :build
-  depends_on "python@3.14" => [:build, :test]
+  depends_on "python@3.15" => [:build, :test]
   depends_on "pygobject3" => :test
   depends_on "cairo"
   depends_on "freetype"
