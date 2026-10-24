@@ -12,7 +12,7 @@ class Qrcp < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "11529207fc359af3d64df738a30be1323d0e505d639e6e0484ec0ea409d520e9"
+    sha256 cellar: :any_skip_relocation, tahoe: "4d8a2798b7fc5faaaf11db87e5db6adff505cff89bdf13d21365b9cfbd89fce7"
   end
 
 

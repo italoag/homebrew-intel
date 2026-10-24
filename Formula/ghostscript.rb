@@ -19,7 +19,7 @@ class Ghostscript < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "7e66c613eded59ad6a677a1d024aabb248f3ae16c0b2e40cb0ef5fca0121dcda"
+    sha256 tahoe: "c3976affc331cdc99788be7ba84399fc0a59382f9859a03c220e777cae37fdb1"
   end
 
 
