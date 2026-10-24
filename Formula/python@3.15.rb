@@ -13,7 +13,7 @@ class PythonAT315 < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "14d5014ed396c67c7acc2c338251d0431631df68223bb914cfe11bc6e293b184"
+    sha256 tahoe: "b64fbb3e532896aff8d9dd2cf5e20a388f83087837fe42aa2ff2424c8ceb8cff"
   end
 
 
@@ -148,6 +148,7 @@ class PythonAT315 < Formula
       args << "--enable-framework=#{frameworks}"
       args << "--with-dtrace"
       args << "--with-dbmliborder=ndbm"
+      args << "--with-tail-call-interp"
 
       # Avoid linking to libgcc https://mail.python.org/pipermail/python-dev/2012-February/116205.html
       args << "MACOSX_DEPLOYMENT_TARGET=#{MacOS.version}"

@@ -4,6 +4,7 @@ class Gnupg < Formula
   url "https://gnupg.org/ftp/gcrypt/gnupg/gnupg-2.5.24.tar.bz2"
   sha256 "bf149d01a2b9fcc0e4589b8ae8697d3d5c557ea48ed95a3fa55dd3b1187e6039"
   license "GPL-3.0-or-later"
+  revision 1
   compatibility_version 1
 
   # GnuPG usually indicates stable releases with an even-numbered minor but
@@ -19,7 +20,7 @@ class Gnupg < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "22af80386795683823635b4ee138211c953e5948cfbed4a2d3ddca87c21a527e"
+    sha256 tahoe: "0a52904390e8afd5b214f72cd7868b272f7e96a9f75c82ec0572936544e716ab"
   end
 
 
@@ -44,6 +45,21 @@ class Gnupg < Formula
 
   on_linux do
     depends_on "zlib-ng-compat"
+  end
+
+  # Fix import of unprotected ECDH secret keys, a regression in 2.5.23
+  patch do
+    url "https://github.com/gpg/gnupg/commit/42386bcf8861f04c1bdec5cbb139a03da83d8ef9.patch?full_index=1"
+    sha256 "93817449be3f93dcade3d79960e33e72959f54f95ff6108f22176bef28111f2b"
+    type :backport
+    resolves "https://dev.gnupg.org/T8469"
+  end
+
+  patch do
+    url "https://github.com/gpg/gnupg/commit/5523cec6913bcbd1a374d183899a6f298d2c0e32.patch?full_index=1"
+    sha256 "0a0acd2f7f25723f3f84ec5c4ecf03b786d73ca61c48487d4d00c0559be89d66"
+    type :backport
+    resolves "https://dev.gnupg.org/T8469"
   end
 
   deny_network_access!

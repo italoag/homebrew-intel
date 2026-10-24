@@ -1,8 +1,8 @@
 class Ethereum < Formula
   desc "Official Go implementation of the Ethereum protocol"
   homepage "https://geth.ethereum.org/"
-  url "https://github.com/ethereum/go-ethereum/archive/refs/tags/v1.17.9.tar.gz"
-  sha256 "dce5d109fb2a29a740cc41ed9e5b78e1e4a08af8bc0899baaf8797bef68aa591"
+  url "https://github.com/ethereum/go-ethereum/archive/refs/tags/v1.17.10.tar.gz"
+  sha256 "d947e1e82eef5ffb46900d1047f207ed5e6f6d2049970cf3f1442669a175fd27"
   license "LGPL-3.0-or-later"
   head "https://github.com/ethereum/go-ethereum.git", branch: "master"
 
@@ -13,7 +13,7 @@ class Ethereum < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "f9d0f0d5550918bb6851b19180e15ba11163f879ea6db3401e67bb33d22af5d2"
+    sha256 cellar: :any_skip_relocation, tahoe: "4bb73ba2c0edec29c27b474cd1cedef801d9f8ebc09f6cccc897e2fe51a57556"
   end
 
 

@@ -14,7 +14,7 @@ class JpegXl < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "037393aacdb948fd5e925dfe67d8681fc99ed18b755df36a5f853131c90edd33"
+    sha256 cellar: :any, tahoe: "f5485680401d90d2cdef62d1b46a0a82741b63c22198b66d097d1f3eb0f7d88f"
   end
 
 
