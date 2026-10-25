@@ -1,10 +1,9 @@
 class PythonAT315 < Formula
   desc "Interpreted, interactive, object-oriented programming language"
   homepage "https://www.python.org/"
-  url "https://www.python.org/ftp/python/3.15.0/Python-3.15.0.tgz"
-  sha256 "438596cac081036d3c1d532ab7e7335eeb35567bc961749a0d5797176db0db68"
+  url "https://www.python.org/ftp/python/3.15.1/Python-3.15.1.tgz"
+  sha256 "133d85e118dc32621cda1d9d1d7d9694fe0c5e82bc339a7d528c109fe8b36387"
   license "Python-2.0"
-  revision 1
 
   livecheck do
     url "https://www.python.org/downloads/source/"
@@ -13,7 +12,7 @@ class PythonAT315 < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "b64fbb3e532896aff8d9dd2cf5e20a388f83087837fe42aa2ff2424c8ceb8cff"
+    sha256 tahoe: "12052867cc0a68dd6a278b3098d15065b1e51ce67806304540587c6cdbacbbab"
   end
 
 

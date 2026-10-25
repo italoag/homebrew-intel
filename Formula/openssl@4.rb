@@ -1,9 +1,9 @@
 class OpensslAT4 < Formula
   desc "Cryptography and SSL/TLS Toolkit"
   homepage "https://openssl-library.org"
-  url "https://github.com/openssl/openssl/releases/download/openssl-4.0.3/openssl-4.0.3.tar.gz"
-  mirror "http://fresh-center.net/linux/misc/openssl-4.0.3.tar.gz"
-  sha256 "325b5c806167c13b40b1ffeadfe0248197c00eccc4cf123ec1e28d2d2fd216d9"
+  url "https://github.com/openssl/openssl/releases/download/openssl-4.1.0/openssl-4.1.0.tar.gz"
+  mirror "http://fresh-center.net/linux/misc/openssl-4.1.0.tar.gz"
+  sha256 "50c17baf54cb008f6ce42d50deb4b28050a1aad711636cabd4b241c7e90cc2fd"
   license "Apache-2.0"
 
   livecheck do
@@ -13,7 +13,7 @@ class OpensslAT4 < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "1d94faa9d74393c15aebf5dbf67ca79686b2fa0fb73fd73a707b58b1e4c70d65"
+    sha256 tahoe: "ff8a79a313031b0536a5aaf09c5b8cbd1dfddf5121013d8eccf4d4eb36c36435"
   end
 
 

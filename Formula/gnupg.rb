@@ -20,7 +20,7 @@ class Gnupg < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "0a52904390e8afd5b214f72cd7868b272f7e96a9f75c82ec0572936544e716ab"
+    sha256 tahoe: "bc24da0aa38ad7521537f61d3e4db86b4086a926e75949a5cec8c6a7f0d77259"
   end
 
 
