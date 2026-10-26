@@ -13,7 +13,7 @@ class Chafa < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "c4bc4f28bb6c4d1b188b4b43acbe55e5a53907ed0d7ac036e8a54c772f459332"
+    sha256 cellar: :any, tahoe: "33aae44643258cb85c69ca1e94a3e4bd59138a7f5d62869c0ba17258c868a599"
   end
 
 
@@ -39,6 +39,8 @@ class Chafa < Formula
     depends_on "gdk-pixbuf"
     depends_on "gettext"
   end
+
+  deny_network_access!
 
   def install
     with_env(NOCONFIGURE: "1") { system "./autogen.sh" } if build.head?

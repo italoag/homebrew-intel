@@ -10,7 +10,7 @@ class Coreutils < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "9af0e57c8f4969149f2e75c5e5ca28638947ae5c75ebff0affb06d314d591633"
+    sha256 tahoe: "747638022573891eaa2aa92317e662ccfc1849ccae4df711af6422fa8311e113"
   end
 
 

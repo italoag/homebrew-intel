@@ -4,18 +4,19 @@ class Beads < Formula
   url "https://github.com/gastownhall/beads/archive/refs/tags/v1.3.2.tar.gz"
   sha256 "d2969ec18f4754dee4f08cb05a0d978dfcca750aa6db9a72b3f35ef3cd62dcc9"
   license "MIT"
+  revision 1
   compatibility_version 1
   head "https://github.com/gastownhall/beads.git", branch: "main"
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "b222fa89dd08f95f69eea9fa844a23f69f715b224c13960a1943e06632de0433"
+    sha256 cellar: :any, tahoe: "8119e8776756a8293f18b296a6e85260df2be79ea707941d2f370a4fa30bce1d"
   end
 
 
   depends_on "go" => :build
   depends_on "dolt"
-  depends_on "icu4c@78"
+  depends_on "icu4c@79"
 
   deny_network_access!
 

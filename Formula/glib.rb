@@ -18,7 +18,7 @@ class Glib < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "c09b1c8516406e89fbd5bdc43a69849f1a038b697785ed9ce6d00d866a6aaa2a"
+    sha256 tahoe: "fa1f5b0c0f46bb8c237d7bee38ed370be632f97df87b2f1ecfffdc573747bc25"
   end
 
 

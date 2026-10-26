@@ -8,7 +8,7 @@ class AwsCAuth < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "6a5a0a10a87e5cd4720b6784754d6eda7c7e788de3f37949744e740e34afd722"
+    sha256 cellar: :any, tahoe: "13ad8daa1dd4b4fbdb7e88bb395f67195a49b92e05fb7024b643358c8428fe79"
   end
 
 

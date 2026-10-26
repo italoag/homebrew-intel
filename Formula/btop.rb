@@ -1,21 +1,16 @@
 class Btop < Formula
   desc "Resource monitor. C++ version and continuation of bashtop and bpytop"
   homepage "https://github.com/aristocratos/btop"
-  url "https://github.com/aristocratos/btop/archive/refs/tags/v1.4.7.tar.gz"
-  sha256 "933de2e4d1b2211a638be463eb6e8616891bfba73aef5d38060bd8319baeefc6"
+  url "https://github.com/aristocratos/btop/archive/refs/tags/v1.4.8.tar.gz"
+  sha256 "67e07c21b770a6d884c5e50ba1d2cfc90732ea57459367d8732ec7ecbeb3be5f"
   license "Apache-2.0"
   head "https://github.com/aristocratos/btop.git", branch: "main"
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "b14f472b1774ef0d958653376693ffb06e9928c29a04255b0e0ac7f2fcb64723"
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "37a9d33566825cff7b0e3e0c4941b2f0a7718405c3c493fb71eaf7100049f429"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "00c8110d1d3714206e0dd238c1945e98509940507c8d692a01c5589853f2474f"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "edc6d6e2c5919d8ccc0d921928091935fecf7ef6f6ecfca5af229e4c8a729817"
-    sha256                               sonoma:            "83b0b284cda00fe757da9d09946e0095a4992e450c5ca46607e4d714558170be"
-    sha256 cellar: :any,                 arm64_linux:       "83e59931ea0c68cc39c0cf48a3831756293d37bc1a1f42ad682210dc1f20d402"
-    sha256 cellar: :any,                 x86_64_linux:      "6c471b70902a92ca7820d4e6b1dcb28e45c3d041ccaeba5e7eeee2fdd78a48cd"
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "76c52511880499cc71b1e030269c12d2c612ebea33887d7048061b5311076329"
   end
+
 
   depends_on "lowdown" => :build
 
