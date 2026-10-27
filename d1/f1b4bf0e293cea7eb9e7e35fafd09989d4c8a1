@@ -1,0 +1,31 @@
+scripts/pipeline.py
+  s_a6c2d66b4b0258::t_6d9ba0325ba451 550,560,566-571
+  s_a6c2d66b4b0258::t_756ac1552ebdc5 585
+  s_a6c2d66b4b0258::t_d29f7895962dce 1002-1010
+  s_a6c2d66b4b0258::t_dd5a7df69f5b44 100,109,114-115,122-127,129-137
+  s_a6c2d66b4b0258::t_fc607021d8d5be 415-432
+scripts/sync-installed.py
+  s_a6c2d66b4b0258::t_1b3c2619552cf7 146-147
+scripts/test_pipeline.py
+  s_a6c2d66b4b0258::t_28d0fbf6f69f41 99-102,106-116,118-121
+  s_a6c2d66b4b0258::t_fbded899a38de1 117
+  s_a6c2d66b4b0258::t_bebcc6ebf98529 122
+scripts/install-binary.py
+  s_a6c2d66b4b0258::t_dbd4b7de6b0844 40-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d1f1b4bf0e293cea7eb9e7e35fafd09989d4c8a1",
+  "prompts": {},
+  "sessions": {
+    "s_a6c2d66b4b0258": {
+      "agent_id": {
+        "tool": "windsurf",
+        "id": "malleable-nigella",
+        "model": "unknown"
+      },
+      "human_author": "Italo A. G. <182202+italoag@users.noreply.github.com>"
+    }
+  }
+}
