@@ -17,11 +17,14 @@ class Icu4cAT78 < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "080f7af8d3b2756b0f5e68b0b00fdb5b1df1af29389fa1f2872fc10c3c162103"
+    sha256 cellar: :any, tahoe: "a058d0966c30bd5a1c84e1afb81c7ff04dc67dcc93912dd8bce6ecd31ac2043d"
   end
 
 
   keg_only :versioned_formula
+
+  deprecate! date: "2026-10-30", because: :versioned_formula
+  disable! date: "2027-10-30", because: :versioned_formula
 
   deny_network_access!
 

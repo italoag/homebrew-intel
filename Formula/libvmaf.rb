@@ -8,7 +8,7 @@ class Libvmaf < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "acc3b7e8ec4634b8a23e56e0c6ae40f34ee2af830ef561386c79860fdc0b67c7"
+    sha256 cellar: :any, tahoe: "a734b527dd0b4485603693ef5980fc490b1d77d14a36f7c7f5c22553e2cd1aa1"
   end
 
 

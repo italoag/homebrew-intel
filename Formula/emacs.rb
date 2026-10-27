@@ -10,7 +10,7 @@ class Emacs < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "38f34d83435ee61b5a30798d2e8ef97325f6b0943d9488e8392f9e4374acb606"
+    sha256 tahoe: "e533f0a03233cac873b73b169642ae5d2139049b12c05337ce83ec8af0d78ec8"
   end
 
 
@@ -34,6 +34,8 @@ class Emacs < Formula
     depends_on "jpeg-turbo"
     depends_on "zlib-ng-compat"
   end
+
+  deny_network_access!
 
   def install
     args = %W[

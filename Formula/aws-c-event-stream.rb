@@ -9,7 +9,7 @@ class AwsCEventStream < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "53ddeeb322690860f71173bf55d77c63f26e610aef20caaa7518aa214c48c9ae"
+    sha256 cellar: :any, tahoe: "557111c041d9d5ffacb3ce081d0566dd9948ac113aa58505166c13769cec4a58"
   end
 
 

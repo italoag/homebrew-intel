@@ -1,14 +1,14 @@
 class K8sgpt < Formula
   desc "Scanning your k8s clusters, diagnosing, and triaging issues in simple English"
   homepage "https://k8sgpt.ai/"
-  url "https://github.com/k8sgpt-ai/k8sgpt/archive/refs/tags/v0.4.40.tar.gz"
-  sha256 "1153994475a609f8b9bb6a281bf3bff517c1fa9390633682eb88f091da8f2ffa"
+  url "https://github.com/k8sgpt-ai/k8sgpt/archive/refs/tags/v0.4.41.tar.gz"
+  sha256 "5bf358be47b5e7a9f78bf70318244acb737f5916084c85212f898aa6d12e323c"
   license "Apache-2.0"
   head "https://github.com/k8sgpt-ai/k8sgpt.git", branch: "main"
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "75c15f0c99b10ad4a7fb639642de24c12ae43d5d87d5dead82e9bf619f172f07"
+    sha256 cellar: :any_skip_relocation, tahoe: "0eba0d2b89f9a1209a3aded26a06502baf0cf19c757aad827cff04fdc6fe882e"
   end
 
 

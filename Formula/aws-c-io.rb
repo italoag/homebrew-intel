@@ -1,14 +1,14 @@
 class AwsCIo < Formula
   desc "Event driven framework for implementing application protocols"
   homepage "https://github.com/awslabs/aws-c-io"
-  url "https://github.com/awslabs/aws-c-io/archive/refs/tags/v1.1.0.tar.gz"
-  sha256 "a437ec3b5929582d79f43904e4939626db19d6fd30c44cb16841bc70c7d6548b"
+  url "https://github.com/awslabs/aws-c-io/archive/refs/tags/v1.1.1.tar.gz"
+  sha256 "70b2572cde9bb882a567e6fc62911af76da2c084f0fecd8eacfa182e60fdfa94"
   license "Apache-2.0"
   compatibility_version 3
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "e3e0749da9cb431f381df4f433510ace310c1faf1c61badf4ec1c0123ef26739"
+    sha256 cellar: :any, tahoe: "af22a5c79ad71d27af370ba3780129a087dc6090b670c8697fc4a038b6885647"
   end
 
 

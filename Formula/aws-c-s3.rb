@@ -1,15 +1,14 @@
 class AwsCS3 < Formula
   desc "C99 library implementation for communicating with the S3 service"
   homepage "https://github.com/awslabs/aws-c-s3"
-  url "https://github.com/awslabs/aws-c-s3/archive/refs/tags/v1.3.1.tar.gz"
-  sha256 "95a3a100c1259990a5272bef9ffcbc92afe9afd5e0d112f4d496fd5673fbfa9a"
+  url "https://github.com/awslabs/aws-c-s3/archive/refs/tags/v1.4.0.tar.gz"
+  sha256 "b41ccedc2ae2e9e8bf4e3486cc3faab0e80df426ce15aafac1d13f6137f9470b"
   license "Apache-2.0"
-  revision 1
-  compatibility_version 6
+  compatibility_version 7
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "9f2e12ee967042bab93e25b373a6b9afb6c4ae305d2fe28b43a98806e9e0ae04"
+    sha256 cellar: :any, tahoe: "5539faa20b226f92f8f6637c38773cd69d51f21f9e4e8d7e8cb9666790613a51"
   end
 
 

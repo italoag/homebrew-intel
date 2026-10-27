@@ -9,7 +9,7 @@ class Aom < Formula
 
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "7c31eda9e6961dd6b779c3e8b33c8ed5c567c5dc0db057aa796848ce1c469b9a"
+    sha256 cellar: :any, tahoe: "a145d903edd4843e1d2f0aa70d5b7bf9fe68a7abb0e6dc951a3374903dffcbd5"
   end
 
 

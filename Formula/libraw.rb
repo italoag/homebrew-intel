@@ -1,8 +1,8 @@
 class Libraw < Formula
   desc "Library for reading RAW files from digital photo cameras"
   homepage "https://www.libraw.org/"
-  url "https://www.libraw.org/data/LibRaw-0.22.2.tar.gz"
-  sha256 "de86b035655accff8d4010f1a221fdf50d353cb7b1422ba26f14a0db92612cfa"
+  url "https://www.libraw.org/data/LibRaw-0.22.3.tar.gz"
+  sha256 "789f3c33466210a1a0907f747a97c715d21bbf4af712f257fcbbd90111b227e4"
   license any_of: ["LGPL-2.1-only", "CDDL-1.0"]
   compatibility_version 2
 
@@ -12,14 +12,10 @@ class Libraw < Formula
   end
 
   bottle do
-    sha256 cellar: :any, arm64_golden_gate: "07353be067f215fa389ea5c506fec721e89e7bcf0c214994fc44f73e03ae28c3"
-    sha256 cellar: :any, arm64_tahoe:       "1954d876dea5007a105c9b72a44c0db378a653879ee19d055e550345171b57a9"
-    sha256 cellar: :any, arm64_sequoia:     "4b48386f601bb9918ea42f453fc3b666ef05f573c8a50d1b4780c8578c374658"
-    sha256 cellar: :any, arm64_sonoma:      "2652cda9de7786db17eab618fd990204d8c3a4c76d0f6a7ddc3c1a438cba84d3"
-    sha256 cellar: :any, sonoma:            "a36ddd43c98af6131a823ab3e07a6325406e421b918228d60c42f184d1015347"
-    sha256 cellar: :any, arm64_linux:       "5fb8138d4b81b873f49d8815859f4fa0daab90983aa0aa60a2d3d9383f7d15b2"
-    sha256 cellar: :any, x86_64_linux:      "e4d86d6478134315d8baf92b5f62cd66a7678acc0aa4679e09b24ac1b122bbb5"
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "6dea5c9f90186c5eb8fdf52ed064151a7ae422948e216bb00228036da3250ef2"
   end
+
 
   head do
     url "https://github.com/LibRaw/LibRaw.git", branch: "master"
