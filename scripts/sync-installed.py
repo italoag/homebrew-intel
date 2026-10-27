@@ -143,7 +143,8 @@ def migration_plan():
     if missing:
         raise SystemExit('A esteira ainda não publicou: ' + ', '.join(sorted(missing)))
     order_set = set(snapshot['order'])
-    # Dep curta sempre resolve para core; nunca pode apontar membro de tap externo.
+    # Deps de membros vêm qualificadas para o tap; deps implícitas (ex.:
+    # extrator .7z -> p7zip) seguem curtas e resolvem pelo keg instalado.
     core_set = {key for key in snapshot['order'] if '/' not in key}
     closure = {tap + '/' + name.split('/')[-1] for name in roots}
     for name in roots:

@@ -97,7 +97,7 @@ def topo(roots, graph):
     return order
 
 
-def transform(source, tap, names, keep_bottle=False, short_core=True):
+def transform(source, tap, names, keep_bottle=False, lookup=None):
     # O bloco bottle canônico é delimitado por end com a mesma indentação. Quando a
     # versão atual já tem bottle Intel do mantenedor, o bloco oficial é preservado.
     if not keep_bottle:
@@ -106,26 +106,35 @@ def transform(source, tap, names, keep_bottle=False, short_core=True):
             raise RuntimeError('Formato de bottle não suportado; revisar importação.')
     # no_autobump! só é permitido em taps oficiais; metadado de manutenção upstream.
     source = re.sub(r'(?m)^\s*no_autobump![^\n]*\n', '', source)
+    lookup = lookup or {}
     pattern = r'((?:depends_on|uses_from_macos)\s+|Formula\[)([\"\x27])([^\"\x27]+)\2'
     def replace(match):
         raw = match[3]
         member = raw if raw in names else raw.removeprefix('homebrew/core/')
-        if member not in names and '/' not in member and short_core:
+        member = lookup.get(member, member)  # alias/nome antigo -> membro canônico
+        if member not in names and '/' not in member:
             # Nome curto que só um tap externo autorizado fornece no fechamento
             # (depends_on "x" resolvendo para owner/tap/x): qualifica para o
             # tap gerado porque a origem não existe fora do plano.
             member = next((c for c in names if c.endswith('/' + member)), member)
         if member not in names:
             return match[0]
-        # Membros do core ficam com o nome curto: a dep é satisfeita pelo keg
-        # instalado e o código upstream que compara dep.name (ex.: deps.find
-        # { |dep| dep.name.start_with?("openssl@") }) continua válido.
-        # short_core=False reproduz o formato legado usado antes desta regra,
-        # para validar fingerprints publicados sem forçar rebuild.
-        target = (tap + '/' + short_name(member)
-                  if '/' in member or not short_core else member)
+        # Deps de membros são SEMPRE qualificadas para o tap gerado. Nome curto
+        # resolve no homebrew/core ("never ambiguous"), e a versão upstream
+        # diverge do keg publicado: o brew então tenta instalar a dep resolvida
+        # no core e morre com "already installed from italoag/intel!" ou
+        # "cannot be installed from bottle" (sem sha tahoe Intel upstream).
+        target = tap + '/' + short_name(member)
         return match[1] + match[2] + target + match[2]
-    return re.sub(pattern, replace, source)
+    source = re.sub(pattern, replace, source)
+    # Com deps qualificadas dep.name retorna "italoag/intel/x": código upstream
+    # que casa nomes curtos (python@*/rust procuram openssl@/llvm@ nos deps)
+    # quebraria — normaliza as leituras para o nome curto esperado.
+    source = re.sub(r'deps\.map\(&:name\)',
+                    'deps.map { |d| d.name.split("/").last }', source)
+    source = re.sub(r'\b(?:dep|dependency)\.name\b',
+                    lambda m: m.group(0) + '.split("/").last', source)
+    return source
 
 
 def api(path, data=None, binary=False, method=None):
@@ -403,6 +412,24 @@ def member_fps(order, graph, sources, file_owner, patch_shas=None):
     return fps
 
 
+def graft_bottle_block(normalized, promoted):
+    # Recria o .rb promovido no formato atual: fonte normalizada nova (deps
+    # qualificadas) + o bloco bottle do asset publicado (root_url/sha256). Sem
+    # isso, .rb antigos com deps curtas persistiriam no release e no repo até
+    # o membro republicar.
+    match = re.search(r'(?ms)^  bottle do\n.*?^  end\n', promoted)
+    if not match:
+        return normalized
+    block = match.group(0)
+    if re.search(r'(?ms)^  bottle do\n', normalized):
+        return re.sub(r'(?ms)^  bottle do\n.*?^  end\n', block,
+                      normalized, count=1)
+    idx = normalized.rfind('\nend')
+    if idx == -1:
+        return normalized
+    return normalized[:idx + 1] + block + '\n' + normalized[idx + 1:]
+
+
 def write_aux_files(aliases, renames):
     # Alias vira symlink Aliases/<alias> -> ../Formula/<alvo>.rb (formato do
     # homebrew-core); renames vira formula_renames.json na raiz do tap.
@@ -519,11 +546,8 @@ def plan():
         print('Aviso: deprecated upstream: ' + ', '.join(sorted(aux['deprecated'])),
               flush=True)
     order = topo(roots, graph)
-    # Ignora alterações exclusivamente nos bottles upstream.
-    normalized = {name: transform(src, tap, set(graph), reusable[name])
-                  for name, src in sources.items()}
     file_owner, dropped = owners(order)
-    alias_map, renames = {}, {}
+    alias_map, renames, lookup = {}, {}, {}
     for name in order:
         if file_owner[short_name(name)] != name:
             continue
@@ -533,11 +557,18 @@ def plan():
             if previous != short:
                 raise RuntimeError(
                     f'Alias {alias} reivindicado por {previous} e {short}')
+            lookup[alias] = name
         for old in aux['renames'].get(name, []):
             previous = renames.setdefault(old, short)
             if previous != short:
                 raise RuntimeError(
                     f'Rename {old} reivindicado por {previous} e {short}')
+            lookup[old] = name
+    # Ignora alterações exclusivamente nos bottles upstream. lookup redireciona
+    # deps declaradas por alias/nome antigo (depends_on "pkg-config" -> pkgconf)
+    # para o membro canônico, ou resolveriam no alias do core.
+    normalized = {name: transform(src, tap, set(graph), reusable[name], lookup)
+                  for name, src in sources.items()}
     write_aux_files(alias_map, renames)
     patches, patch_shas = collect_patches(order, normalized, file_owner)
     for rel, content in patches.items():
@@ -551,8 +582,7 @@ def plan():
         # Migração de fingerprint: se a fonte upstream e as deps de um membro
         # publicado não mudaram (fp legado confere), só atualiza o fp —
         # o bottle já publicado continua válido e não precisa rebuild.
-        legacy_norm = {n: transform(s, tap, set(graph), reusable[n],
-                                    short_core=False)
+        legacy_norm = {n: transform(s, tap, set(graph), reusable[n])
                        for n, s in sources.items()}
         legacy_fps = member_fps(order, graph, legacy_norm, file_owner)
         tables = [('manifest.json', manifest)]
@@ -969,6 +999,15 @@ def publish():
             source = repair_bottle_urls(
                 download(assets[asset_name]['browser_download_url']).decode(),
                 assets)
+            grafted = graft_bottle_block(plan_data['normalized'][key], source)
+            if grafted != source:
+                # Propaga o formato novo (deps qualificadas) mantendo o bottle
+                # publicado; o asset é renovado para que shards adotem o .rb
+                # atualizado em vez do formato legado com deps curtas.
+                refresh = WORK / asset_name
+                refresh.write_text(grafted)
+                upload_asset(release['id'], refresh, asset_name)
+                source = grafted
             # O bottle referenciado sumiu do release? Publicar o .rb assim
             # quebraria todo install com 404: remove o bloco bottle e o
             # cliente compila da fonte até o rebuild completar.

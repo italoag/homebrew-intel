@@ -96,12 +96,29 @@ end
 '''
         result = p.transform(source, 'user/intel', {'oniguruma'})
         self.assertNotIn('bottle do', result)
-        # Membros do core ficam com nome curto: o keg satisfaz a dep e
-        # dep.name continua compatível com o código upstream.
-        self.assertIn('depends_on "oniguruma"', result)
-        self.assertIn('Formula["oniguruma"]', result)
+        # Deps de membros são qualificadas: o nome curto resolveria no core,
+        # cuja versão diverge do keg publicado e matava a instalação.
+        self.assertIn('depends_on "user/intel/oniguruma"', result)
+        self.assertIn('Formula["user/intel/oniguruma"]', result)
         self.assertIn('uses_from_macos "zlib"', result)
         self.assertIn('sha256 "keep"', result)
+
+    def test_transform_qualifies_alias_and_normalizes_dep_name(self):
+        source = '''class Aom < Formula
+  depends_on "pkg-config"
+  depends_on "llvm"
+  def install
+    llvm = deps.map(&:name).find { |dep| dep.match?(/^llvm/) }
+    openssl = deps.find { |dep| dep.name.start_with?("openssl@") }.name
+  end
+end
+'''
+        result = p.transform(source, 'user/intel', {'pkgconf', 'llvm', 'openssl@4'},
+                             lookup={'pkg-config': 'pkgconf'})
+        self.assertIn('depends_on "user/intel/pkgconf"', result)
+        self.assertIn('depends_on "user/intel/llvm"', result)
+        self.assertIn('deps.map { |d| d.name.split("/").last }', result)
+        self.assertIn('dep.name.split("/").last.start_with?("openssl@")', result)
 
     def test_external_tap_rejected(self):
         with self.assertRaises(RuntimeError):

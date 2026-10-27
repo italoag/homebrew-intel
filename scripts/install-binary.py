@@ -37,7 +37,8 @@ def main():
         else:
             raise SystemExit('Pacote fora do snapshot. Acrescente a packages.txt e aguarde o workflow.')
     targets = [tap + '/' + key.split('/')[-1] for key in resolved]
-    # Dep curta sempre resolve para core; nunca pode apontar membro de tap externo.
+    # Deps de membros vêm qualificadas para o tap; deps implícitas (ex.:
+    # extrator .7z -> p7zip) seguem curtas e resolvem pelo keg instalado.
     core_set = {key for key in state['order'] if '/' not in key}
     closure = set(targets)
     for target in targets:
