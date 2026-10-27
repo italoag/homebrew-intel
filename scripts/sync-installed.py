@@ -13,7 +13,8 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 WORK = ROOT / '.work'
 ENV = dict(os.environ, HOMEBREW_NO_AUTO_UPDATE='1',
-           HOMEBREW_NO_INSTALL_CLEANUP='1', HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK='1')
+           HOMEBREW_NO_INSTALL_CLEANUP='1', HOMEBREW_NO_AUTOREMOVE='1',
+           HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK='1')
 
 
 def brew(*args, capture=True):
@@ -129,7 +130,7 @@ def scan(write_packages):
     print('Revisão: .work/review.txt. Nenhum pacote instalado foi alterado.')
 
 
-def migration_plan():
+def migration_plan(partial=False):
     platform_check()
     if not (ROOT / 'snapshot.json').exists() or not (WORK / 'intel-scan.json').exists():
         raise SystemExit('Execute scan e aguarde a publicação do snapshot antes de migrar.')
@@ -146,9 +147,34 @@ def migration_plan():
     # Deps de membros vêm qualificadas para o tap; deps implícitas (ex.:
     # extrator .7z -> p7zip) seguem curtas e resolvem pelo keg instalado.
     core_set = {key for key in snapshot['order'] if '/' not in key}
-    closure = {tap + '/' + name.split('/')[-1] for name in roots}
+    # Membro pendente não tem fórmula publicada no tap: brew deps não resolve.
+    # Com --partial migra só quem tem o fechamento inteiro publicado.
+    pending = {key.split('/')[-1] for key in snapshot.get('pending', [])}
+    ready_roots = []
+    blocked = {}
+    deps_of = {}
     for name in roots:
-        for dep in brew('deps', '--full-name', tap + '/' + name.split('/')[-1]).split():
+        short = name.split('/')[-1]
+        if short in pending:
+            blocked[short] = 'aguardando publicação pela esteira'
+            continue
+        try:
+            deps_of[name] = brew('deps', '--full-name', tap + '/' + short).split()
+        except subprocess.CalledProcessError:
+            blocked[short] = 'fórmula não resolve no tap'
+            continue
+        missing_deps = sorted({dep.split('/')[-1] for dep in deps_of[name]} & pending)
+        if missing_deps:
+            blocked[short] = 'deps pendentes: ' + ', '.join(missing_deps)
+            continue
+        ready_roots.append(name)
+    if blocked and not partial:
+        raise SystemExit('Aguardando publicação pela esteira: ' +
+                         ', '.join(sorted(blocked)) +
+                         '; ou migre o subconjunto pronto com migrate --partial.')
+    closure = {tap + '/' + name.split('/')[-1] for name in ready_roots}
+    for name in ready_roots:
+        for dep in deps_of[name]:
             short = dep.removeprefix('homebrew/core/')
             if dep.startswith(tap + '/'):
                 closure.add(dep)
@@ -161,11 +187,6 @@ def migration_plan():
     short_set = {key.split('/')[-1] for key in order_set}
     if any(full.removeprefix(tap + '/') not in short_set for full in closure):
         raise SystemExit('Dependência fora do snapshot: migração bloqueada.')
-    # Snapshot parcial: membro pendente pode não ter fórmula publicada no tap.
-    blocked = {full.removeprefix(tap + '/') for full in closure} & set(
-        snapshot.get('pending', []))
-    if blocked:
-        raise SystemExit('Aguardando publicação pela esteira: ' + ', '.join(sorted(blocked)))
     names = list(dict.fromkeys(key.split('/')[-1] for key in snapshot['order']
                                if tap + '/' + key.split('/')[-1] in closure))
     installed = json.loads(brew('info', '--json=v2', '--installed'))['formulae']
@@ -214,15 +235,19 @@ def migration_plan():
                      'previous_origin': current.get('tap') if current else None,
                      'previous_versions': [i.get('version') for i in current.get('installed', [])] if current else [],
                      'url': bottle['url'], 'sha256': bottle['sha256']})
-    return snapshot, installed, plan
+    return snapshot, installed, plan, blocked
 
 
-def migrate(apply):
-    snapshot, installed, plan = migration_plan()
+def migrate(apply, partial=False):
+    snapshot, installed, plan, blocked = migration_plan(partial)
     WORK.mkdir(exist_ok=True)
     (WORK / 'migration-plan.json').write_text(json.dumps(plan, indent=2) + '\n')
     for item in plan:
         print(f"{item['action']:9} {item['full_name']} (origem anterior: {item['previous_origin']})")
+    if blocked:
+        print(f'{len(blocked)} candidatas ainda bloqueadas:')
+        for name in sorted(blocked):
+            print(f'  {name}: {blocked[name]}')
     if not apply:
         print('Plano salvo; nenhum pacote alterado. Para executar: migrate --apply')
         return
@@ -238,7 +263,8 @@ def migrate(apply):
             digest = hashlib.sha256()
             for chunk in iter(lambda: stream.read(1024 * 1024), b''):
                 digest.update(chunk)
-        if digest.hexdigest() not in item.get('allowed_sha256', [item['sha256']]):
+        allowed = item.get('allowed_sha256') or [item['sha256']]
+        if digest.hexdigest() not in allowed:
             raise SystemExit('Download/checksum inválido; nenhuma reinstalação iniciada.')
     log = []
     for item in plan:
@@ -247,7 +273,22 @@ def migrate(apply):
         if item['action'] == 'reinstall':
             args.extend(['--force', '--no-ask'])
         args.append(item['full_name'])
-        brew(*args, capture=False)
+        try:
+            brew(*args, capture=False)
+        except subprocess.CalledProcessError:
+            # Dep qualificada misturada com dep curta de fórmula antiga faz o
+            # brew travar o mesmo keg duas vezes ("already locked"). O plano já
+            # garante a ordem das deps: recria o keg sem resolver deps.
+            if item['action'] == 'reinstall':
+                brew('uninstall', '--ignore-dependencies', item['name'],
+                     capture=False)
+            try:
+                brew('install', '--force-bottle', '--ignore-dependencies',
+                     item['full_name'], capture=False)
+            except subprocess.CalledProcessError:
+                # Keg despejado mas o link bateu em arquivo/symlink alheio
+                # (ex.: docker-compose criado pelo Docker Desktop).
+                brew('link', '--overwrite', item['name'], capture=False)
         actual = info(item['full_name'])
         receipts = actual.get('installed') or []
         if not receipts:
@@ -274,11 +315,13 @@ def main():
     scanner.add_argument('--write-packages', action='store_true')
     migration = sub.add_parser('migrate')
     migration.add_argument('--apply', action='store_true')
+    migration.add_argument('--partial', action='store_true',
+                           help='migra só as candidatas com fechamento já publicado')
     args = parser.parse_args()
     if args.command == 'scan':
         scan(args.write_packages)
     else:
-        migrate(args.apply)
+        migrate(args.apply, args.partial)
 
 
 if __name__ == '__main__':
