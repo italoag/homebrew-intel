@@ -989,6 +989,7 @@ def process_member(name, idx, tap, full, short, build_set, reusable, release,
 
 def publish():
     checks()
+    WORK.mkdir(exist_ok=True)
     owner, repository, tap = repo_tap()
     run('brew', 'tap', '--force', 'homebrew/core')
     core = Path(run('brew', '--repository', 'homebrew/core', capture=True).strip())
