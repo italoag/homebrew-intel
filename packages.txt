@@ -9,19 +9,6 @@ aklomp-base64
 aom
 aria2
 avro-c
-aws-c-auth
-aws-c-cal
-aws-c-common
-aws-c-compression
-aws-c-event-stream
-aws-c-http
-aws-c-io
-aws-c-mqtt
-aws-c-s3
-aws-c-sdkutils
-aws-checksums
-aws-shell
-awscli
 azcopy
 aztfexport
 beads
@@ -236,7 +223,6 @@ rtk
 rust
 rustscan
 s-lang
-s2n
 sdl2-compat
 sdl3
 sevenzip
@@ -299,6 +285,5 @@ datolabs-io/opsy/opsy
 reviewdog/tap/reviewdog
 lusingander/tap/serie
 ethereum-optimism/tap/supersim
-tenderly/tenderly/tenderly
 charmbracelet/tap/wishlist
 lucasgelfond/zerobrew/zerobrew
