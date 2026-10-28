@@ -792,10 +792,10 @@ def install_missing_deps(full, tap, order_index, release=None,
     # aplica à operação inteira: pré-instala as ausentes com install comum
     # (despeja bottle adotado/publicado ou compila como fallback local — só o
     # shard dono publica), deixando o install final tratar só do alvo.
-    # Com deps curtas, instalar um dependente antes de sua dep faria o brew
-    # resolver o nome no core e instalar a fórmula errada (keg de outro tap
-    # conflita depois): a ordem topológica do plano garante deps primeiro, e
-    # a lista precisa ser transitiva para cobrir deps indiretas.
+    # --ignore-dependencies: a lista já é o fechamento transitivo em ordem
+    # topológica, e a travagem de deps do brew conflita consigo mesma quando
+    # a árvore mistura dep qualificada com dep curta de .rb antigo promovido
+    # ('already locked' -> auto-deadlock).
     installed = set(run('brew', 'list', '--formula', capture=True).split())
     all_deps = run('brew', 'deps', '--formula', '--full-name',
                    '--include-build', '--include-test', full,
@@ -808,7 +808,7 @@ def install_missing_deps(full, tap, order_index, release=None,
                 and dep_owner.get(dep_short, my_shard) != my_shard):
             wait_for_publish(release, dep_short)
         try:
-            brew_install(tap + '/' + dep_short)
+            brew_install('--ignore-dependencies', tap + '/' + dep_short)
         except subprocess.CalledProcessError:
             # O .rb promovido/adotado pode apontar para um bottle que o dono
             # ainda não publicou (ou que sumiu): sem o bloco bottle o brew
@@ -819,7 +819,8 @@ def install_missing_deps(full, tap, order_index, release=None,
                     or 'bottle do' not in dep_rb.read_text()):
                 raise
             dep_rb.write_text(strip_bottle_block(dep_rb.read_text()))
-            run('brew', 'install', tap + '/' + dep_short)
+            run('brew', 'install', '--ignore-dependencies',
+                tap + '/' + dep_short)
         # O brew pode puxar transitivas pelo caminho: relê a lista real.
         installed = set(run('brew', 'list', '--formula', capture=True).split())
 
@@ -907,9 +908,11 @@ def process_member(name, idx, tap, full, short, build_set, reusable, release,
         tab = formula_info(full).get('installed') or []
         if tab and not all(item.get('poured_from_bottle') for item in tab):
             # Já foi compilado como dep de outro membro: refaz com test deps.
-            brew_install('--build-bottle', '--include-test', full, cmd='reinstall')
-        else:
-            brew_install('--build-bottle', '--include-test', full)
+            # (reinstall não aceita --ignore-dependencies; uninstall+install
+            # equivale e evita o auto-deadlock da travagem de deps.)
+            run('brew', 'uninstall', '--force', '--ignore-dependencies', full)
+        brew_install('--build-bottle', '--include-test',
+                     '--ignore-dependencies', full)
         run('brew', 'test', full)
         run('brew', 'linkage', '--test', full)
         out = WORK / f'pkg-{idx}' / short
@@ -949,7 +952,8 @@ def process_member(name, idx, tap, full, short, build_set, reusable, release,
         install_missing_deps(full, tap, order_index, release, dep_owner, idx,
                              {short_name(n) for n in build_set})
         # --include-test traz as test deps que brew test exige instaladas.
-        brew_install('--force-bottle', '--include-test', full)
+        brew_install('--force-bottle', '--include-test',
+                     '--ignore-dependencies', full)
         verify_poured(full, name)
         run('brew', 'test', full)
         run('brew', 'linkage', '--test', full)

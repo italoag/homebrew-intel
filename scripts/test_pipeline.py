@@ -57,7 +57,7 @@ class SafetyTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             plan = [{'full_name': 'u/intel/jq', 'action': 'reinstall', 'previous_origin': 'homebrew/core'}]
             with patch.object(sync, 'WORK', Path(tmp)), \
-                 patch.object(sync, 'migration_plan', return_value=({'tap': 'u/intel'}, [], plan)), \
+                 patch.object(sync, 'migration_plan', return_value=({'tap': 'u/intel'}, [], plan, {})), \
                  patch.object(sync, 'brew', side_effect=RuntimeError('network down')) as commands:
                 with contextlib.redirect_stdout(io.StringIO()), self.assertRaisesRegex(RuntimeError, 'network down'):
                     sync.migrate(True)
