@@ -214,6 +214,19 @@ def download(url, attempts=4):
             time.sleep(5 * (attempt + 1))
 
 
+def fetch_if_present(url):
+    # Asset listado pela API mas indisponível na CDN: janela entre o DELETE e o
+    # re-upload de mesmo nome (upload_asset) ou lag de propagação. Nos caminhos
+    # oportunistas (adotar/fragmentos) a ausência degrada para o fallback local
+    # em vez de derrubar o membro com 404.
+    try:
+        return download(url)
+    except urllib.error.HTTPError as err:
+        if err.code == 404:
+            return None
+        raise
+
+
 def upload_asset(release_id, path, name=None):
     path = Path(path)
     name = name or path.name
@@ -235,7 +248,8 @@ def upload_asset(release_id, path, name=None):
 def load_manifest(release):
     for asset in release_assets(release['id']):
         if asset['name'] == 'manifest.json':
-            return json.loads(download(asset['browser_download_url']))
+            fetched = fetch_if_present(asset['browser_download_url'])
+            return json.loads(fetched) if fetched else {}
     return {}
 
 
@@ -256,8 +270,9 @@ def combined_manifest(release, assets=None, ttl=600):
     manifest = dict(load_manifest(release))
     for asset in assets:
         if re.fullmatch(r'manifest-\d+\.json', asset['name']):
-            manifest.update(json.loads(
-                download(asset['browser_download_url'])))
+            fetched = fetch_if_present(asset['browser_download_url'])
+            if fetched:
+                manifest.update(json.loads(fetched))
     _manifest_cache.update({'t': now, 'data': dict(manifest)})
     return manifest
 
@@ -588,8 +603,9 @@ def plan():
         tables = [('manifest.json', manifest)]
         for asset in release_assets(release['id']):
             if re.fullmatch(r'manifest-\d+\.json', asset['name']):
-                tables.append((asset['name'], json.loads(
-                    download(asset['browser_download_url']))))
+                fetched = fetch_if_present(asset['browser_download_url'])
+                if fetched:
+                    tables.append((asset['name'], json.loads(fetched)))
         migrated = 0
         for asset_name, table in tables:
             dirty = False
@@ -731,8 +747,10 @@ def adopt_bottles(release, full, formula_dir):
         if not (entry.get('reused') or entry.get('asset') in asset_map):
             continue
         target = formula_dir / (dep_short + '.rb')
-        fetched = repair_bottle_urls(download(asset_map[asset_name]).decode(),
-                                   asset_map)
+        fetched = fetch_if_present(asset_map[asset_name])
+        if fetched is None:
+            continue
+        fetched = repair_bottle_urls(fetched.decode(), asset_map)
         if not target.exists() or target.read_text() != fetched:
             print('Adotando bottle publicado por outro shard:', dep_short, flush=True)
             target.write_text(fetched)
@@ -773,14 +791,20 @@ def wait_for_publish(release, dep_short, timeout=2700, interval=120):
                  .get(dep_short) or {})
         if entry.get('reused') or entry.get('asset') in asset_map:
             asset_name = f'Formula-{dep_short}.rb'
-            if asset_name in asset_map:
+            if asset_name not in asset_map:
+                print(f'Dep publicada por outro shard; adotada: {dep_short}',
+                      flush=True)
+                return True
+            fetched = fetch_if_present(asset_map[asset_name])
+            if fetched is not None:
                 target = ROOT / 'Formula' / (dep_short + '.rb')
-                fetched = repair_bottle_urls(
-                    download(asset_map[asset_name]).decode(), asset_map)
-                target.write_text(fetched)
-            print(f'Dep publicada por outro shard; adotada: {dep_short}',
-                  flush=True)
-            return True
+                target.write_text(repair_bottle_urls(
+                    fetched.decode(), asset_map))
+                print(f'Dep publicada por outro shard; adotada: {dep_short}',
+                      flush=True)
+                return True
+            print(f'Asset {asset_name} listado mas ainda indisponível; '
+                  'aguardando propagação', flush=True)
         print(f'Aguardando dep de outro shard: {dep_short}', flush=True)
         time.sleep(interval)
     return False
