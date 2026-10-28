@@ -762,6 +762,13 @@ def keg_installed(short):
                           stderr=subprocess.DEVNULL).returncode == 0
 
 
+def has_test_block(short):
+    # Fórmulas de taps terceiros podem não definir 'test do'; brew test falha
+    # com "defines no test" e o membro ficaria pendente para sempre.
+    source = (ROOT / 'Formula' / (short + '.rb')).read_text()
+    return re.search(r'^\s*test do\b', source, re.M) is not None
+
+
 def brew_install(*args, cmd='install'):
     # A imagem do runner já tem binários em /usr/local/bin (aws, azcopy...) que
     # conflitam com brew link: o keg é construído, o install sai com erro só
@@ -937,7 +944,8 @@ def process_member(name, idx, tap, full, short, build_set, reusable, release,
             run('brew', 'uninstall', '--force', '--ignore-dependencies', full)
         brew_install('--build-bottle', '--include-test',
                      '--ignore-dependencies', full)
-        run('brew', 'test', full)
+        if has_test_block(short):
+            run('brew', 'test', full)
         run('brew', 'linkage', '--test', full)
         out = WORK / f'pkg-{idx}' / short
         out.mkdir(parents=True, exist_ok=True)
@@ -979,7 +987,8 @@ def process_member(name, idx, tap, full, short, build_set, reusable, release,
         brew_install('--force-bottle', '--include-test',
                      '--ignore-dependencies', full)
         verify_poured(full, name)
-        run('brew', 'test', full)
+        if has_test_block(short):
+            run('brew', 'test', full)
         run('brew', 'linkage', '--test', full)
         if reusable[name]:
             upload_asset(release['id'], ROOT / 'Formula' / (short + '.rb'),
