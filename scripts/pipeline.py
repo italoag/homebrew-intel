@@ -845,13 +845,15 @@ def install_missing_deps(full, tap, order_index, release=None,
             # ainda não publicou (ou que sumiu): sem o bloco bottle o brew
             # compila a dep da fonte em vez de falhar no download. Se o keg
             # já existe, a falha foi no link e brew_install já tentou o retry.
+            # A retomada compila da fonte, então roda SEM --ignore-dependencies:
+            # o flag zeraria HOMEBREW_DEPENDENCIES no filho de build e o
+            # superenv ficaria sem os opt_bin/pkgconfig das deps.
             dep_rb = ROOT / 'Formula' / (dep_short + '.rb')
-            if (not dep_rb.is_file() or keg_installed(dep_short)
-                    or 'bottle do' not in dep_rb.read_text()):
+            if keg_installed(dep_short) or not dep_rb.is_file():
                 raise
-            dep_rb.write_text(strip_bottle_block(dep_rb.read_text()))
-            run('brew', 'install', '--ignore-dependencies',
-                tap + '/' + dep_short)
+            if 'bottle do' in dep_rb.read_text():
+                dep_rb.write_text(strip_bottle_block(dep_rb.read_text()))
+            brew_install(tap + '/' + dep_short)
         # O brew pode puxar transitivas pelo caminho: relê a lista real.
         installed = set(run('brew', 'list', '--formula', capture=True).split())
 
@@ -942,8 +944,12 @@ def process_member(name, idx, tap, full, short, build_set, reusable, release,
             # (reinstall não aceita --ignore-dependencies; uninstall+install
             # equivale e evita o auto-deadlock da travagem de deps.)
             run('brew', 'uninstall', '--force', '--ignore-dependencies', full)
-        brew_install('--build-bottle', '--include-test',
-                     '--ignore-dependencies', full)
+        # Sem --ignore-dependencies: o flag chega ao filho de build e zera
+        # HOMEBREW_DEPENDENCIES (build.rb retorna antes de expand_deps) — o
+        # superenv fica sem os opt_bin/pkgconfig das deps e compilações morrem
+        # na hora (cmake ENOENT, configure não acha .pc). As deps já foram
+        # pré-instaladas em ordem, então a resolução aqui só valida o grafo.
+        brew_install('--build-bottle', '--include-test', full)
         if has_test_block(short):
             run('brew', 'test', full)
         run('brew', 'linkage', '--test', full)
