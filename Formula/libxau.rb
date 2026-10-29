@@ -18,9 +18,9 @@ class Libxau < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "eaab2aad3bf7abb8cf6f1b164cd6648731814a71b1b3cb1141055d48fa07914d"
   end
 
-  depends_on "pkgconf" => :build
-  depends_on "util-macros" => :build
-  depends_on "xorgproto"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/util-macros" => :build
+  depends_on "italoag/intel/xorgproto"
 
   def install
     args = %W[

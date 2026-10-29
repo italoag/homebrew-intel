@@ -27,17 +27,12 @@ class Openjpeg < Formula
     end
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "cb57a4b19aa02fc422414f4246325ac863021b50aa0a61064136884e3e147748"
-  end
 
-
-  depends_on "cmake" => :build
-  depends_on "doxygen" => :build
-  depends_on "libpng"
-  depends_on "libtiff"
-  depends_on "little-cms2"
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/doxygen" => :build
+  depends_on "italoag/intel/libpng"
+  depends_on "italoag/intel/libtiff"
+  depends_on "italoag/intel/little-cms2"
 
   deny_network_access!
 
@@ -68,4 +63,9 @@ class Openjpeg < Formula
            testpath/"test.c", "-L#{lib}", "-lopenjp2", "-o", "test"
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "cb57a4b19aa02fc422414f4246325ac863021b50aa0a61064136884e3e147748"
+  end
+
 end

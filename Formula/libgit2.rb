@@ -13,20 +13,15 @@ class Libgit2 < Formula
     strategy :github_latest
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "069e3ad39eeebffee7f58551970476413bfbe50f0019a388db0bb2bf11045b3c"
-  end
 
-
-  depends_on "cmake" => :build
-  depends_on "pkgconf" => :build
-  depends_on "libssh2"
-  depends_on "llhttp"
-  depends_on "openssl@4"
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/libssh2"
+  depends_on "italoag/intel/llhttp"
+  depends_on "italoag/intel/openssl@4"
 
   on_linux do
-    depends_on "pcre2" # Uses regcomp_l on macOS which needs xlocale.h
+    depends_on "italoag/intel/pcre2" # Uses regcomp_l on macOS which needs xlocale.h
     depends_on "zlib-ng-compat"
   end
 
@@ -68,7 +63,7 @@ class Libgit2 < Formula
         return 0;
       }
     C
-    libssh2 = Formula["libssh2"]
+    libssh2 = Formula["italoag/intel/libssh2"]
     flags = %W[
       -I#{include}
       -I#{libssh2.opt_include}
@@ -78,4 +73,9 @@ class Libgit2 < Formula
     system ENV.cc, "test.c", "-o", "test", *flags
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "069e3ad39eeebffee7f58551970476413bfbe50f0019a388db0bb2bf11045b3c"
+  end
+
 end

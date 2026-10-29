@@ -18,8 +18,8 @@ class Uvwasi < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "2befd108f0cf4fffab4832dc834e0b7c4b8aec470ad95994435792c6b3ab9bcc"
   end
 
-  depends_on "cmake" => :build
-  depends_on "libuv"
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/libuv"
 
   # Remove find_dependency for a not-installed module in CMake config
   patch do

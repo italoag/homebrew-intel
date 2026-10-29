@@ -10,7 +10,7 @@ class FastFloat < Formula
     sha256 cellar: :any_skip_relocation, all: "97b907cb6f9f05bd553ed0688e58e804cdb909f69fd9f7ca3ecfff2c3aa92948"
   end
 
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
 
   deny_network_access!
 

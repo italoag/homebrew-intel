@@ -8,25 +8,20 @@ class Libimobiledevice < Formula
   compatibility_version 1
   head "https://github.com/libimobiledevice/libimobiledevice.git", branch: "master"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "e70d96700fad20cd32f2c110db3403fca2dc2f62435d7010fe99bf6910ca984a"
-  end
 
-
-  depends_on "autoconf" => :build
-  depends_on "automake" => :build
-  depends_on "libtool" => :build
-  depends_on "pkgconf" => :build
-  depends_on "libimobiledevice-glue"
-  depends_on "libplist"
-  depends_on "libtasn1"
-  depends_on "libtatsu"
-  depends_on "libusbmuxd"
-  depends_on "openssl@4"
+  depends_on "italoag/intel/autoconf" => :build
+  depends_on "italoag/intel/automake" => :build
+  depends_on "italoag/intel/libtool" => :build
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/libimobiledevice-glue"
+  depends_on "italoag/intel/libplist"
+  depends_on "italoag/intel/libtasn1"
+  depends_on "italoag/intel/libtatsu"
+  depends_on "italoag/intel/libusbmuxd"
+  depends_on "italoag/intel/openssl@4"
 
   on_linux do
-    depends_on "readline"
+    depends_on "italoag/intel/readline"
   end
 
   deny_network_access!
@@ -48,4 +43,9 @@ class Libimobiledevice < Formula
   test do
     system bin/"idevicedate", "--help"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "e70d96700fad20cd32f2c110db3403fca2dc2f62435d7010fe99bf6910ca984a"
+  end
+
 end

@@ -11,13 +11,8 @@ class JsonC < Formula
     regex(/^json-c[._-](\d+(?:\.\d+)+)(?:[._-]\d{6,8})?$/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "4c0feb36ec188b54d156b651a011e2cd48953ec565a088f518eb44617bec7a48"
-  end
 
-
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
 
   deny_network_access!
 
@@ -46,4 +41,9 @@ class JsonC < Formula
     system ENV.cc, "-I#{include}", "test.c", "-L#{lib}", "-ljson-c", "-o", "test"
     assert_equal '{ "key": "value" }', shell_output("./test").chomp
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "46bdad77aab9bb0a9e4702226f9b374f2c981f644944680a7b80e3065dd1c478"
+  end
+
 end

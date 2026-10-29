@@ -3,11 +3,6 @@ class Imgpkg < Formula
   homepage "https://carvel.dev/imgpkg/"
   version "v0.49.0"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "18114320a3f3eaedfcf81a101606ed9ba96210c5c9f8926eb1d981915297d71e"
-  end
-
   if OS.mac?
     if Hardware::CPU.arm?
       url "https://github.com/carvel-dev/imgpkg/releases/download/v0.49.0/imgpkg-darwin-arm64"
@@ -34,5 +29,10 @@ class Imgpkg < Formula
   test do
     system "#{bin}/imgpkg", "version"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "18114320a3f3eaedfcf81a101606ed9ba96210c5c9f8926eb1d981915297d71e"
+  end
+
 end
 

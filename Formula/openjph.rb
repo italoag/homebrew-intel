@@ -7,14 +7,9 @@ class Openjph < Formula
   compatibility_version 7
   head "https://github.com/aous72/OpenJPH.git", branch: "master"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "35dc2ae545a08c07b285c5d0ae72e46ab7cc8e6f3df7df31c7ccf9a4ca3a0202"
-  end
 
-
-  depends_on "cmake" => :build
-  depends_on "libtiff"
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/libtiff"
 
   resource "homebrew-test.ppm", :test do
     url "https://raw.githubusercontent.com/aous72/jp2k_test_codestreams/ca2d370/openjph/references/Malamute.ppm"
@@ -42,4 +37,9 @@ class Openjph < Formula
     system bin/"ojph_expand", "-i", "homebrew.j2c", "-o", "homebrew.ppm"
     assert_path_exists testpath/"homebrew.ppm"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "35dc2ae545a08c07b285c5d0ae72e46ab7cc8e6f3df7df31c7ccf9a4ca3a0202"
+  end
+
 end

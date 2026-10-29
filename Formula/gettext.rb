@@ -10,14 +10,9 @@ class Gettext < Formula
   ]
   compatibility_version 1
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "58312b38d793e52027f46ffce34872399801efec2f2f991d212c29ee96410487"
-  end
 
-
-  depends_on "json-c" # for spit
-  depends_on "libunistring"
+  depends_on "italoag/intel/json-c" # for spit
+  depends_on "italoag/intel/libunistring"
 
   uses_from_macos "curl" # for spit
   uses_from_macos "libxml2"
@@ -72,4 +67,9 @@ class Gettext < Formula
     system bin/"gettext", "test"
     assert_match "spit: missing --model option\n", shell_output("#{bin}/spit 2>&1", 1)
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "5f1cba5fa46e2524c6c2310d2a2930c6460b8abfa4c65fe0a724b22f5cec6e8e"
+  end
+
 end

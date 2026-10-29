@@ -17,10 +17,10 @@ class Sfsexp < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "38e4511f902951c709a20aab4f8c56209c45c86ddf83efe86185242a0f6adadf"
   end
 
-  depends_on "autoconf" => :build
-  depends_on "automake" => :build
-  depends_on "libtool" => :build
-  uses_from_macos "m4" => :build
+  depends_on "italoag/intel/autoconf" => :build
+  depends_on "italoag/intel/automake" => :build
+  depends_on "italoag/intel/libtool" => :build
+  uses_from_macos "italoag/intel/m4" => :build
 
   def install
     system "./configure", "--disable-silent-rules", *std_configure_args

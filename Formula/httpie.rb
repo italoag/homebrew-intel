@@ -9,14 +9,9 @@ class Httpie < Formula
   revision 13
   head "https://github.com/httpie/cli.git", branch: "master"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "09432488972879e8faadc12ad79b7ed39543c7df3ca5be6d20c24e87eaf7edc2"
-  end
 
-
-  depends_on "certifi"
-  depends_on "python@3.15"
+  depends_on "italoag/intel/certifi"
+  depends_on "italoag/intel/python@3.15"
 
   pypi_packages package_name:     "httpie",
                 exclude_packages: "certifi"
@@ -105,4 +100,9 @@ class Httpie < Formula
     raw_url = "https://raw.githubusercontent.com/Homebrew/homebrew-core/HEAD/Formula/h/httpie.rb"
     assert_match "PYTHONPATH", shell_output("#{bin}/http --ignore-stdin #{raw_url}")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "09432488972879e8faadc12ad79b7ed39543c7df3ca5be6d20c24e87eaf7edc2"
+  end
+
 end

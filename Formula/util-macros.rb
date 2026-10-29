@@ -10,7 +10,7 @@ class UtilMacros < Formula
     sha256 cellar: :any_skip_relocation, all: "1667d87ebab1bae1e48e9ef068534059be1bc7398cea4a39de35cb850109bd79"
   end
 
-  depends_on "pkgconf" => :test
+  depends_on "italoag/intel/pkgconf" => :test
 
   def install
     args = %W[

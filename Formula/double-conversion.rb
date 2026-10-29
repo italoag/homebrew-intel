@@ -17,7 +17,7 @@ class DoubleConversion < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "e979034104679d840c699976d0c1c4f5ddb2d155e7ddf99752d682dfc0628fe6"
   end
 
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
 
   deny_network_access!
 

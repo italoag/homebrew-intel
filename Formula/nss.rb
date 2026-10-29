@@ -14,15 +14,10 @@ class Nss < Formula
     end
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "60af009b3f72584dc2ab1d3be4e29f6bb2d2bbba6f7ac94f66f63a0aa76627a3"
-  end
 
+  depends_on "italoag/intel/nspr"
 
-  depends_on "nspr"
-
-  uses_from_macos "sqlite"
+  uses_from_macos "italoag/intel/sqlite"
 
   on_linux do
     depends_on "zlib-ng-compat"
@@ -123,4 +118,9 @@ class Nss < Formula
       Cflags: -I${includedir}
     PC
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "60af009b3f72584dc2ab1d3be4e29f6bb2d2bbba6f7ac94f66f63a0aa76627a3"
+  end
+
 end

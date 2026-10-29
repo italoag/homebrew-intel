@@ -2,19 +2,14 @@ class Libserdes < Formula
   desc "Schema ser/deserializer lib for Avro + Confluent Schema Registry"
   homepage "https://github.com/confluentinc/libserdes"
   url "https://github.com/confluentinc/libserdes.git",
-      tag:      "v8.3.2",
+      tag:      "v8.4.0",
       revision: "8cf97f7395bf5131d14bacfe896c6a5731b1f0c8"
   license "Apache-2.0"
   head "https://github.com/confluentinc/libserdes.git", branch: "master"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "1fe16e5e81773e24cdae34cb71309fe3eca6adea9255eb9f8cf87855aa2cecf6"
-  end
 
-
-  depends_on "avro-c"
-  depends_on "jansson"
+  depends_on "italoag/intel/avro-c"
+  depends_on "italoag/intel/jansson"
 
   uses_from_macos "curl"
 
@@ -46,4 +41,9 @@ class Libserdes < Formula
     system ENV.cc, "test.c", "-L#{lib}", "-lserdes", "-o", "test"
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "39be7dd64093e57d1adbf8805a1cac34e78506b924c9fbcbd358d1acd536af82"
+  end
+
 end

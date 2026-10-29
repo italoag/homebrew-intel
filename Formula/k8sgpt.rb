@@ -6,13 +6,8 @@ class K8sgpt < Formula
   license "Apache-2.0"
   head "https://github.com/k8sgpt-ai/k8sgpt.git", branch: "main"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "0eba0d2b89f9a1209a3aded26a06502baf0cf19c757aad827cff04fdc6fe882e"
-  end
 
-
-  depends_on "go" => :build
+  depends_on "italoag/intel/go" => :build
 
   deny_network_access!
 
@@ -32,4 +27,9 @@ class K8sgpt < Formula
 
     assert_match version.to_s, shell_output("#{bin}/k8sgpt version")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "0eba0d2b89f9a1209a3aded26a06502baf0cf19c757aad827cff04fdc6fe882e"
+  end
+
 end

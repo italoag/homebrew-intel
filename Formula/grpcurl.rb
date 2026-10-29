@@ -6,15 +6,10 @@ class Grpcurl < Formula
   license "MIT"
   head "https://github.com/fullstorydev/grpcurl.git", branch: "master"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "78faac0b94b11d38382de2d5e40778ddd44a682277474facb9ca0aeb8b2d81e0"
-  end
-
 
   # TODO: unpin go@1.26 when grpcurl supports go 1.27
   # ref: https://github.com/fullstorydev/grpcurl/issues/568
-  depends_on "go@1.26" => :build
+  depends_on "italoag/intel/go@1.26" => :build
 
   deny_network_access!
 
@@ -36,4 +31,9 @@ class Grpcurl < Formula
     PROTO
     system bin/"grpcurl", "-msg-template", "-proto", "test.proto", "describe", "test.HelloWorld"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "78faac0b94b11d38382de2d5e40778ddd44a682277474facb9ca0aeb8b2d81e0"
+  end
+
 end

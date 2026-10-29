@@ -12,11 +12,6 @@ class OpensslAT3 < Formula
     regex(/href=.*?openssl[._-]v?(3\.5(?:\.\d+)+)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "7b550467aa0b7cb7712911c11b334b8fc713ab5864b0236e07f037bb9478479c"
-  end
-
 
   keg_only :versioned_formula
 
@@ -25,7 +20,7 @@ class OpensslAT3 < Formula
   deprecate! date: "2030-04-08", because: :unmaintained
   disable! date: "2031-04-08", because: :unmaintained
 
-  depends_on "ca-certificates" => :no_linkage
+  depends_on "italoag/intel/ca-certificates" => :no_linkage
 
   on_linux do
     resource "Test::Harness" do
@@ -165,4 +160,9 @@ class OpensslAT3 < Formula
     assert_match "verification failed", output
     refute_match "error:80000002", output
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "7b550467aa0b7cb7712911c11b334b8fc713ab5864b0236e07f037bb9478479c"
+  end
+
 end

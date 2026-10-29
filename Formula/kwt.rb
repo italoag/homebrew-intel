@@ -3,11 +3,6 @@ class Kwt < Formula
   homepage "https://carvel.dev/kwt/"
   version "v0.0.8"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "ecf2339438c9428194c8210d16e7dcf090d9face549c9715a29d6df93c24ff14"
-  end
-
   if OS.mac?
     if Hardware::CPU.arm?
       url "https://github.com/carvel-dev/kwt/releases/download/v0.0.8/kwt-darwin-arm64"
@@ -34,5 +29,10 @@ class Kwt < Formula
   test do
     system "#{bin}/kwt", "version"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "ecf2339438c9428194c8210d16e7dcf090d9face549c9715a29d6df93c24ff14"
+  end
+
 end
 

@@ -1,8 +1,8 @@
 class Librsvg < Formula
   desc "Library to render SVG files using Cairo"
   homepage "https://wiki.gnome.org/Projects/LibRsvg"
-  url "https://download.gnome.org/sources/librsvg/2.63/librsvg-2.63.3.tar.xz"
-  sha256 "55311c2293612e4a2e38cd9bdb6160a1c85c158adc7c97e423e1e65949afb6a4"
+  url "https://download.gnome.org/sources/librsvg/2.63/librsvg-2.63.4.tar.xz"
+  sha256 "31f07d9350dad3f8964fd613c31309ac160fdef13dfac59df6fd082de78d6e8f"
   license "LGPL-2.1-or-later"
   compatibility_version 1
   head "https://gitlab.gnome.org/GNOME/librsvg.git", branch: "main"
@@ -15,31 +15,26 @@ class Librsvg < Formula
     regex(/librsvg[._-]v?(\d+\.\d+\.(?:\d|[1-8]\d+)(?:\.\d+)*)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "e4afc2571630f98ef5050a485b36a325f17bec30ffa7f020449c7ba0a284663b"
-  end
 
-
-  depends_on "cargo-c" => :build
-  depends_on "gobject-introspection" => :build
-  depends_on "meson" => :build
-  depends_on "ninja" => :build
-  depends_on "pkgconf" => [:build, :test]
-  depends_on "rust" => :build
-  depends_on "cairo"
-  depends_on "fontconfig"
-  depends_on "gdk-pixbuf"
-  depends_on "glib"
-  depends_on "harfbuzz"
-  depends_on "pango"
+  depends_on "italoag/intel/cargo-c" => :build
+  depends_on "italoag/intel/gobject-introspection" => :build
+  depends_on "italoag/intel/meson" => :build
+  depends_on "italoag/intel/ninja" => :build
+  depends_on "italoag/intel/pkgconf" => [:build, :test]
+  depends_on "italoag/intel/rust" => :build
+  depends_on "italoag/intel/cairo"
+  depends_on "italoag/intel/fontconfig"
+  depends_on "italoag/intel/gdk-pixbuf"
+  depends_on "italoag/intel/glib"
+  depends_on "italoag/intel/harfbuzz"
+  depends_on "italoag/intel/pango"
 
   uses_from_macos "libxml2"
 
   on_macos do
-    depends_on "freetype"
-    depends_on "gettext"
-    depends_on "libpng"
+    depends_on "italoag/intel/freetype"
+    depends_on "italoag/intel/gettext"
+    depends_on "italoag/intel/libpng"
   end
 
   deny_network_access!
@@ -92,4 +87,9 @@ class Librsvg < Formula
     system ENV.cc, "test.c", "-o", "test", *flags
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "e4afc2571630f98ef5050a485b36a325f17bec30ffa7f020449c7ba0a284663b"
+  end
+
 end

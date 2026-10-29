@@ -4,11 +4,6 @@ class Dstp < Formula
   homepage "https://github.com/ycd/dstp"
   version "0.4.23"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "ee7874467a8e0bf4678584a75762e9f3b907aa6fb6e2a2d4e003486c027af266"
-  end
-
   on_macos do
     if Hardware::CPU.intel?
       url "https://github.com/ycd/dstp/releases/download/v0.4.23/dstp_0.4.23_Darwin_amd64.tar.gz"
@@ -38,6 +33,11 @@ class Dstp < Formula
 
   test do
     system "dstp"
+  end
+
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "ee7874467a8e0bf4678584a75762e9f3b907aa6fb6e2a2d4e003486c027af266"
   end
 
 end

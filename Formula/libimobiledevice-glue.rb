@@ -7,17 +7,12 @@ class LibimobiledeviceGlue < Formula
   compatibility_version 1
   head "https://github.com/libimobiledevice/libimobiledevice-glue.git", branch: "master"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "6310ff1fb9db3b724c45eb1523ec6b21fd5bf3091c3a7850d1fbc7cc3bd8beb4"
-  end
 
-
-  depends_on "autoconf" => :build
-  depends_on "automake" => :build
-  depends_on "libtool" => :build
-  depends_on "pkgconf" => :build
-  depends_on "libplist"
+  depends_on "italoag/intel/autoconf" => :build
+  depends_on "italoag/intel/automake" => :build
+  depends_on "italoag/intel/libtool" => :build
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/libplist"
 
   def install
     configure = build.head? ? "./autogen.sh" : "./configure"
@@ -37,4 +32,9 @@ class LibimobiledeviceGlue < Formula
     system ENV.cc, "test.c", "-L#{lib}", "-limobiledevice-glue-1.0", "-o", "test"
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "6310ff1fb9db3b724c45eb1523ec6b21fd5bf3091c3a7850d1fbc7cc3bd8beb4"
+  end
+
 end

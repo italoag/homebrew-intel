@@ -6,17 +6,12 @@ class Ffmpegthumbnailer < Formula
   license "GPL-2.0-or-later"
   head "https://github.com/dirkvdb/ffmpegthumbnailer.git", branch: "master"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "00550d408009214ddf7c21fd9f796b2ce07302cfb8404c23a8aaf7f91db53bca"
-  end
 
-
-  depends_on "cmake" => :build
-  depends_on "pkgconf" => :build
-  depends_on "ffmpeg"
-  depends_on "jpeg-turbo"
-  depends_on "libpng"
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/ffmpeg"
+  depends_on "italoag/intel/jpeg-turbo"
+  depends_on "italoag/intel/libpng"
 
   deny_network_access!
 
@@ -40,4 +35,9 @@ class Ffmpegthumbnailer < Formula
     system bin/"ffmpegthumbnailer", "-i", "v.mp4", "-o", "out.jpg"
     assert_path_exists testpath/"out.jpg", "Failed to create thumbnail!"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "00550d408009214ddf7c21fd9f796b2ce07302cfb8404c23a8aaf7f91db53bca"
+  end
+
 end

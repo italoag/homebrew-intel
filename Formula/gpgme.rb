@@ -11,15 +11,10 @@ class Gpgme < Formula
     regex(/href=.*?gpgme[._-]v?(\d+(?:\.\d+)+)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "15d058d78e91c0921ac2cbb9765fbf20b23cd52e3280fb813088ef81991a9fc6"
-  end
 
-
-  depends_on "gnupg"
-  depends_on "libassuan"
-  depends_on "libgpg-error"
+  depends_on "italoag/intel/gnupg"
+  depends_on "italoag/intel/libassuan"
+  depends_on "italoag/intel/libgpg-error"
 
   def install
     system "./configure", "--disable-silent-rules",
@@ -32,7 +27,7 @@ class Gpgme < Formula
       # avoid triggering mandatory rebuilds of software that hard-codes this path
       s.gsub! prefix, opt_prefix
       # replace libassuan Cellar paths to avoid breakage on libassuan version/revision bumps
-      s.gsub! Formula["libassuan"].prefix.realpath, formula_opt_prefix("libassuan")
+      s.gsub! Formula["italoag/intel/libassuan"].prefix.realpath, formula_opt_prefix("libassuan")
     end
   end
 
@@ -68,4 +63,9 @@ class Gpgme < Formula
     system ENV.cc, "test.c", "-I#{include}", "-L#{lib}", "-lgpgme", "-o", "test"
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "15d058d78e91c0921ac2cbb9765fbf20b23cd52e3280fb813088ef81991a9fc6"
+  end
+
 end

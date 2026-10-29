@@ -11,26 +11,21 @@ class Libraw < Formula
     regex(/href=.*?LibRaw[._-]v?(\d+(?:\.\d+)+)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "6dea5c9f90186c5eb8fdf52ed064151a7ae422948e216bb00228036da3250ef2"
-  end
-
 
   head do
     url "https://github.com/LibRaw/LibRaw.git", branch: "master"
 
-    depends_on "autoconf" => :build
-    depends_on "automake" => :build
-    depends_on "libtool" => :build
+    depends_on "italoag/intel/autoconf" => :build
+    depends_on "italoag/intel/automake" => :build
+    depends_on "italoag/intel/libtool" => :build
   end
 
-  depends_on "pkgconf" => :build
-  depends_on "jpeg-turbo"
-  depends_on "little-cms2"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/jpeg-turbo"
+  depends_on "italoag/intel/little-cms2"
 
   on_macos do
-    depends_on "libomp"
+    depends_on "italoag/intel/libomp"
   end
 
   on_linux do
@@ -61,4 +56,9 @@ class Libraw < Formula
     system bin/"raw-identify", "-u", filename
     system bin/"simple_dcraw", "-v", "-T", filename
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "6dea5c9f90186c5eb8fdf52ed064151a7ae422948e216bb00228036da3250ef2"
+  end
+
 end

@@ -9,9 +9,9 @@ class Xtrans < Formula
     sha256 cellar: :any_skip_relocation, all: "eac4f242f00e4216244a9da8f9470bd0bfd9af02ee9d305d4e5be8bc35aa5143"
   end
 
-  depends_on "pkgconf" => :build
-  depends_on "util-macros" => :build
-  depends_on "xorgproto" => :test
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/util-macros" => :build
+  depends_on "italoag/intel/xorgproto" => :test
 
   def install
     args = %W[

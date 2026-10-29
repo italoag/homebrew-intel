@@ -24,7 +24,7 @@ class Texinfo < Formula
   uses_from_macos "perl"
 
   on_linux do
-    depends_on "libunistring"
+    depends_on "italoag/intel/libunistring"
   end
 
   def install

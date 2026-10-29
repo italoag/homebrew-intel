@@ -17,33 +17,28 @@ class Ghostscript < Formula
     end
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "c3976affc331cdc99788be7ba84399fc0a59382f9859a03c220e777cae37fdb1"
-  end
-
 
   head do
     url "https://github.com/ArtifexSoftware/ghostpdl.git", branch: "master"
 
-    depends_on "autoconf" => :build
-    depends_on "automake" => :build
-    depends_on "libtool" => :build
+    depends_on "italoag/intel/autoconf" => :build
+    depends_on "italoag/intel/automake" => :build
+    depends_on "italoag/intel/libtool" => :build
   end
 
-  depends_on "pkgconf" => :build
-  depends_on "fontconfig"
-  depends_on "freetype"
-  depends_on "jbig2dec"
-  depends_on "jpeg-turbo"
-  depends_on "leptonica"
-  depends_on "libarchive"
-  depends_on "libidn"
-  depends_on "libpng"
-  depends_on "libtiff"
-  depends_on "little-cms2"
-  depends_on "openjpeg"
-  depends_on "tesseract"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/fontconfig"
+  depends_on "italoag/intel/freetype"
+  depends_on "italoag/intel/jbig2dec"
+  depends_on "italoag/intel/jpeg-turbo"
+  depends_on "italoag/intel/leptonica"
+  depends_on "italoag/intel/libarchive"
+  depends_on "italoag/intel/libidn"
+  depends_on "italoag/intel/libpng"
+  depends_on "italoag/intel/libtiff"
+  depends_on "italoag/intel/little-cms2"
+  depends_on "italoag/intel/openjpeg"
+  depends_on "italoag/intel/tesseract"
 
   uses_from_macos "expat"
 
@@ -102,4 +97,9 @@ class Ghostscript < Formula
     ps = test_fixtures("test.ps")
     assert_match "Hello World!", shell_output("#{bin}/ps2ascii #{ps}")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "c3976affc331cdc99788be7ba84399fc0a59382f9859a03c220e777cae37fdb1"
+  end
+
 end

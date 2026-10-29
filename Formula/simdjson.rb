@@ -1,18 +1,13 @@
 class Simdjson < Formula
   desc "SIMD-accelerated C++ JSON parser"
   homepage "https://simdjson.org"
-  url "https://github.com/simdjson/simdjson/archive/refs/tags/v5.0.5.tar.gz"
-  sha256 "50bb17769e1054ff1bfcd5dbbfcf33544c77f6ebdb31a318436ea0e47f78f571"
+  url "https://github.com/simdjson/simdjson/archive/refs/tags/v5.0.6.tar.gz"
+  sha256 "a2535137f8da93c0a61a6eeb47e96e502e16db89223b64f76b4041d595f797d7"
   license "Apache-2.0"
   head "https://github.com/simdjson/simdjson.git", branch: "master"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "f4b827132f197d5f1a3490e2c5dd16dcf99f1fe089299a188b9f065105343371"
-  end
 
-
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
 
   deny_network_access!
 
@@ -41,4 +36,9 @@ class Simdjson < Formula
            "-I#{include}", "-L#{lib}", "-lsimdjson", "-o", "test"
     assert_equal "\"Homebrew\"\n", shell_output("./test")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "f4b827132f197d5f1a3490e2c5dd16dcf99f1fe089299a188b9f065105343371"
+  end
+
 end

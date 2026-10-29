@@ -23,10 +23,10 @@ class Ripgrep < Formula
     sha256 cellar: :any, x86_64_linux:      "b92a80402edd4e6fa17e9eb580d20e941c60787510c4ce2716fa53d2c6d4c432"
   end
 
-  depends_on "asciidoctor" => :build
-  depends_on "pkgconf" => :build
-  depends_on "rust" => :build
-  depends_on "pcre2"
+  depends_on "italoag/intel/asciidoctor" => :build
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/rust" => :build
+  depends_on "italoag/intel/pcre2"
 
   deny_network_access!
 

@@ -6,22 +6,17 @@ class Libheif < Formula
   license "LGPL-3.0-or-later"
   compatibility_version 1
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "212891705907ba521c0d6cac8d9fc52d4bd4852eb09831932329afcddd38d170"
-  end
 
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/pkgconf" => :build
 
-  depends_on "cmake" => :build
-  depends_on "pkgconf" => :build
-
-  depends_on "aom"
-  depends_on "jpeg-turbo"
-  depends_on "libde265"
-  depends_on "libpng"
-  depends_on "libtiff"
-  depends_on "webp"
-  depends_on "x265"
+  depends_on "italoag/intel/aom"
+  depends_on "italoag/intel/jpeg-turbo"
+  depends_on "italoag/intel/libde265"
+  depends_on "italoag/intel/libpng"
+  depends_on "italoag/intel/libtiff"
+  depends_on "italoag/intel/webp"
+  depends_on "italoag/intel/x265"
 
   def install
     args = %W[
@@ -71,4 +66,9 @@ class Libheif < Formula
     assert_match output, shell_output("#{bin}/heif-convert #{example} #{exout}")
     assert_path_exists testpath/"exampleavif.jpg"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "212891705907ba521c0d6cac8d9fc52d4bd4852eb09831932329afcddd38d170"
+  end
+
 end

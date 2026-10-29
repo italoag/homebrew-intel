@@ -5,37 +5,32 @@
 class Dotenvx < Formula
   desc "Secure dotenv—from the creator of `dotenv`"
   homepage "https://github.com/dotenvx/dotenvx"
-  url "https://github.com/dotenvx/dotenvx/archive/refs/tags/v2.38.0.tar.gz"
-  version "2.38.0"
-  sha256 "369800cd954045f9ac654d35902496ac7349e9c88165cff03b7c99d08fae1df0"
+  url "https://github.com/dotenvx/dotenvx/archive/refs/tags/v2.38.2.tar.gz"
+  version "2.38.2"
+  sha256 "521cee25b8aa23e427220eed8b255e4c05ce5e71bffcf55598086a3fd0252f02"
   license "BSD-3-Clause"
-
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "97b1a8a68a0c0a52f429c4704bec0564ae943f587f92f49652d2b42da6d5a8ae"
-  end
 
   on_macos do
     on_intel do
-      url "https://github.com/dotenvx/dotenvx/releases/download/v2.38.0/dotenvx-2.38.0-darwin-amd64.tar.gz"
-      sha256 "06411fe3da34d487af815fa148533ca3fb44d97bb139a22d77e24c40c6e49264"
+      url "https://github.com/dotenvx/dotenvx/releases/download/v2.38.2/dotenvx-2.38.2-darwin-amd64.tar.gz"
+      sha256 "755a9d9e3fb9e9545a08c40d45e9eb45e114d0449a988fca3d13841018a914f2"
     end
 
     on_arm do
-      url "https://github.com/dotenvx/dotenvx/releases/download/v2.38.0/dotenvx-2.38.0-darwin-arm64.tar.gz"
-      sha256 "02ef074074f0ef969bff921ac58cfcc59deebb5003137743b4f88c228904c472"
+      url "https://github.com/dotenvx/dotenvx/releases/download/v2.38.2/dotenvx-2.38.2-darwin-arm64.tar.gz"
+      sha256 "ea9e44fb45aa1726a9ef4be13a553070f634a7487f850e0d88bc5bca10332f86"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/dotenvx/dotenvx/releases/download/v2.38.0/dotenvx-2.38.0-linux-amd64.tar.gz"
-      sha256 "351191fe8aa5526e8dc2db17e8954ab654a57950b8296622c25802f985ba018e"
+      url "https://github.com/dotenvx/dotenvx/releases/download/v2.38.2/dotenvx-2.38.2-linux-amd64.tar.gz"
+      sha256 "37d8e26600b707e4ec450b1ab57571159f6ac39be736b04886a0fcc66527a1bb"
     end
 
     on_arm do
-      url "https://github.com/dotenvx/dotenvx/releases/download/v2.38.0/dotenvx-2.38.0-linux-arm64.tar.gz"
-      sha256 "7520837e28a4092f4ea1a36c95db212e479ce3aaabf40cc711334619749cc0a3"
+      url "https://github.com/dotenvx/dotenvx/releases/download/v2.38.2/dotenvx-2.38.2-linux-arm64.tar.gz"
+      sha256 "cb0bb6e4cf3ff5ae7be8489d91ee14d1db302be20c531bfc4e18e5ff9207be3b"
     end
   end
 
@@ -47,4 +42,9 @@ bin.install_symlink "dotenvx" => "git-dotenvx"
   test do
     system bin/"dotenvx", "--version"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "420fcc1c9475030a9e2cd5346c38a8fcf326f497ce1777c12b6d323e3b825b72"
+  end
+
 end

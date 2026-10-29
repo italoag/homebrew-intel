@@ -13,11 +13,6 @@ class Lz4 < Formula
     strategy :github_latest
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "de7c00fa4c89471d2c174fead583b98ea6d5c56eb90393664d5591b10f8d3a67"
-  end
-
 
   depends_on "italoag/intel/cmake" => :build
 
@@ -51,4 +46,9 @@ class Lz4 < Formula
     # Make sure lz4 executable is built multi-threaded
     assert_match "multithread", shell_output("#{bin}/lz4 -V")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "b637e1beb9d2322d1e65925b3895a71b10ae590e868552a1083560a52f64dc85"
+  end
+
 end

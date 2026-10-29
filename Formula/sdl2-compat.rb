@@ -6,14 +6,9 @@ class Sdl2Compat < Formula
   license "Zlib"
   head "https://github.com/libsdl-org/sdl2-compat.git", branch: "main"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "6acc23c37f971dd020b39304d43d2296734e386805b7ebe0dcf5e063e2105bf6"
-  end
 
-
-  depends_on "cmake" => :build
-  depends_on "sdl3" => :no_linkage
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/sdl3" => :no_linkage
 
   deny_network_access!
 
@@ -51,4 +46,9 @@ class Sdl2Compat < Formula
     ENV["SDL_VIDEODRIVER"] = "dummy"
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "6acc23c37f971dd020b39304d43d2296734e386805b7ebe0dcf5e063e2105bf6"
+  end
+
 end

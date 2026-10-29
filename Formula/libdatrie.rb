@@ -16,7 +16,7 @@ class Libdatrie < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "2296c37b6f7f5499b944e6e0d553e3ceac5a3666046ed133d495748045a4835f"
   end
 
-  depends_on "pkgconf" => :build
+  depends_on "italoag/intel/pkgconf" => :build
 
   def install
     system "./configure", "--enable-shared", *std_configure_args

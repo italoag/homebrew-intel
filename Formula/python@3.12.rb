@@ -11,26 +11,21 @@ class PythonAT312 < Formula
     regex(%r{href=.*?/Python[._-]v?(3\.12(?:\.\d+)*)\.t}i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "3176b5beed86fbc7b2d2a3ae524179aec2af15317d437a9daa58eec31cf29f7d"
-  end
-
 
   # https://devguide.python.org/versions/#versions
   deprecate! date: "2028-11-01", because: :deprecated_upstream
   disable! date: "2029-11-01", because: :deprecated_upstream
 
-  depends_on "pkgconf" => :build
-  depends_on "mpdecimal"
-  depends_on "openssl@3"
-  depends_on "sqlite"
-  depends_on "xz"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/mpdecimal"
+  depends_on "italoag/intel/openssl@3"
+  depends_on "italoag/intel/sqlite"
+  depends_on "italoag/intel/xz"
 
   uses_from_macos "bzip2"
   uses_from_macos "expat", since: :sequoia
   uses_from_macos "libedit"
-  uses_from_macos "libffi"
+  uses_from_macos "italoag/intel/libffi"
   uses_from_macos "libxcrypt"
   uses_from_macos "ncurses"
 
@@ -89,7 +84,7 @@ class PythonAT312 < Formula
   # The HOMEBREW_PREFIX location of site-packages.
   def site_packages = HOMEBREW_PREFIX/"lib/python#{version.major_minor}/site-packages"
 
-  def altinstall? = name != Formula["python3"].name
+  def altinstall? = name != Formula["italoag/intel/python@3.15"].name
 
   def python3 = bin/"python#{version.major_minor}"
 
@@ -532,4 +527,9 @@ class PythonAT312 < Formula
     assert_match "If you wish to install a Python library",
                  shell_output("#{python3} -m pip install pip 2>&1", 1)
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "3176b5beed86fbc7b2d2a3ae524179aec2af15317d437a9daa58eec31cf29f7d"
+  end
+
 end

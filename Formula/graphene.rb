@@ -21,15 +21,15 @@ class Graphene < Formula
     sha256               x86_64_linux:      "978a8d282c1d1715f11bc6e701441b843a99c8520ac8108016b224932c6c03a5"
   end
 
-  depends_on "gobject-introspection" => :build
-  depends_on "meson" => :build
-  depends_on "ninja" => :build
-  depends_on "pkgconf" => [:build, :test]
+  depends_on "italoag/intel/gobject-introspection" => :build
+  depends_on "italoag/intel/meson" => :build
+  depends_on "italoag/intel/ninja" => :build
+  depends_on "italoag/intel/pkgconf" => [:build, :test]
 
-  depends_on "glib"
+  depends_on "italoag/intel/glib"
 
   on_macos do
-    depends_on "gettext"
+    depends_on "italoag/intel/gettext"
   end
 
   def install

@@ -28,18 +28,18 @@ class Fontconfig < Formula
     sha256 x86_64_linux:      "56c35f5cc20e978189ba6693eef8ed1167de1d04ef9e5289e9a9dff8b5077049"
   end
 
-  depends_on "gettext" => :build
-  depends_on "meson" => :build
-  depends_on "ninja" => :build
-  depends_on "pkgconf" => :build
-  depends_on "freetype"
+  depends_on "italoag/intel/gettext" => :build
+  depends_on "italoag/intel/meson" => :build
+  depends_on "italoag/intel/ninja" => :build
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/freetype"
 
   uses_from_macos "gperf" => :build
-  uses_from_macos "python" => :build
+  uses_from_macos "italoag/intel/python@3.15" => :build
   uses_from_macos "expat"
 
   on_macos do
-    depends_on "gettext"
+    depends_on "italoag/intel/gettext"
   end
 
   deny_network_access!

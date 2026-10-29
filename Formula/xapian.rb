@@ -13,14 +13,9 @@ class Xapian < Formula
     regex(/href=.*?xapian-core[._-]v?(\d+(?:\.\d+)+)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "0e454b0750c7a5b3c5cd91ba4310a3e91ac5358520bbb424d9277fab35530df1"
-  end
 
-
-  depends_on "python@3.15" => [:build, :test]
-  depends_on "sphinx-doc" => :build
+  depends_on "italoag/intel/python@3.15" => [:build, :test]
+  depends_on "italoag/intel/sphinx-doc" => :build
 
   on_linux do
     depends_on "util-linux"
@@ -72,4 +67,9 @@ class Xapian < Formula
     system bin/"xapian-config", "--libs"
     system python3, "-c", "import xapian"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "0e454b0750c7a5b3c5cd91ba4310a3e91ac5358520bbb424d9277fab35530df1"
+  end
+
 end

@@ -10,11 +10,6 @@ class ZigAT016 < Formula
     regex(/href=.*?zig[._-]v?(0\.16(?:\.\d+)+)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "4cbda6929793f4e234edfa115be84fddf744ff4a0299174d934137c8127f18f3"
-  end
-
 
   keg_only :versioned_formula
 
@@ -23,12 +18,12 @@ class ZigAT016 < Formula
   deprecate! date: "2027-10-01", because: :unsupported
   disable! date: "2028-10-01", because: :unsupported
 
-  depends_on "cmake" => :build
-  depends_on "lld@21"
-  depends_on "llvm@21"
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/lld@21"
+  depends_on "italoag/intel/llvm@21"
 
   on_macos do
-    depends_on "zstd"
+    depends_on "italoag/intel/zstd"
   end
 
   # https://github.com/Homebrew/homebrew-core/issues/209483
@@ -133,4 +128,9 @@ class ZigAT016 < Formula
     library = "/usr/lib/libc++.1.dylib"
     assert Utils.binary_linked_to_library?(bin/"zig", library), "No linkage with #{library}!"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "4cbda6929793f4e234edfa115be84fddf744ff4a0299174d934137c8127f18f3"
+  end
+
 end

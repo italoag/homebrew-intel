@@ -6,15 +6,10 @@ class Vhs < Formula
   license "MIT"
   head "https://github.com/charmbracelet/vhs.git", branch: "main"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "cbd0ec36796d16d436f935d551f5c37167d3b5e1e18700ac602c8c1df7216762"
-  end
 
-
-  depends_on "go" => :build
-  depends_on "ffmpeg"
-  depends_on "ttyd"
+  depends_on "italoag/intel/go" => :build
+  depends_on "italoag/intel/ffmpeg"
+  depends_on "italoag/intel/ttyd"
 
   deny_network_access!
 
@@ -42,4 +37,9 @@ class Vhs < Formula
 
     assert_match version.to_s, shell_output("#{bin}/vhs --version")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "cbd0ec36796d16d436f935d551f5c37167d3b5e1e18700ac602c8c1df7216762"
+  end
+
 end

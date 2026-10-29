@@ -21,10 +21,10 @@ class SLang < Formula
     sha256 x86_64_linux:      "72a9f13d969bd75373501dbac11238d2b4a7fcbc934624f50b14ad6f5185c22d"
   end
 
-  depends_on "libpng"
+  depends_on "italoag/intel/libpng"
 
   def install
-    png = Formula["libpng"]
+    png = Formula["italoag/intel/libpng"]
     system "./configure", "--prefix=#{prefix}",
                           "--with-pnglib=#{png.lib}",
                           "--with-pnginc=#{png.include}",

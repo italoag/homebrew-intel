@@ -6,13 +6,8 @@ class Xan < Formula
   license any_of: ["MIT", "Unlicense"]
   head "https://github.com/medialab/xan.git", branch: "master"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "ab2e4d622f2056aebd930283287d3f70892d03104408fdd57ce31c9b81b74d9a"
-  end
 
-
-  depends_on "rust" => :build
+  depends_on "italoag/intel/rust" => :build
 
   deny_network_access!
 
@@ -30,4 +25,9 @@ class Xan < Formula
     system bin/"xan", "stats", "test.csv"
     assert_match version.to_s, shell_output("#{bin}/xan --version").chomp
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "ab2e4d622f2056aebd930283287d3f70892d03104408fdd57ce31c9b81b74d9a"
+  end
+
 end

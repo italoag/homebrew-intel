@@ -25,7 +25,7 @@ class SourceHighlight < Formula
     sha256 x86_64_linux:      "09c0f664ede1dd50549c8cae4dd1a57b587c81da49a3f03b5d0b78e33f15a935"
   end
 
-  depends_on "boost"
+  depends_on "italoag/intel/boost"
 
   # Fix -flat_namespace being used on Big Sur and later.
   patch do

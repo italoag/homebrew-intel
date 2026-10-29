@@ -8,21 +8,16 @@ class AdaUrl < Formula
   compatibility_version 2
   head "https://github.com/ada-url/ada.git", branch: "main"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "ff011c73608d4ffc0d6e9cbc65fd842a2c9c3f4b12c20781c0b3eef8c36dff0a"
-  end
 
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/cxxopts" => :build
+  depends_on "italoag/intel/fmt"
+  depends_on "italoag/intel/simdutf"
 
-  depends_on "cmake" => :build
-  depends_on "cxxopts" => :build
-  depends_on "fmt"
-  depends_on "simdutf"
-
-  uses_from_macos "python" => :build
+  uses_from_macos "italoag/intel/python@3.15" => :build
 
   on_macos do
-    depends_on "llvm" if DevelopmentTools.clang_build_version <= 1500
+    depends_on "italoag/intel/llvm" if DevelopmentTools.clang_build_version <= 1500
   end
 
   fails_with :clang do
@@ -84,4 +79,9 @@ class AdaUrl < Formula
     Process.wait(pid)
     assert_match "search_start 25", output_log.read
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "4a1e3231f033fb9f5a4f3b7ca3e679b121ff6da9bee4147ff66b59860ce89d9a"
+  end
+
 end

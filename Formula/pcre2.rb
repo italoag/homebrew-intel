@@ -11,18 +11,13 @@ class Pcre2 < Formula
     regex(/^pcre2[._-]v?(\d+(?:\.\d+)+)$/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "dc0dcc2c51cc535045244a0168aef862b055b0f00030ea96eaddb7e8a9a45d77"
-  end
-
 
   head do
     url "https://github.com/PCRE2Project/pcre2.git", branch: "main"
 
-    depends_on "autoconf" => :build
-    depends_on "automake" => :build
-    depends_on "libtool" => :build
+    depends_on "italoag/intel/autoconf" => :build
+    depends_on "italoag/intel/automake" => :build
+    depends_on "italoag/intel/libtool" => :build
   end
 
   uses_from_macos "bzip2"
@@ -54,4 +49,9 @@ class Pcre2 < Formula
   test do
     system bin/"pcre2grep", "regular expression", prefix/"README"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "dc0dcc2c51cc535045244a0168aef862b055b0f00030ea96eaddb7e8a9a45d77"
+  end
+
 end

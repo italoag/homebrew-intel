@@ -13,19 +13,14 @@ class Librdkafka < Formula
     regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "a518fa680341d96866639bf3a2fe601b62e7adab5f90838d5a688c378ffe58c0"
-  end
 
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/lz4"
+  depends_on "italoag/intel/lzlib"
+  depends_on "italoag/intel/openssl@4"
+  depends_on "italoag/intel/zstd"
 
-  depends_on "pkgconf" => :build
-  depends_on "lz4"
-  depends_on "lzlib"
-  depends_on "openssl@4"
-  depends_on "zstd"
-
-  uses_from_macos "python" => :build
+  uses_from_macos "italoag/intel/python@3.15" => :build
   uses_from_macos "curl"
   uses_from_macos "cyrus-sasl"
 
@@ -53,4 +48,9 @@ class Librdkafka < Formula
     system ENV.cc, "test.c", "-L#{lib}", "-lrdkafka", "-lz", "-lpthread", "-o", "test"
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "7b55bbdf07806370dd6de56feebb71776bd210d8df891b0872988bfdbfd5ff0a"
+  end
+
 end

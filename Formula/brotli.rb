@@ -14,13 +14,8 @@ class Brotli < Formula
     regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "507c17737012f541335f1a74ddaeb547b2ce59fe9697a2c99679570ddd63e94b"
-  end
 
-
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
 
   deny_network_access!
 
@@ -40,4 +35,9 @@ class Brotli < Formula
     system bin/"brotli", "file.txt.br", "--output=out.txt", "--decompress"
     assert_equal (testpath/"file.txt").read, (testpath/"out.txt").read
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "3fc8a213e8292e130995bac6ab40c9cf9b7adebac35191a90990191cfe33e94d"
+  end
+
 end

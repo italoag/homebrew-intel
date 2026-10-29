@@ -21,21 +21,21 @@ class Gmime < Formula
   head do
     url "https://github.com/jstedfast/gmime.git", branch: "master"
 
-    depends_on "autoconf" => :build
-    depends_on "automake" => :build
+    depends_on "italoag/intel/autoconf" => :build
+    depends_on "italoag/intel/automake" => :build
     depends_on "gtk-doc" => :build
-    depends_on "libtool" => :build
+    depends_on "italoag/intel/libtool" => :build
   end
 
-  depends_on "gobject-introspection" => :build
-  depends_on "pkgconf" => [:build, :test]
-  depends_on "glib"
-  depends_on "gpgme"
-  depends_on "libidn2"
+  depends_on "italoag/intel/gobject-introspection" => :build
+  depends_on "italoag/intel/pkgconf" => [:build, :test]
+  depends_on "italoag/intel/glib"
+  depends_on "italoag/intel/gpgme"
+  depends_on "italoag/intel/libidn2"
 
   on_macos do
-    depends_on "gettext"
-    depends_on "libgpg-error"
+    depends_on "italoag/intel/gettext"
+    depends_on "italoag/intel/libgpg-error"
   end
 
   on_linux do

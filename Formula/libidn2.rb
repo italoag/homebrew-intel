@@ -34,29 +34,29 @@ class Libidn2 < Formula
   head do
     url "https://gitlab.com/libidn/libidn2.git", branch: "master"
 
-    depends_on "autoconf" => :build
-    depends_on "automake" => :build
+    depends_on "italoag/intel/autoconf" => :build
+    depends_on "italoag/intel/automake" => :build
     depends_on "gengetopt" => :build
-    depends_on "gettext" => :build
-    depends_on "help2man" => :build
-    depends_on "libtool" => :build
+    depends_on "italoag/intel/gettext" => :build
+    depends_on "italoag/intel/help2man" => :build
+    depends_on "italoag/intel/libtool" => :build
 
     uses_from_macos "gperf" => :build
 
     on_macos do
-      depends_on "coreutils" => :build
+      depends_on "italoag/intel/coreutils" => :build
     end
 
     on_system :linux, macos: :ventura_or_newer do
-      depends_on "texinfo" => :build
+      depends_on "italoag/intel/texinfo" => :build
     end
   end
 
-  depends_on "pkgconf" => :build
-  depends_on "libunistring"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/libunistring"
 
   on_macos do
-    depends_on "gettext"
+    depends_on "italoag/intel/gettext"
   end
 
   def install

@@ -7,14 +7,9 @@ class Libvpx < Formula
   compatibility_version 1
   head "https://chromium.googlesource.com/webm/libvpx.git", branch: "main"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "0ab1b7d814114d4e81f907cbef82ab183135d4e80f101cb79a3e76727cd7465b"
-  end
-
 
   on_intel do
-    depends_on "nasm" => :build
+    depends_on "italoag/intel/nasm" => :build
   end
 
   # Add Golden Gate support. Remove patch when supported in a released version.
@@ -52,6 +47,11 @@ class Libvpx < Formula
   test do
     system "ar", "-x", "#{lib}/libvpx.a"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "0ab1b7d814114d4e81f907cbef82ab183135d4e80f101cb79a3e76727cd7465b"
+  end
+
 end
 
 __END__

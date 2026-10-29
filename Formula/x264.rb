@@ -52,7 +52,7 @@ class X264 < Formula
   end
 
   on_intel do
-    depends_on "nasm" => :build
+    depends_on "italoag/intel/nasm" => :build
   end
 
   def install

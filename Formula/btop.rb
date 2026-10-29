@@ -6,17 +6,12 @@ class Btop < Formula
   license "Apache-2.0"
   head "https://github.com/aristocratos/btop.git", branch: "main"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "76c52511880499cc71b1e030269c12d2c612ebea33887d7048061b5311076329"
-  end
 
-
-  depends_on "lowdown" => :build
+  depends_on "italoag/intel/lowdown" => :build
 
   on_macos do
-    depends_on "coreutils" => :build
-    depends_on "llvm" => :build if DevelopmentTools.clang_build_version <= 1600
+    depends_on "italoag/intel/coreutils" => :build
+    depends_on "italoag/intel/llvm" => :build if DevelopmentTools.clang_build_version <= 1600
   end
 
   fails_with :clang do
@@ -68,4 +63,9 @@ class Btop < Formula
   ensure
     Process.kill("TERM", pid)
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "76c52511880499cc71b1e030269c12d2c612ebea33887d7048061b5311076329"
+  end
+
 end

@@ -11,18 +11,13 @@ class Libuninameslist < Formula
     strategy :github_latest
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "bda74e2fb0bac13f1de3f2fb65540a3a59560b25f33dee4a92ffb870be8e1c0e"
-  end
-
 
   head do
     url "https://github.com/fontforge/libuninameslist.git", branch: "master"
 
-    depends_on "autoconf" => :build
-    depends_on "automake" => :build
-    depends_on "libtool" => :build
+    depends_on "italoag/intel/autoconf" => :build
+    depends_on "italoag/intel/automake" => :build
+    depends_on "italoag/intel/libtool" => :build
   end
 
   def install
@@ -47,4 +42,9 @@ class Libuninameslist < Formula
     system ENV.cc, "test.c", "-I#{include}", "-L#{lib}", "-luninameslist", "-o", "test"
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "bda74e2fb0bac13f1de3f2fb65540a3a59560b25f33dee4a92ffb870be8e1c0e"
+  end
+
 end

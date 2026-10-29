@@ -6,19 +6,14 @@ class Openexr < Formula
   license "BSD-3-Clause"
   compatibility_version 2
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "ca2c29e98eebc841115ec6c1d17c2a9324027a0b3c4d77a7245a78e255f9d859"
-  end
 
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/pkgconf" => :build
 
-  depends_on "cmake" => :build
-  depends_on "pkgconf" => :build
-
-  depends_on "imath"
-  depends_on "libdeflate"
-  depends_on "openjph"
-  depends_on "zstd"
+  depends_on "italoag/intel/imath"
+  depends_on "italoag/intel/libdeflate"
+  depends_on "italoag/intel/openjph"
+  depends_on "italoag/intel/zstd"
 
   on_linux do
     depends_on "zlib-ng-compat"
@@ -47,4 +42,9 @@ class Openexr < Formula
       system bin/"exrheader", "AllHalfValues.exr"
     end
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "ca2c29e98eebc841115ec6c1d17c2a9324027a0b3c4d77a7245a78e255f9d859"
+  end
+
 end

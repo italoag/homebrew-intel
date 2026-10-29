@@ -1,10 +1,9 @@
 class Simdutf < Formula
   desc "Unicode conversion routines, fast"
   homepage "https://simdutf.github.io/simdutf/"
-  url "https://github.com/simdutf/simdutf/archive/refs/tags/v9.3.2.tar.gz"
-  sha256 "d92a0a4ce216dcebf18af20fed7ea7279fa535683f790fdaeed39827a234f567"
+  url "https://github.com/simdutf/simdutf/archive/refs/tags/v9.3.3.tar.gz"
+  sha256 "441e374e8629bd8469f6d5cde9f0fa17ef3ad158aeb077791606d8aa73b565ef"
   license any_of: ["Apache-2.0", "MIT"]
-  revision 1
   compatibility_version 7
   head "https://github.com/simdutf/simdutf.git", branch: "master"
 
@@ -13,17 +12,12 @@ class Simdutf < Formula
     regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "16c66780609c490506905441bf40aba03fdb11143d1bbbc09a7016fbd1dbc3ac"
-  end
 
+  depends_on "italoag/intel/aklomp-base64" => :build
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/icu4c@79"
 
-  depends_on "aklomp-base64" => :build
-  depends_on "cmake" => :build
-  depends_on "icu4c@79"
-
-  uses_from_macos "python" => :build
+  uses_from_macos "italoag/intel/python@3.15" => :build
 
   deny_network_access!
 
@@ -47,4 +41,9 @@ class Simdutf < Formula
   test do
     system bin/"sutf-benchmark", "--random-utf8", "10240", "-I", "100"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "3251551cddf4db1a0b2da0db74462e3340fac13c61df77cdb9fa9ac67fd232d9"
+  end
+
 end

@@ -12,16 +12,11 @@ class Fish < Formula
     regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "4e33cbb200b117ffe8c1deb472c0b8d6ec0eb6bd82f66d49eed549e9710bd941"
-  end
 
-
-  depends_on "cmake" => :build
-  depends_on "rust" => :build
-  depends_on "sphinx-doc" => :build
-  depends_on "pcre2"
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/rust" => :build
+  depends_on "italoag/intel/sphinx-doc" => :build
+  depends_on "italoag/intel/pcre2"
 
   deny_network_access!
 
@@ -47,4 +42,9 @@ class Fish < Formula
     output = shell_output("#{bin}/fish -c 'set --show fish_function_path'")
     assert_match "#{HOMEBREW_PREFIX}/share/fish/vendor_functions.d", output
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "4e33cbb200b117ffe8c1deb472c0b8d6ec0eb6bd82f66d49eed549e9710bd941"
+  end
+
 end

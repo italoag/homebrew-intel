@@ -7,17 +7,12 @@ class Cffi < Formula
   revision 1
   compatibility_version 1
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "60e98ba384bfb511ce66d63dff81bc8d92f80fd4d24c46420eab5535b191bd26"
-  end
 
+  depends_on "italoag/intel/python@3.14" => [:build, :test]
+  depends_on "italoag/intel/python@3.15" => [:build, :test]
+  depends_on "italoag/intel/pycparser"
 
-  depends_on "python@3.14" => [:build, :test]
-  depends_on "python@3.15" => [:build, :test]
-  depends_on "pycparser"
-
-  uses_from_macos "libffi"
+  uses_from_macos "italoag/intel/libffi"
 
   pypi_packages exclude_packages: "pycparser"
 
@@ -59,4 +54,9 @@ class Cffi < Formula
       assert_equal 3, shell_output("#{python} sum.py").to_i
     end
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "761013db394f2f97986d68f54415be8d1f96007bba8ba0a1d09d4c9736c16409"
+  end
+
 end

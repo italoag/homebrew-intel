@@ -27,9 +27,9 @@ class Libyaml < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "354677a745b6c62109e792ddbd0cbdaf9e6a471d84fdbde3a7d9bae36d832da8"
   end
 
-  depends_on "autoconf" => :build
-  depends_on "automake" => :build
-  depends_on "libtool" => :build
+  depends_on "italoag/intel/autoconf" => :build
+  depends_on "italoag/intel/automake" => :build
+  depends_on "italoag/intel/libtool" => :build
 
   def install
     system "./bootstrap"

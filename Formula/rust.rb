@@ -83,20 +83,15 @@ class Rust < Formula
     end
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "157af9660cd81179ad85989d5a79328df3f20d3dae3309d11ebc7566d10aa554"
-  end
 
+  depends_on "italoag/intel/libgit2"
+  depends_on "italoag/intel/libssh2"
+  depends_on "italoag/intel/llvm"
+  depends_on "italoag/intel/openssl@4"
+  depends_on "italoag/intel/pkgconf"
+  depends_on "italoag/intel/sqlite"
 
-  depends_on "libgit2"
-  depends_on "libssh2"
-  depends_on "llvm"
-  depends_on "openssl@4"
-  depends_on "pkgconf"
-  depends_on "sqlite"
-
-  uses_from_macos "python" => :build
+  uses_from_macos "italoag/intel/python@3.15" => :build
   uses_from_macos "curl"
 
   # Required by Rust, see https://github.com/rust-lang/rust/issues/39870
@@ -106,9 +101,9 @@ class Rust < Formula
   # These used to belong in `rustfmt`.
   link_overwrite "bin/cargo-fmt", "bin/git-rustfmt", "bin/rustfmt", "bin/rustfmt-*"
 
-  def llvm = deps.map(&:name).find { |dep| dep.match?(/^llvm(@\d+)?$/) }
+  def llvm = deps.map { |d| d.name.split("/").last }.find { |dep| dep.match?(/^llvm(@\d+)?$/) }
 
-  def openssl = deps.map(&:name).find { |dep| dep.start_with?("openssl@") }
+  def openssl = deps.map { |d| d.name.split("/").last }.find { |dep| dep.start_with?("openssl@") }
 
   def install
     # Ensure that the `openssl` crate picks up the intended library.
@@ -258,4 +253,9 @@ class Rust < Formula
     end
     assert missing_linkage.empty?, "Missing linkage: #{missing_linkage.join(", ")}"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "157af9660cd81179ad85989d5a79328df3f20d3dae3309d11ebc7566d10aa554"
+  end
+
 end

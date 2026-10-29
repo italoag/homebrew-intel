@@ -12,7 +12,7 @@ class NlohmannJson < Formula
     sha256 cellar: :any_skip_relocation, all: "df65065eb8504f15f8802b7c681df015a592a68336db7fe290eeeda59fa1e440"
   end
 
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
 
   # Fix to error: unknown type name 'char8_t' for clang, remove in next release
   patch do

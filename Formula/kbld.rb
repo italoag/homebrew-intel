@@ -3,11 +3,6 @@ class Kbld < Formula
   homepage "https://carvel.dev/kbld/"
   version "v0.49.2"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "1f999fab9db6dd103d600a289174683198ecbdb9b31560c072521c5e1502524c"
-  end
-
   if OS.mac?
     if Hardware::CPU.arm?
       url "https://github.com/carvel-dev/kbld/releases/download/v0.49.2/kbld-darwin-arm64"
@@ -34,5 +29,10 @@ class Kbld < Formula
   test do
     system "#{bin}/kbld", "version"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "1f999fab9db6dd103d600a289174683198ecbdb9b31560c072521c5e1502524c"
+  end
+
 end
 

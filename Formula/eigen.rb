@@ -24,7 +24,7 @@ class Eigen < Formula
     sha256 cellar: :any_skip_relocation, all: "563e391400dc4eab1a9cf164c14082db589cd39d0546b454a8b4f7ec56237be6"
   end
 
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
 
   deny_network_access!
 

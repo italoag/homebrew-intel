@@ -10,11 +10,6 @@ class Dos2unix < Formula
     regex(/href=.*?dos2unix[._-]v?(\d+(?:\.\d+)+)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "e0a27be0d83d958192254297f132cbe4e67af6c7c30c65ea701b452a4b04ea46"
-  end
-
 
   deny_network_access!
 
@@ -52,4 +47,9 @@ class Dos2unix < Formula
     system bin/"dos2unix", test_file
     assert_equal "foo\nbar\n", test_file.read
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "e0a27be0d83d958192254297f132cbe4e67af6c7c30c65ea701b452a4b04ea46"
+  end
+
 end

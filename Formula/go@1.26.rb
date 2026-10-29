@@ -20,15 +20,10 @@ class GoAT126 < Formula
     end
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "a49c6b502993cbe9a47a7e20d465e6dd88178927c0c34a279518ea01a736a943"
-  end
-
 
   keg_only :versioned_formula
 
-  depends_on "go" => :build
+  depends_on "italoag/intel/go" => :build
 
   deny_network_access!
 
@@ -92,4 +87,9 @@ class GoAT126 < Formula
       assert_equal "Hello from cgo!\n", shell_output("#{bin}/go run hello_cgo.go")
     end
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "a49c6b502993cbe9a47a7e20d465e6dd88178927c0c34a279518ea01a736a943"
+  end
+
 end

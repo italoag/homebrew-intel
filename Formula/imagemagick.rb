@@ -13,27 +13,22 @@ class Imagemagick < Formula
     strategy :github_releases
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "2fca062e861b2dca5d3605c8f76ea4814414490fbc74ee5f9d8ee0c053fdf9fb"
-  end
 
-
-  depends_on "pkgconf" => :build
+  depends_on "italoag/intel/pkgconf" => :build
 
   # Only add dependencies required for dependents in homebrew-core,
   # recursive dependencies or INCREDIBLY widely used and light formats in the
   # current year (2026).
   # Add other dependencies to imagemagick-full formula.
-  depends_on "freetype"
-  depends_on "jpeg-turbo"
-  depends_on "libheif"
-  depends_on "libpng"
-  depends_on "libtiff"
-  depends_on "libtool"
-  depends_on "little-cms2"
-  depends_on "webp"
-  depends_on "xz"
+  depends_on "italoag/intel/freetype"
+  depends_on "italoag/intel/jpeg-turbo"
+  depends_on "italoag/intel/libheif"
+  depends_on "italoag/intel/libpng"
+  depends_on "italoag/intel/libtiff"
+  depends_on "italoag/intel/libtool"
+  depends_on "italoag/intel/little-cms2"
+  depends_on "italoag/intel/webp"
+  depends_on "italoag/intel/xz"
 
   uses_from_macos "bzip2"
   uses_from_macos "libxml2"
@@ -93,4 +88,9 @@ class Imagemagick < Formula
       assert_match feature, features
     end
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "2fca062e861b2dca5d3605c8f76ea4814414490fbc74ee5f9d8ee0c053fdf9fb"
+  end
+
 end

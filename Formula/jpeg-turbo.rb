@@ -1,8 +1,8 @@
 class JpegTurbo < Formula
   desc "JPEG image codec that aids compression and decompression"
   homepage "https://www.libjpeg-turbo.org/"
-  url "https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/3.2.0/libjpeg-turbo-3.2.0.tar.gz"
-  sha256 "6f30092cef9fb839779646608f4ee14ae3cbac989c47fa05e841b0841f09878e"
+  url "https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/3.2.1/libjpeg-turbo-3.2.1.tar.gz"
+  sha256 "c27ad72a68da151177929aa969ae773a2da5ac2af9ce946079314fdac8cece7f"
   license all_of: [
     "IJG", # libjpeg API library and programs
     "Zlib", # libjpeg-turbo SIMD source code
@@ -16,17 +16,12 @@ class JpegTurbo < Formula
     strategy :github_latest
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "8f62ddee0e42aeabcac5dafe430e83d4cc0a350681c217c15041c64aae1cceab"
-  end
 
-
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
 
   on_intel do
     # Required only for x86 SIMD extensions.
-    depends_on "nasm" => :build
+    depends_on "italoag/intel/nasm" => :build
   end
 
   # These conflict with `jpeg`, which is now keg-only.
@@ -70,4 +65,9 @@ class JpegTurbo < Formula
                            test_fixtures("test.jpg")
     assert_path_exists testpath/"out.jpg"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "8f62ddee0e42aeabcac5dafe430e83d4cc0a350681c217c15041c64aae1cceab"
+  end
+
 end

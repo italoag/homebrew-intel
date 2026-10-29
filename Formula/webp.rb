@@ -12,16 +12,11 @@ class Webp < Formula
     regex(/libwebp[._-]v?(\d+(?:\.\d+)+)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "8cb09e32b81e7f6903b8d3410f76b9298bb07c274361b536495b4c450e11c61a"
-  end
 
-
-  depends_on "cmake" => :build
-  depends_on "giflib"
-  depends_on "jpeg-turbo"
-  depends_on "libpng"
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/giflib"
+  depends_on "italoag/intel/jpeg-turbo"
+  depends_on "italoag/intel/libpng"
 
   deny_network_access!
 
@@ -46,4 +41,9 @@ class Webp < Formula
     system bin/"dwebp", "webp_test.png", "-o", "webp_test.webp"
     assert_path_exists testpath/"webp_test.webp"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "8cb09e32b81e7f6903b8d3410f76b9298bb07c274361b536495b4c450e11c61a"
+  end
+
 end

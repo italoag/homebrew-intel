@@ -14,21 +14,16 @@ class Libssh2 < Formula
     regex(/href=.*?libssh2[._-]v?(\d+(?:\.\d+)+)\./i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "57a3ff1ee7360f8ba12000c1e866e8422b0f5258a678e791f32157de1675b938"
-  end
-
 
   head do
     url "https://github.com/libssh2/libssh2.git", branch: "master"
 
-    depends_on "autoconf" => :build
-    depends_on "automake" => :build
-    depends_on "libtool" => :build
+    depends_on "italoag/intel/autoconf" => :build
+    depends_on "italoag/intel/automake" => :build
+    depends_on "italoag/intel/libtool" => :build
   end
 
-  depends_on "openssl@4"
+  depends_on "italoag/intel/openssl@4"
 
   on_linux do
     depends_on "zlib-ng-compat"
@@ -166,4 +161,9 @@ class Libssh2 < Formula
     system ENV.cc, "test.c", "-L#{lib}", "-lssh2", "-o", "test"
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "57a3ff1ee7360f8ba12000c1e866e8422b0f5258a678e791f32157de1675b938"
+  end
+
 end

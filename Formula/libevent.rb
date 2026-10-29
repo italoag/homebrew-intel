@@ -12,14 +12,9 @@ class Libevent < Formula
     regex(/libevent[._-]v?(\d+(?:\.\d+)+)-stable/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "72e1e39d1f11b35f465f9d684daf592a0a79e24f78c54c0c2c60f1e331b66b6a"
-  end
 
-
-  depends_on "pkgconf" => :build
-  depends_on "openssl@4"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/openssl@4"
 
   def install
     system "./configure", "--disable-debug-mode", *std_configure_args
@@ -42,4 +37,9 @@ class Libevent < Formula
     system ENV.cc, "test.c", "-L#{lib}", "-levent", "-o", "test"
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "72e1e39d1f11b35f465f9d684daf592a0a79e24f78c54c0c2c60f1e331b66b6a"
+  end
+
 end

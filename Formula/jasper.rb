@@ -21,8 +21,8 @@ class Jasper < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "42e56bdae47308719c6a31f311c8b5a0ffd11cb4d98e69e7a81309ab0245562d"
   end
 
-  depends_on "cmake" => :build
-  depends_on "jpeg-turbo"
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/jpeg-turbo"
 
   def install
     args = %w[

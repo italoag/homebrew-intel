@@ -16,19 +16,19 @@ class GdkPixbuf < Formula
     sha256               x86_64_linux:      "13498f2cb02bb122c7befb4e3eaa4a79aca7d736f1c5cb68c85088fc70f37f24"
   end
 
-  depends_on "docutils" => :build # for rst2man
-  depends_on "gettext" => :build
-  depends_on "gobject-introspection" => :build
-  depends_on "meson" => :build
-  depends_on "ninja" => :build
-  depends_on "pkgconf" => [:build, :test]
-  depends_on "glib"
-  depends_on "jpeg-turbo"
-  depends_on "libpng"
-  depends_on "libtiff"
+  depends_on "italoag/intel/docutils" => :build # for rst2man
+  depends_on "italoag/intel/gettext" => :build
+  depends_on "italoag/intel/gobject-introspection" => :build
+  depends_on "italoag/intel/meson" => :build
+  depends_on "italoag/intel/ninja" => :build
+  depends_on "italoag/intel/pkgconf" => [:build, :test]
+  depends_on "italoag/intel/glib"
+  depends_on "italoag/intel/jpeg-turbo"
+  depends_on "italoag/intel/libpng"
+  depends_on "italoag/intel/libtiff"
 
   on_macos do
-    depends_on "gettext"
+    depends_on "italoag/intel/gettext"
   end
 
   on_linux do

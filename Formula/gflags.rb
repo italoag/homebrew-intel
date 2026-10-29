@@ -16,7 +16,7 @@ class Gflags < Formula
     sha256 cellar: :any, x86_64_linux:      "b4e2eef6a08b9f0d4bd67223e0814e440748fcf08fcce0f0272d1534273440eb"
   end
 
-  depends_on "cmake" => [:build, :test]
+  depends_on "italoag/intel/cmake" => [:build, :test]
 
   deny_network_access!
 

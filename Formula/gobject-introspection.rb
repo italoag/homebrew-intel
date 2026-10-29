@@ -10,23 +10,18 @@ class GobjectIntrospection < Formula
   revision 6
   compatibility_version 1
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "bf0b2056f036164df4bf1e9375c03bff74c0a34a90861bcbb56b18c2c431a114"
-  end
 
-
-  depends_on "bison" => :build
-  depends_on "meson" => :build
-  depends_on "ninja" => :build
-  depends_on "cairo"
-  depends_on "glib"
-  depends_on "pkgconf"
+  depends_on "italoag/intel/bison" => :build
+  depends_on "italoag/intel/meson" => :build
+  depends_on "italoag/intel/ninja" => :build
+  depends_on "italoag/intel/cairo"
+  depends_on "italoag/intel/glib"
+  depends_on "italoag/intel/pkgconf"
   # Ships a `_giscanner.cpython-315-darwin.so`, so needs a specific version.
-  depends_on "python@3.15"
+  depends_on "italoag/intel/python@3.15"
 
   uses_from_macos "flex" => :build
-  uses_from_macos "libffi"
+  uses_from_macos "italoag/intel/libffi"
 
   pypi_packages package_name:   "",
                 extra_packages: %w[mako markdown setuptools]
@@ -93,6 +88,11 @@ class GobjectIntrospection < Formula
     system ENV.cc, "main.c", "-o", "test", *pkgconf_flags
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "bf0b2056f036164df4bf1e9375c03bff74c0a34a90861bcbb56b18c2c431a114"
+  end
+
 end
 
 __END__

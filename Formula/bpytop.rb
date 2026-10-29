@@ -9,16 +9,11 @@ class Bpytop < Formula
   license "Apache-2.0"
   head "https://github.com/aristocratos/bpytop.git", branch: "master"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "e9252f642cbf79247bfc8c5972c42c080e4d284fca38a2bdd7131887908d727f"
-  end
 
-
-  depends_on "python@3.15"
+  depends_on "italoag/intel/python@3.15"
 
   on_macos do
-    depends_on "osx-cpu-temp"
+    depends_on "italoag/intel/osx-cpu-temp"
   end
 
   resource "psutil" do
@@ -71,4 +66,9 @@ class Bpytop < Formula
   ensure
     Process.kill("TERM", pid)
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "bfde662a000c2111010f97e0b7c890157aa4b77a5331874e04b9758067ecdd9d"
+  end
+
 end

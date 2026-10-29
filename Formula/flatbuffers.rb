@@ -22,7 +22,7 @@ class Flatbuffers < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "f7e4ccf9797920f3ecfbbb9a5a540b1416f377d7a7b04a851f23860427df1434"
   end
 
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
 
   deny_network_access!
 

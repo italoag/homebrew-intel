@@ -7,14 +7,9 @@ class Snappy < Formula
   compatibility_version 1
   head "https://github.com/google/snappy.git", branch: "main"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "dac2222616a23d497a179524e4fa24a260cfe6c203931d40498c0043c9332eab"
-  end
 
-
-  depends_on "cmake" => :build
-  depends_on "pkgconf" => :build
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/pkgconf" => :build
 
   # Fix issue where `snappy` setting -fno-rtti causes build issues on `folly`
   # `folly` issue ref: https://github.com/facebook/folly/issues/1583
@@ -59,6 +54,11 @@ class Snappy < Formula
     system ENV.cxx, "-std=c++11", "test.cpp", "-L#{lib}", "-lsnappy", "-o", "test"
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "cbd7bb5217c075ae64e92a003a225c49e859e24bfc0e8adc648cc564f8f78f78"
+  end
+
 end
 
 __END__

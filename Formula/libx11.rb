@@ -6,17 +6,12 @@ class Libx11 < Formula
   license "MIT"
   compatibility_version 1
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "9719a9aedb1c326a062f2f9b8f0cdee59f737adfe9b5ca73eb597a6bd3b7208e"
-  end
 
-
-  depends_on "pkgconf" => :build
-  depends_on "util-macros" => :build
-  depends_on "xtrans" => :build
-  depends_on "libxcb"
-  depends_on "xorgproto"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/util-macros" => :build
+  depends_on "italoag/intel/xtrans" => :build
+  depends_on "italoag/intel/libxcb"
+  depends_on "italoag/intel/xorgproto"
 
   deny_network_access!
 
@@ -79,4 +74,9 @@ class Libx11 < Formula
     system ENV.cc, "test.c", "-L#{lib}", "-lX11", "-o", "test", "-I#{include}"
     assert_match "XSupportsLocale=1", shell_output("./test")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "9719a9aedb1c326a062f2f9b8f0cdee59f737adfe9b5ca73eb597a6bd3b7208e"
+  end
+
 end

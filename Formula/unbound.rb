@@ -1,10 +1,9 @@
 class Unbound < Formula
   desc "Validating, recursive, caching DNS resolver"
   homepage "https://www.unbound.net"
-  url "https://nlnetlabs.nl/downloads/unbound/unbound-1.26.1.tar.gz"
-  sha256 "35a6dc0e425a9282c3426d9a3043144011bf0534aed4b73ab62c52aee0af1503"
+  url "https://nlnetlabs.nl/downloads/unbound/unbound-1.26.2.tar.gz"
+  sha256 "d8ee7aa6bbb3ff1be7d9e57637d0d0ec2f18273a8efff1a0afe2c665858b96f7"
   license "BSD-3-Clause"
-  revision 1
   compatibility_version 1
   head "https://github.com/NLnetLabs/unbound.git", branch: "master"
 
@@ -16,15 +15,10 @@ class Unbound < Formula
     regex(/^(?:release-)?v?(\d+(?:\.\d+)+)$/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "9da420915a8c83be0eab96f894fc9e57a774d4590bc5806235d234a8e2688a3e"
-  end
 
-
-  depends_on "libevent"
-  depends_on "libnghttp2"
-  depends_on "openssl@4"
+  depends_on "italoag/intel/libevent"
+  depends_on "italoag/intel/libnghttp2"
+  depends_on "italoag/intel/openssl@4"
 
   uses_from_macos "expat"
 
@@ -67,4 +61,9 @@ class Unbound < Formula
   test do
     system sbin/"unbound-control-setup", "-d", testpath
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "4515da0957e7de3ae76f0f96ba332673c3d1f287c58a62de6590ad9fd5ee80ee"
+  end
+
 end

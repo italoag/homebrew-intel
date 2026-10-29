@@ -17,7 +17,7 @@ class Help2man < Formula
     sha256 cellar: :any, x86_64_linux:      "eb20fb548e3eabb081167661c9d3406a3984ace247b5eec71a851e9e4a6de7bc"
   end
 
-  depends_on "gettext"
+  depends_on "italoag/intel/gettext"
   uses_from_macos "perl"
 
   resource "Locale::gettext" do
@@ -28,6 +28,8 @@ class Help2man < Formula
       url :url
     end
   end
+
+  deny_network_access!
 
   def install
     ENV.prepend_create_path "PERL5LIB", libexec/"lib/perl5"

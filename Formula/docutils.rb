@@ -12,7 +12,7 @@ class Docutils < Formula
     sha256 cellar: :any_skip_relocation, all: "04a8f23f994e085aee08118828278b940568c710cab5c09afd04cf4d34413e73"
   end
 
-  depends_on "python@3.15"
+  depends_on "italoag/intel/python@3.15"
 
   def install
     virtualenv_install_with_resources

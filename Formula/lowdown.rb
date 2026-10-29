@@ -12,13 +12,8 @@ class Lowdown < Formula
     regex(/href=.*?lowdown[._-]v?(\d+(?:\.\d+)+)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "02e05b781db3fa8b48c32dd5139a7af42b08cc69d026e72876c947cc569e26c9"
-  end
 
-
-  depends_on "bmake" => :build
+  depends_on "italoag/intel/bmake" => :build
 
   def install
     configure_args = %W[MANDIR=#{man} PREFIX=#{prefix}]
@@ -57,4 +52,9 @@ class Lowdown < Formula
     html = pipe_output("#{bin}/lowdown -s", markdown)
     assert_equal expected_html, html
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "02e05b781db3fa8b48c32dd5139a7af42b08cc69d026e72876c947cc569e26c9"
+  end
+
 end

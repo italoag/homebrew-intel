@@ -10,8 +10,8 @@ class Pycparser < Formula
     sha256 cellar: :any_skip_relocation, all: "a7a56dfe603baa785cb95e964e6e726284786b4cc5ef1d61b0e6aeb016680dce"
   end
 
-  depends_on "python-setuptools" => :build
-  depends_on "python@3.15" => [:build, :test]
+  depends_on "italoag/intel/python-setuptools" => :build
+  depends_on "italoag/intel/python@3.15" => [:build, :test]
 
   deny_network_access!
 

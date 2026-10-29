@@ -22,14 +22,14 @@ class Pinentry < Formula
     sha256 cellar: :any, x86_64_linux:      "b5e23cb72d88f6ea3c9c9f95aa356231ea072dd8f91886249154366db8ea6c69"
   end
 
-  depends_on "pkgconf" => :build
-  depends_on "libassuan"
-  depends_on "libgpg-error"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/libassuan"
+  depends_on "italoag/intel/libgpg-error"
 
   uses_from_macos "ncurses"
 
   on_linux do
-    depends_on "glib"
+    depends_on "italoag/intel/glib"
     depends_on "libsecret"
   end
 

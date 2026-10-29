@@ -21,7 +21,7 @@ class Talloc < Formula
     sha256 cellar: :any, x86_64_linux:      "3490cf833175989808b2f38118a501a5e6895069f7385dd0145abe0185a5dfdd"
   end
 
-  uses_from_macos "python" => :build
+  uses_from_macos "italoag/intel/python@3.15" => :build
 
   def install
     system "./configure", "--prefix=#{prefix}",

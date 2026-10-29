@@ -11,14 +11,9 @@ class Xorgproto < Formula
     regex(/href=.*?xorgproto[._-]v?(\d+\.\d+(?:\.([0-8]\d*?)?\d(?:\.\d+)*)?)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "ce40a9d4c05b96cb3a5f6e6be5a4dd129d7d02f372019d8770a0fd7f8a66a7bc"
-  end
 
-
-  depends_on "pkgconf" => [:build, :test]
-  depends_on "util-macros" => :build
+  depends_on "italoag/intel/pkgconf" => [:build, :test]
+  depends_on "italoag/intel/util-macros" => :build
 
   def install
     args = %W[
@@ -35,4 +30,9 @@ class Xorgproto < Formula
     assert_equal "-I#{include}", shell_output("pkg-config --cflags xproto").chomp
     assert_equal "-I#{include}/X11/dri", shell_output("pkg-config --cflags xf86driproto").chomp
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "ce40a9d4c05b96cb3a5f6e6be5a4dd129d7d02f372019d8770a0fd7f8a66a7bc"
+  end
+
 end

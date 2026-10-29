@@ -16,7 +16,7 @@ class Libdeflate < Formula
     sha256 cellar: :any, x86_64_linux:      "fa40c162955d0491c534f74f4a9dd1f1606e8fca0c0e01be54c890e9985ac8a0"
   end
 
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
 
   deny_network_access!
 

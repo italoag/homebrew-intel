@@ -6,18 +6,13 @@ class Libvmaf < Formula
   license "BSD-2-Clause-Patent"
   compatibility_version 1
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "a734b527dd0b4485603693ef5980fc490b1d77d14a36f7c7f5c22553e2cd1aa1"
-  end
 
-
-  depends_on "meson" => :build
-  depends_on "ninja" => :build
+  depends_on "italoag/intel/meson" => :build
+  depends_on "italoag/intel/ninja" => :build
   uses_from_macos "vim" => :build # needed for xxd
 
   on_intel do
-    depends_on "nasm" => :build
+    depends_on "italoag/intel/nasm" => :build
   end
 
   def install
@@ -43,4 +38,9 @@ class Libvmaf < Formula
     system ENV.cc, "test.c", "-o", "test", *flags
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "8e17a645e86f12f51e0176d50daef559221d1dff468bffed0aa396e46312642a"
+  end
+
 end

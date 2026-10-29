@@ -21,7 +21,7 @@ class Libksba < Formula
     sha256 cellar: :any, x86_64_linux:      "74e720998979bbca5597eca92df39202c44229c674cc9368d578e6fbc08109ee"
   end
 
-  depends_on "libgpg-error"
+  depends_on "italoag/intel/libgpg-error"
 
   def install
     system "./configure", "--disable-dependency-tracking",

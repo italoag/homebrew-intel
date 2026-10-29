@@ -13,13 +13,8 @@ class Xxhash < Formula
     strategy :github_latest
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "fc6e457107580a0048c64387b08b71a37541c604e70b25befa501a22844e7931"
-  end
 
-
-  depends_on "cmake" => [:build, :test]
+  depends_on "italoag/intel/cmake" => [:build, :test]
 
   deny_network_access!
 
@@ -79,4 +74,9 @@ class Xxhash < Formula
     system "cmake", "--build", "build"
     system "./build/test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "4c0d8b34d81eb79f66797ff0814c336b4c1c8586208780ab50a1a7c81052a20f"
+  end
+
 end

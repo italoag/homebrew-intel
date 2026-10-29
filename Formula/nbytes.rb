@@ -15,7 +15,7 @@ class Nbytes < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "cd60fe046720705ec370907040b03d1b47c806b0b2544612374206f50e7a502a"
   end
 
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
 
   deny_network_access!
 

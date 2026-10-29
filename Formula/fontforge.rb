@@ -8,38 +8,33 @@ class Fontforge < Formula
   compatibility_version 1
   head "https://github.com/fontforge/fontforge.git", branch: "master"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "fa93788fbcfe9850d102c06968b2b647b332191d903ba4e8b197ab45e2d64694"
-  end
 
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/gettext" => :build
+  depends_on "italoag/intel/ninja" => :build
+  depends_on "italoag/intel/pkgconf" => :build
 
-  depends_on "cmake" => :build
-  depends_on "gettext" => :build
-  depends_on "ninja" => :build
-  depends_on "pkgconf" => :build
-
-  depends_on "cairo"
-  depends_on "fontconfig"
-  depends_on "freetype"
-  depends_on "giflib"
-  depends_on "glib"
-  depends_on "jpeg-turbo"
-  depends_on "libpng"
-  depends_on "libspiro"
-  depends_on "libtiff"
-  depends_on "libtool"
-  depends_on "libuninameslist"
-  depends_on "pango"
-  depends_on "python@3.15"
-  depends_on "readline"
-  depends_on "woff2"
+  depends_on "italoag/intel/cairo"
+  depends_on "italoag/intel/fontconfig"
+  depends_on "italoag/intel/freetype"
+  depends_on "italoag/intel/giflib"
+  depends_on "italoag/intel/glib"
+  depends_on "italoag/intel/jpeg-turbo"
+  depends_on "italoag/intel/libpng"
+  depends_on "italoag/intel/libspiro"
+  depends_on "italoag/intel/libtiff"
+  depends_on "italoag/intel/libtool"
+  depends_on "italoag/intel/libuninameslist"
+  depends_on "italoag/intel/pango"
+  depends_on "italoag/intel/python@3.15"
+  depends_on "italoag/intel/readline"
+  depends_on "italoag/intel/woff2"
 
   uses_from_macos "libxml2"
 
   on_macos do
-    depends_on "brotli"
-    depends_on "gettext"
+    depends_on "italoag/intel/brotli"
+    depends_on "italoag/intel/gettext"
   end
 
   on_linux do
@@ -94,4 +89,9 @@ class Fontforge < Formula
     fileres = shell_output("/usr/bin/file #{testpath}/Ambrosia.woff2")
     assert_match "Web Open Font Format (Version 2)", fileres
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "fa93788fbcfe9850d102c06968b2b647b332191d903ba4e8b197ab45e2d64694"
+  end
+
 end

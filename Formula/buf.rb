@@ -14,13 +14,8 @@ class Buf < Formula
     strategy :github_latest
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "94555dbf95aa12385e1410ba5152c2ffa77982f14b2c01ffea4f7fe4a3b2740c"
-  end
 
-
-  depends_on "go" => :build
+  depends_on "italoag/intel/go" => :build
 
   deny_network_access!
 
@@ -69,4 +64,9 @@ class Buf < Formula
 
     assert_match version.to_s, shell_output("#{bin}/buf --version")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "94555dbf95aa12385e1410ba5152c2ffa77982f14b2c01ffea4f7fe4a3b2740c"
+  end
+
 end

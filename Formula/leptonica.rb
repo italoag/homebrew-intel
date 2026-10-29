@@ -22,13 +22,13 @@ class Leptonica < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "46b90af8964b6c265f258a8a7ec159a4881e9ec5c2d3d0e37cd91054b5e87999"
   end
 
-  depends_on "pkgconf" => :build
-  depends_on "giflib"
-  depends_on "jpeg-turbo"
-  depends_on "libpng"
-  depends_on "libtiff"
-  depends_on "openjpeg"
-  depends_on "webp"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/giflib"
+  depends_on "italoag/intel/jpeg-turbo"
+  depends_on "italoag/intel/libpng"
+  depends_on "italoag/intel/libtiff"
+  depends_on "italoag/intel/openjpeg"
+  depends_on "italoag/intel/webp"
 
   on_linux do
     depends_on "zlib-ng-compat"

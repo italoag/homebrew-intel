@@ -1,16 +1,11 @@
 class Sevenzip < Formula
   desc "7-Zip is a file archiver with a high compression ratio"
   homepage "https://7-zip.org"
-  url "https://github.com/ip7z/7zip/releases/download/26.04/7z2604-src.tar.xz"
-  sha256 "9691944c0fe0d01bb49373a704fb983fd33bc98b1738695179dfbf99ac1734f6"
+  url "https://github.com/ip7z/7zip/archive/refs/tags/26.05.tar.gz"
+  sha256 "989c658cef4c13124ed1f4ff7330a6ce5ab22cefdbbc9daae9b2c110dde9a63b"
   license all_of: ["LGPL-2.1-or-later", "BSD-3-Clause"]
   compatibility_version 1
   head "https://github.com/ip7z/7zip.git", branch: "main"
-
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "b694cdc8dea91ea9932f5f3c6194fc1ad84d4880c7fe6c4dfbe78dab9b3d1aea"
-  end
 
 
   deny_network_access!
@@ -101,4 +96,9 @@ class Sevenzip < Formula
     output = shell_output("./test7z").strip
     assert_equal version.to_s, output
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "1a59e5c66bdb31c9072339f387abb4af519644fba9730047337f4779815d3713"
+  end
+
 end

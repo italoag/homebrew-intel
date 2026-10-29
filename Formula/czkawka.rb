@@ -6,32 +6,27 @@ class Czkawka < Formula
   license all_of: ["MIT", "CC-BY-4.0"]
   head "https://github.com/qarmin/czkawka.git", branch: "master"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "4a95f952f500829ed75d342e211563f9aa8f96b6f736417b79583043059ca99d"
-  end
 
-
-  depends_on "rust" => :build
-  depends_on "adwaita-icon-theme"
-  depends_on "cairo"
-  depends_on "dav1d"
-  depends_on "ffmpeg"
-  depends_on "gdk-pixbuf"
-  depends_on "glib"
-  depends_on "gtk4"
-  depends_on "libheif"
-  depends_on "librsvg"
-  depends_on "pango"
-  depends_on "pkgconf"
-  depends_on "webp-pixbuf-loader"
+  depends_on "italoag/intel/rust" => :build
+  depends_on "italoag/intel/adwaita-icon-theme"
+  depends_on "italoag/intel/cairo"
+  depends_on "italoag/intel/dav1d"
+  depends_on "italoag/intel/ffmpeg"
+  depends_on "italoag/intel/gdk-pixbuf"
+  depends_on "italoag/intel/glib"
+  depends_on "italoag/intel/gtk4"
+  depends_on "italoag/intel/libheif"
+  depends_on "italoag/intel/librsvg"
+  depends_on "italoag/intel/pango"
+  depends_on "italoag/intel/pkgconf"
+  depends_on "italoag/intel/webp-pixbuf-loader"
 
   uses_from_macos "bzip2"
 
   on_macos do
-    depends_on "gettext"
-    depends_on "graphene"
-    depends_on "harfbuzz"
+    depends_on "italoag/intel/gettext"
+    depends_on "italoag/intel/graphene"
+    depends_on "italoag/intel/harfbuzz"
   end
 
   deny_network_access!
@@ -63,4 +58,9 @@ class Czkawka < Formula
 
     assert_match version.to_s, shell_output("#{bin}/czkawka_cli --version")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "4a95f952f500829ed75d342e211563f9aa8f96b6f736417b79583043059ca99d"
+  end
+
 end

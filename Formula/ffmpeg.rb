@@ -16,42 +16,37 @@ class Ffmpeg < Formula
     regex(/href=.*?ffmpeg[._-]v?(\d+(?:\.\d+)+)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "a7af97e56173805a03ccb6ed9ac5075a5cb6863013fe9c42d85addff37aa3958"
-  end
 
-
-  depends_on "pkgconf" => :build
+  depends_on "italoag/intel/pkgconf" => :build
 
   # Only add dependencies required for dependents in homebrew-core
   # or INCREDIBLY widely used and light codecs in the current year (2026).
   # Add other dependencies to ffmpeg-full formula.
   # We should expect to remove e.g. x264 eventually (>=2027) when usage of it is
   # negligible and has all moved to e.g. x265 instead.
-  depends_on "dav1d"
-  depends_on "lame"
-  depends_on "libvmaf" # dependent: ab-av1
-  depends_on "libvpx"
-  depends_on "openssl@4"
-  depends_on "opus"
-  depends_on "sdl2-compat"
-  depends_on "svt-av1"
-  depends_on "x264"
-  depends_on "x265"
-  depends_on "xz"
+  depends_on "italoag/intel/dav1d"
+  depends_on "italoag/intel/lame"
+  depends_on "italoag/intel/libvmaf" # dependent: ab-av1
+  depends_on "italoag/intel/libvpx"
+  depends_on "italoag/intel/openssl@4"
+  depends_on "italoag/intel/opus"
+  depends_on "italoag/intel/sdl2-compat"
+  depends_on "italoag/intel/svt-av1"
+  depends_on "italoag/intel/x264"
+  depends_on "italoag/intel/x265"
+  depends_on "italoag/intel/xz"
 
   uses_from_macos "bzip2"
   uses_from_macos "libxml2"
 
   on_linux do
     depends_on "alsa-lib"
-    depends_on "libxcb"
+    depends_on "italoag/intel/libxcb"
     depends_on "zlib-ng-compat"
   end
 
   on_intel do
-    depends_on "nasm" => :build
+    depends_on "italoag/intel/nasm" => :build
   end
 
   deny_network_access!
@@ -107,4 +102,9 @@ class Ffmpeg < Formula
     system bin/"ffmpeg", "-filter_complex", "testsrc=rate=1:duration=5", mp4out
     assert_path_exists mp4out, "Failed to create video.mp4!"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "a7af97e56173805a03ccb6ed9ac5075a5cb6863013fe9c42d85addff37aa3958"
+  end
+
 end

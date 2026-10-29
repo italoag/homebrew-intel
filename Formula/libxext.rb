@@ -16,9 +16,9 @@ class Libxext < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "7bc771ee68f57189ea941e83f2f5ff18ac94878ae35c30aed8868a906834d148"
   end
 
-  depends_on "pkgconf" => :build
-  depends_on "libx11"
-  depends_on "xorgproto"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/libx11"
+  depends_on "italoag/intel/xorgproto"
 
   def install
     args = %W[

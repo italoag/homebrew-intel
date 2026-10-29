@@ -10,8 +10,8 @@ class XcbProto < Formula
     sha256 cellar: :any_skip_relocation, all: "019dc0c8c057b145fb308abe073a0c30da2ea309f61a12a8f03c303e7bd27de9"
   end
 
-  depends_on "pkgconf" => [:build, :test]
-  depends_on "python@3.15" => [:build, :test]
+  depends_on "italoag/intel/pkgconf" => [:build, :test]
+  depends_on "italoag/intel/python@3.15" => [:build, :test]
 
   def install
     args = %W[

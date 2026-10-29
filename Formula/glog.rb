@@ -19,8 +19,8 @@ class Glog < Formula
 
   # deprecate! date: "2025-12-10", because: :repo_archived, replacement_formula: "abseil"
 
-  depends_on "cmake" => [:build, :test]
-  depends_on "gflags"
+  depends_on "italoag/intel/cmake" => [:build, :test]
+  depends_on "italoag/intel/gflags"
 
   deny_network_access!
 

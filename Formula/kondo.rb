@@ -16,7 +16,7 @@ class Kondo < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "2d282eae511caf3bc620fbe9bd92abcf629febe09ba711fca0e0e63e8169eb9e"
   end
 
-  depends_on "rust" => :build
+  depends_on "italoag/intel/rust" => :build
 
   deny_network_access!
 
@@ -26,7 +26,7 @@ class Kondo < Formula
 
   def install
     system "cargo", "install", *std_cargo_args(path: "kondo")
-    generate_completions_from_executable(bin/"kondo", "--completions")
+    generate_completions_from_executable(bin/"kondo", shell_parameter_format: "--completions=")
   end
 
   test do

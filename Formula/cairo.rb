@@ -11,29 +11,24 @@ class Cairo < Formula
     regex(%r{href=(?:["']?|.*?/)cairo[._-]v?(\d+\.\d*[02468](?:\.\d+)*)\.t}i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "5b61f5ad38b9731c8fa452c5dd95e63358a2b0849f137dfd8f5516c9911a810c"
-  end
 
+  depends_on "italoag/intel/meson" => :build
+  depends_on "italoag/intel/ninja" => :build
+  depends_on "italoag/intel/pkgconf" => [:build, :test]
 
-  depends_on "meson" => :build
-  depends_on "ninja" => :build
-  depends_on "pkgconf" => [:build, :test]
-
-  depends_on "fontconfig"
-  depends_on "freetype"
-  depends_on "glib"
-  depends_on "libpng"
-  depends_on "libx11"
-  depends_on "libxcb"
-  depends_on "libxext"
-  depends_on "libxrender"
-  depends_on "lzo"
-  depends_on "pixman"
+  depends_on "italoag/intel/fontconfig"
+  depends_on "italoag/intel/freetype"
+  depends_on "italoag/intel/glib"
+  depends_on "italoag/intel/libpng"
+  depends_on "italoag/intel/libx11"
+  depends_on "italoag/intel/libxcb"
+  depends_on "italoag/intel/libxext"
+  depends_on "italoag/intel/libxrender"
+  depends_on "italoag/intel/lzo"
+  depends_on "italoag/intel/pixman"
 
   on_macos do
-    depends_on "gettext"
+    depends_on "italoag/intel/gettext"
   end
 
   on_linux do
@@ -76,4 +71,9 @@ class Cairo < Formula
     system ENV.cc, "test.c", "-o", "test", *flags
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "5b61f5ad38b9731c8fa452c5dd95e63358a2b0849f137dfd8f5516c9911a810c"
+  end
+
 end

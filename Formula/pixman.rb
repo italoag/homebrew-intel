@@ -24,9 +24,9 @@ class Pixman < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "acad642a52a0e39159ba340f1e676c63d014422bf1d90e218ba7397b5873a2d1"
   end
 
-  depends_on "meson" => :build
-  depends_on "ninja" => :build
-  depends_on "pkgconf" => :test
+  depends_on "italoag/intel/meson" => :build
+  depends_on "italoag/intel/ninja" => :build
+  depends_on "italoag/intel/pkgconf" => :test
 
   def install
     system "meson", "setup", "build", "--default-library=both", *std_meson_args

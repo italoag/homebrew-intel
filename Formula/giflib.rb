@@ -11,11 +11,6 @@ class Giflib < Formula
     regex(%r{url=.*?/giflib[._-]v?(\d+(?:\.\d+)+)\.t}i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "3664fad7a5c499b7db8d2d603eefc3609a4e25797f320ad59b64914f868f58d1"
-  end
-
 
   deny_network_access!
 
@@ -34,4 +29,9 @@ class Giflib < Formula
     output = shell_output("#{bin}/giftext #{test_fixtures("test.gif")}")
     assert_match "Screen Size - Width = 1, Height = 1", output
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "3664fad7a5c499b7db8d2d603eefc3609a4e25797f320ad59b64914f868f58d1"
+  end
+
 end

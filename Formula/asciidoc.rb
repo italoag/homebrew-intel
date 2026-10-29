@@ -14,9 +14,9 @@ class Asciidoc < Formula
     sha256 cellar: :any_skip_relocation, all: "7855ebed76e3eb32109ab72cf0013683ef9a34213b8c7dc7aab9b7141db99067"
   end
 
-  depends_on "docbook"
-  depends_on "python@3.15"
-  depends_on "source-highlight"
+  depends_on "italoag/intel/docbook"
+  depends_on "italoag/intel/python@3.15"
+  depends_on "italoag/intel/source-highlight"
 
   uses_from_macos "libxml2"
 

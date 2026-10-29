@@ -6,13 +6,8 @@ class HdrhistogramC < Formula
   license any_of: ["CC0-1.0", "BSD-2-Clause"]
   compatibility_version 1
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "1e0be63fe0df040b177ecafac263fa71f6eaee8893ed22d5ca8c26ee269583fa"
-  end
 
-
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
 
   on_linux do
     depends_on "zlib-ng-compat"
@@ -49,4 +44,9 @@ class HdrhistogramC < Formula
       #[Buckets =           22, SubBuckets     =         2048]
     EOS
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "1e0be63fe0df040b177ecafac263fa71f6eaee8893ed22d5ca8c26ee269583fa"
+  end
+
 end

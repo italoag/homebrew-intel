@@ -7,11 +7,6 @@ class Reviewdog < Formula
   homepage "https://github.com/reviewdog/reviewdog"
   version "0.21.0"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "cacd3c00b691cb996665dd01ea3fc510b6e0cec9c2522c82ca320ee2a511808b"
-  end
-
   on_macos do
     if Hardware::CPU.intel?
       url "https://github.com/reviewdog/reviewdog/releases/download/v0.21.0/reviewdog_0.21.0_Darwin_x86_64.tar.gz"
@@ -58,4 +53,9 @@ class Reviewdog < Formula
   test do
     system "#{bin}/reviewdog -version"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "cacd3c00b691cb996665dd01ea3fc510b6e0cec9c2522c82ca320ee2a511808b"
+  end
+
 end

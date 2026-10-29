@@ -14,15 +14,10 @@ class Libuv < Formula
     regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "f8190411e01a43456709c7aef239c00852706f3c338f4f7927c683e0055cf738"
-  end
 
-
-  depends_on "cmake" => :build
-  depends_on "python-setuptools" => :build # for sphinx-copybutton
-  depends_on "sphinx-doc" => :build
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/python-setuptools" => :build # for sphinx-copybutton
+  depends_on "italoag/intel/sphinx-doc" => :build
 
   pypi_packages package_name:     "",
                 exclude_packages: "sphinx",
@@ -36,7 +31,7 @@ class Libuv < Formula
   deny_network_access!
 
   def install
-    venv = virtualenv_create(buildpath/"venv", Formula["sphinx-doc"].python3)
+    venv = virtualenv_create(buildpath/"venv", Formula["italoag/intel/sphinx-doc"].python3)
     venv.pip_install resources, build_isolation: false
     ENV.prepend_path "PYTHONPATH", venv.site_packages
 
@@ -66,4 +61,9 @@ class Libuv < Formula
     system ENV.cc, "test.c", "-L#{lib}", "-luv", "-o", "test"
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "f8190411e01a43456709c7aef239c00852706f3c338f4f7927c683e0055cf738"
+  end
+
 end

@@ -8,14 +8,9 @@ class Yamale < Formula
   license "MIT"
   head "https://github.com/23andMe/Yamale.git", branch: "master"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "4382294b9ad2cd2159817b144186c93f1775103b139a2ca0a12215974905c550"
-  end
 
-
-  depends_on "libyaml"
-  depends_on "python@3.15"
+  depends_on "italoag/intel/libyaml"
+  depends_on "italoag/intel/python@3.15"
 
   resource "pyyaml" do
     url "https://files.pythonhosted.org/packages/05/8e/961c0007c59b8dd7729d542c61a4d537767a59645b82a0b521206e1e25c2/pyyaml-6.0.3.tar.gz"
@@ -54,4 +49,9 @@ class Yamale < Formula
     output = shell_output("#{bin}/yamale -s schema.yaml schema.yaml", 1)
     assert_match "Validation failed!", output
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "981ea70c40d1c2a074ebacaea2304320709037057b440d008ff35dcfe0fb80eb"
+  end
+
 end

@@ -10,28 +10,23 @@ class PythonAT315 < Formula
     regex(%r{href=.*?/Python[._-]v?(3\.15(?:\.\d+)*)\.t}i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "cc4c233683c339769aa2bdeb44f66019442e853e9f00b67f97b0ef4560227e60"
-  end
-
 
   # https://devguide.python.org/versions/#versions
   deprecate! date: "2031-11-01", because: :deprecated_upstream
   disable! date: "2032-11-01", because: :deprecated_upstream
 
-  depends_on "pkgconf" => :build
-  depends_on "ca-certificates" => :no_linkage
-  depends_on "mpdecimal"
-  depends_on "openssl@4"
-  depends_on "sqlite"
-  depends_on "xz"
-  depends_on "zstd"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/ca-certificates" => :no_linkage
+  depends_on "italoag/intel/mpdecimal"
+  depends_on "italoag/intel/openssl@4"
+  depends_on "italoag/intel/sqlite"
+  depends_on "italoag/intel/xz"
+  depends_on "italoag/intel/zstd"
 
   uses_from_macos "bzip2"
   uses_from_macos "expat", since: :sequoia
   uses_from_macos "libedit"
-  uses_from_macos "libffi"
+  uses_from_macos "italoag/intel/libffi"
   uses_from_macos "ncurses"
 
   on_linux do
@@ -89,14 +84,14 @@ class PythonAT315 < Formula
   # The HOMEBREW_PREFIX location of site-packages.
   def site_packages = HOMEBREW_PREFIX/"lib/python#{version.major_minor}/site-packages"
 
-  def altinstall? = name != Formula["python3"].name
+  def altinstall? = name != Formula["italoag/intel/python@3.15"].name
 
   def python3 = bin/"python#{version.major_minor}"
 
   deny_network_access!
 
   def install
-    openssl = deps.find { |dep| dep.name.start_with?("openssl@") }.name
+    openssl = deps.find { |dep| dep.name.split("/").last.start_with?("openssl@") }.name
     # Unset these so that installing pip and setuptools puts them where we want
     # and not into some other Python the user has installed.
     ENV["PYTHONHOME"] = nil
@@ -308,7 +303,7 @@ class PythonAT315 < Formula
     # Use brewed ca-certificates PEM file instead of the bundled copy
     certifi = root_site_packages/"pip/_vendor/certifi"
     rm certifi/"cacert.pem"
-    certifi.install_symlink Formula["ca-certificates"].pkgetc/"cert.pem" => "cacert.pem"
+    certifi.install_symlink Formula["italoag/intel/ca-certificates"].pkgetc/"cert.pem" => "cacert.pem"
 
     # pip install with --target flag will just place the bin folder into the
     # target, so move its contents into the appropriate location
@@ -516,4 +511,9 @@ class PythonAT315 < Formula
     assert_match "If you wish to install a Python library",
                  shell_output("#{python3} -m pip install pip 2>&1", 1)
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "3e2f699827447ce70935a25a0f543c286703f3ab289deb7bd5edb332ac28d80b"
+  end
+
 end

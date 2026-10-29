@@ -11,17 +11,12 @@ class CargoC < Formula
     regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "16c29ab523dd1aad0b518f2ffafff75069780324fd22460352177262b9a8f683"
-  end
 
-
-  depends_on "pkgconf" => :build
-  depends_on "rust" => :build
-  depends_on "libgit2"
-  depends_on "libssh2"
-  depends_on "openssl@4"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/rust" => :build
+  depends_on "italoag/intel/libgit2"
+  depends_on "italoag/intel/libssh2"
+  depends_on "italoag/intel/openssl@4"
 
   # curl-config on ventura builds do not report http2 feature,
   # this is a workaround to allow to build against system curl
@@ -64,4 +59,9 @@ class CargoC < Formula
              "No linkage with #{library.basename}! Cargo is likely using a vendored version."
     end
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "16c29ab523dd1aad0b518f2ffafff75069780324fd22460352177262b9a8f683"
+  end
+
 end

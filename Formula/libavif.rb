@@ -16,11 +16,11 @@ class Libavif < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "824125e726a4ea8c4495ef60d538ef5b769037bd9c4acc7c5a757d0cd03c4819"
   end
 
-  depends_on "cmake" => :build
-  depends_on "aom"
-  depends_on "dav1d"
-  depends_on "jpeg-turbo"
-  depends_on "libpng"
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/aom"
+  depends_on "italoag/intel/dav1d"
+  depends_on "italoag/intel/jpeg-turbo"
+  depends_on "italoag/intel/libpng"
 
   on_linux do
     depends_on "zlib-ng-compat"

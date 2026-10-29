@@ -7,16 +7,11 @@ class X265 < Formula
   compatibility_version 2
   head "https://github.com/Multicorewareinc/x265.git", branch: "master"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "8475d87c9c0ae84efd2e3bdf6e7e917c11cc66008964de062f51b43bd9ca733d"
-  end
 
-
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
 
   on_intel do
-    depends_on "nasm" => :build
+    depends_on "italoag/intel/nasm" => :build
   end
 
   resource "homebrew-test_video", :test do
@@ -88,4 +83,9 @@ class X265 < Formula
 
     assert_match "version #{version}", shell_output("#{bin}/x265 -V 2>&1")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "868bb35aecc0eb607456ac8cca1cc9ee7598b497c546928e7407c132a4158b0d"
+  end
+
 end

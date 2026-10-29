@@ -19,14 +19,9 @@ class Exiftool < Formula
     strategy :page_match
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "4d29821e8148439a36755da63733d8871fdc62a74641ac703f68a0a373754594"
-  end
 
-
-  depends_on "brotli"
-  depends_on "xz"
+  depends_on "italoag/intel/brotli"
+  depends_on "italoag/intel/xz"
 
   uses_from_macos "perl"
 
@@ -111,4 +106,9 @@ class Exiftool < Formula
       assert_match "BrotliEXIF", shell_output("#{bin}/exiftool -verbose input.jxl")
     end
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "395a9dc7d7cb21b50ce14bdb4661316352bfbb9cd65f7670a9c54a2be60d1e9b"
+  end
+
 end

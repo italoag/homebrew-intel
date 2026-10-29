@@ -7,19 +7,14 @@ class P11Kit < Formula
   compatibility_version 1
   head "https://github.com/p11-glue/p11-kit.git", branch: "master"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "20f87d112be6b1f463183ed6544f09d04d8a292c242b4fc4ab458b7c2e48b2be"
-  end
 
+  depends_on "italoag/intel/meson" => :build
+  depends_on "italoag/intel/ninja" => :build
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/ca-certificates"
+  depends_on "italoag/intel/libtasn1"
 
-  depends_on "meson" => :build
-  depends_on "ninja" => :build
-  depends_on "pkgconf" => :build
-  depends_on "ca-certificates"
-  depends_on "libtasn1"
-
-  uses_from_macos "libffi"
+  uses_from_macos "italoag/intel/libffi"
 
   # meson test runs a server so needs network access
   allow_network_access! :build
@@ -49,4 +44,9 @@ class P11Kit < Formula
   test do
     assert_match "library-manufacturer: PKCS#11 Kit", shell_output("#{bin}/p11-kit list-modules --verbose")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "20f87d112be6b1f463183ed6544f09d04d8a292c242b4fc4ab458b7c2e48b2be"
+  end
+
 end

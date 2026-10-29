@@ -11,13 +11,8 @@ class Azcopy < Formula
     regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "733f82e441cfc7e6d718271a43f2fa6e766b2a5f3f10250acfde8526d2048cc8"
-  end
 
-
-  depends_on "go" => :build
+  depends_on "italoag/intel/go" => :build
 
   deny_network_access!
 
@@ -35,4 +30,9 @@ class Azcopy < Formula
     assert_match "Existing Jobs", shell_output("#{bin}/azcopy jobs list")
     assert_match version.to_s, shell_output("#{bin}/azcopy --version")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "733f82e441cfc7e6d718271a43f2fa6e766b2a5f3f10250acfde8526d2048cc8"
+  end
+
 end

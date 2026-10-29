@@ -7,18 +7,13 @@ class Py3cairo < Formula
   revision 1
   compatibility_version 1
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "0cba0df9d6dfa9a30d30263f7bf2d54563b6e484a1e7798f320fd129c613b13d"
-  end
 
-
-  depends_on "meson" => :build
-  depends_on "ninja" => :build
-  depends_on "pkgconf" => :build
-  depends_on "python@3.14" => [:build, :test]
-  depends_on "python@3.15" => [:build, :test]
-  depends_on "cairo"
+  depends_on "italoag/intel/meson" => :build
+  depends_on "italoag/intel/ninja" => :build
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/python@3.14" => [:build, :test]
+  depends_on "italoag/intel/python@3.15" => [:build, :test]
+  depends_on "italoag/intel/cairo"
 
   def pythons
     deps.map(&:to_formula)
@@ -48,4 +43,9 @@ class Py3cairo < Formula
       system python, "-c", "import cairo; print(cairo.version)"
     end
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "0cba0df9d6dfa9a30d30263f7bf2d54563b6e484a1e7798f320fd129c613b13d"
+  end
+
 end

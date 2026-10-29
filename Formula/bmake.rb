@@ -10,11 +10,6 @@ class Bmake < Formula
     regex(/href=.*?bmake[._-]v?(\d{6,8})\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "ed85c27b84c7ebd663ec77e9a3193ef329777fe1bffaeb9ba79d3bc94f644f68"
-  end
-
 
   uses_from_macos "bc-gh" => :build
 
@@ -46,4 +41,9 @@ class Bmake < Formula
     system bin/"bmake"
     system bin/"bmake", "clean"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "ed85c27b84c7ebd663ec77e9a3193ef329777fe1bffaeb9ba79d3bc94f644f68"
+  end
+
 end

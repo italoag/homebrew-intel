@@ -20,8 +20,8 @@ class Lame < Formula
     sha256 cellar: :any, x86_64_linux:      "260e9309ef40e8ad7373bfae07f20d5357e036d32b14ea3ce6526fdf15181a37"
   end
 
-  depends_on "pkgconf" => :build
-  depends_on "mpg123"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/mpg123"
 
   uses_from_macos "ncurses"
 

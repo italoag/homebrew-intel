@@ -11,18 +11,13 @@ class Libarchive < Formula
     regex(/href=.*?libarchive[._-]v?(\d+(?:\.\d+)+)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "26a34c88017c6cc4c02fd694187c15726299bd8ed64cf58cba8ec091e2b49e0b"
-  end
-
 
   keg_only :provided_by_macos
 
-  depends_on "libb2"
-  depends_on "lz4"
-  depends_on "xz"
-  depends_on "zstd"
+  depends_on "italoag/intel/libb2"
+  depends_on "italoag/intel/lz4"
+  depends_on "italoag/intel/xz"
+  depends_on "italoag/intel/zstd"
 
   uses_from_macos "bzip2"
   uses_from_macos "expat"
@@ -59,4 +54,9 @@ class Libarchive < Formula
     system bin/"bsdtar", "-czvf", "test.tar.gz", "test"
     assert_match "test", shell_output("#{bin}/bsdtar -xOzf test.tar.gz")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "a353181eab76ee0b14d93e9c729d20af156a681ccedf0788141efc93ae91a59f"
+  end
+
 end

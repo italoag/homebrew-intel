@@ -16,7 +16,7 @@ class Imath < Formula
     sha256 cellar: :any, x86_64_linux:      "3664b41b9a85c26b5735f4a3507f0970e83d4ed53cacb62c7ec2cc36a3e2c74c"
   end
 
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
 
   # These used to be provided by `ilmbase`
   link_overwrite "lib/libImath.dylib"

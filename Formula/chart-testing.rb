@@ -7,16 +7,11 @@ class ChartTesting < Formula
   license "Apache-2.0"
   head "https://github.com/helm/chart-testing.git", branch: "main"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "2c4783615a0b16749b4744922b53e1ea8e6814d4efe6cd3773a00b8b7596eff4"
-  end
 
-
-  depends_on "go" => :build
-  depends_on "helm" => :test
-  depends_on "yamllint" => :test
-  depends_on "yamale"
+  depends_on "italoag/intel/go" => :build
+  depends_on "italoag/intel/helm" => :test
+  depends_on "italoag/intel/yamllint" => :test
+  depends_on "italoag/intel/yamale"
 
   conflicts_with "coreos-ct", because: "both install `ct` binaries"
 
@@ -48,4 +43,9 @@ class ChartTesting < Formula
                           "--validate-maintainers=false").lines.last.chomp
     assert_match "All charts linted successfully", output
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "2c4783615a0b16749b4744922b53e1ea8e6814d4efe6cd3773a00b8b7596eff4"
+  end
+
 end

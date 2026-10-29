@@ -28,7 +28,7 @@ class Libassuan < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "620108c517ecfeb00c843bd34f86b75bf84c1bd92be9b554c86424fad3b99f08"
   end
 
-  depends_on "libgpg-error"
+  depends_on "italoag/intel/libgpg-error"
 
   def install
     system "./configure", "--disable-silent-rules",

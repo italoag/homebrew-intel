@@ -28,7 +28,7 @@ class Bison < Formula
 
   keg_only :provided_by_macos
 
-  uses_from_macos "m4"
+  uses_from_macos "italoag/intel/m4"
 
   deny_network_access!
 

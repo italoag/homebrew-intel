@@ -8,14 +8,9 @@ class SphinxDoc < Formula
   license "BSD-2-Clause"
   head "https://github.com/sphinx-doc/sphinx.git", branch: "master"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "1dafca835e953d095be3c8ba4a834cce6a1de072e44d556e9b100fb25e33c37b"
-  end
 
-
-  depends_on "certifi"
-  depends_on "python@3.15"
+  depends_on "italoag/intel/certifi"
+  depends_on "italoag/intel/python@3.15"
 
   pypi_packages exclude_packages: "certifi",
                 extra_packages:   "numpydoc"
@@ -134,4 +129,9 @@ class SphinxDoc < Formula
     system bin/"sphinx-build", testpath, testpath/"build"
     assert_path_exists testpath/"build/index.html"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "1dafca835e953d095be3c8ba4a834cce6a1de072e44d556e9b100fb25e33c37b"
+  end
+
 end

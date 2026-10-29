@@ -12,13 +12,8 @@ class Ninja < Formula
     regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "fb3e3a65db840fef85d616e020d3e1e40b66cdb82f216df8d7d50a11d8cafa12"
-  end
 
-
-  uses_from_macos "python" => [:build, :test]
+  uses_from_macos "italoag/intel/python@3.15" => [:build, :test]
 
   # runs a server in the test
   allow_network_access! :test
@@ -47,4 +42,9 @@ class Ninja < Formula
     spawn bin/"ninja", "-t", "browse", "--port=#{port}", "--hostname=127.0.0.1", "--no-browser", "foo.o"
     assert_match "foo.c", shell_output("curl --silent --retry 5 --retry-connrefused http://127.0.0.1:#{port}?foo.o")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "fb3e3a65db840fef85d616e020d3e1e40b66cdb82f216df8d7d50a11d8cafa12"
+  end
+
 end

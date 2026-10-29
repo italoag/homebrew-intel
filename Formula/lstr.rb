@@ -7,11 +7,6 @@ class Lstr < Formula
   version "0.2.1" # This should match the latest release
   license "MIT"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "402194db1c65850609dd3ce72eeb61a7777a0f548c9cfb1382b7313f16665bfd"
-  end
-
   # Define URLs and checksums for both architectures
   if Hardware::CPU.intel?
     url "https://github.com/bgreenwell/lstr/releases/download/v0.2.1/lstr-macos-x86_64.tar.gz"
@@ -31,5 +26,10 @@ class Lstr < Formula
   test do
     system "#{bin}/lstr", "--version"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "402194db1c65850609dd3ce72eeb61a7777a0f548c9cfb1382b7313f16665bfd"
+  end
+
 end
 

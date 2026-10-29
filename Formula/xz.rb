@@ -12,11 +12,6 @@ class Xz < Formula
   version_scheme 1
   compatibility_version 1
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "69cc1ef04e866c436e118429da8cfa14d5a72165d12ce8c4eccba892cab2af25"
-  end
-
 
   deny_network_access!
 
@@ -39,4 +34,9 @@ class Xz < Formula
     system bin/"xz", "-d", "#{path}.xz"
     assert_equal original_contents, path.read
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "69cc1ef04e866c436e118429da8cfa14d5a72165d12ce8c4eccba892cab2af25"
+  end
+
 end

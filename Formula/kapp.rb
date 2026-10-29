@@ -3,11 +3,6 @@ class Kapp < Formula
   homepage "https://carvel.dev/kapp/"
   version "v0.65.5"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "30cb799dd05548ca31cb13753d5854bf2fd756d4f8b4269dc0b660aaa2c8676b"
-  end
-
   if OS.mac?
     if Hardware::CPU.arm?
       url "https://github.com/carvel-dev/kapp/releases/download/v0.65.5/kapp-darwin-arm64"
@@ -34,5 +29,10 @@ class Kapp < Formula
   test do
     system "#{bin}/kapp", "version"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "30cb799dd05548ca31cb13753d5854bf2fd756d4f8b4269dc0b660aaa2c8676b"
+  end
+
 end
 

@@ -11,20 +11,15 @@ class Libomp < Formula
     regex(/^llvmorg[._-]v?(\d+(?:\.\d+)+)$/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "32ef44c2b09855ee33c6a7456e7779659e80c489231ab36de44097ec214d0b24"
-  end
-
 
   # Ref: https://github.com/Homebrew/homebrew-core/issues/112107
   keg_only "it can override GCC headers and result in broken builds"
 
-  depends_on "cmake" => :build
-  uses_from_macos "llvm" => :build
+  depends_on "italoag/intel/cmake" => :build
+  uses_from_macos "italoag/intel/llvm" => :build
 
   on_linux do
-    depends_on "python@3.15"
+    depends_on "italoag/intel/python@3.15"
   end
 
   deny_network_access!
@@ -71,4 +66,9 @@ class Libomp < Formula
                     "-I#{include}", "-L#{lib}", "-lomp", "-o", "test"
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "9e39a744a933f68d293389a90a0f2ba368323c0d96b575a5cc06d4e36ff30fee"
+  end
+
 end

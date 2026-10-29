@@ -1,8 +1,8 @@
 class PythonAT313 < Formula
   desc "Interpreted, interactive, object-oriented programming language"
   homepage "https://www.python.org/"
-  url "https://www.python.org/ftp/python/3.13.16/Python-3.13.16.tgz"
-  sha256 "cfac63bddf956deafb1172ca131ae5dcaafd6f95056086e233fca205593ed427"
+  url "https://www.python.org/ftp/python/3.13.18/Python-3.13.18.tgz"
+  sha256 "99dbc847fb6a3fb26358370fb4c591215864116ebb584f2b89ab0b74c51dfa2a"
   license "Python-2.0"
   compatibility_version 1
 
@@ -11,26 +11,21 @@ class PythonAT313 < Formula
     regex(%r{href=.*?/Python[._-]v?(3\.13(?:\.\d+)*)\.t}i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "355ad63c639377bf9d0bd7424043521daa77b7665e29bc0a07707cb0f6b7e760"
-  end
-
 
   # https://devguide.python.org/versions/#versions
   deprecate! date: "2029-11-01", because: :deprecated_upstream
   disable! date: "2030-11-01", because: :deprecated_upstream
 
-  depends_on "pkgconf" => :build
-  depends_on "mpdecimal"
-  depends_on "openssl@3"
-  depends_on "sqlite"
-  depends_on "xz"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/mpdecimal"
+  depends_on "italoag/intel/openssl@3"
+  depends_on "italoag/intel/sqlite"
+  depends_on "italoag/intel/xz"
 
   uses_from_macos "bzip2"
   uses_from_macos "expat", since: :sequoia
   uses_from_macos "libedit"
-  uses_from_macos "libffi"
+  uses_from_macos "italoag/intel/libffi"
   uses_from_macos "ncurses"
 
   on_linux do
@@ -54,8 +49,8 @@ class PythonAT313 < Formula
   end
 
   resource "pip" do
-    url "https://files.pythonhosted.org/packages/ae/15/4500e320e6b101ec3b719ae85b697d9940b6cda672bc555bd6016fc60c6f/pip-26.2.1.tar.gz"
-    sha256 "f6ad667e89a1fe78046c8f13232b247200f5258d7828f3f7883d660878e0813f"
+    url "https://files.pythonhosted.org/packages/fa/e8/0842d757e483e895e670f655084cfe8b8c72580c6769a76b30b2789a0608/pip-26.2.2.tar.gz"
+    sha256 "3a8e5c800492787f33a4114ef54444546c340df428974ebba17e0fd47e11af2f"
   end
 
   resource "wheel" do
@@ -86,7 +81,7 @@ class PythonAT313 < Formula
   # The HOMEBREW_PREFIX location of site-packages.
   def site_packages = HOMEBREW_PREFIX/"lib/python#{version.major_minor}/site-packages"
 
-  def altinstall? = name != Formula["python3"].name
+  def altinstall? = name != Formula["italoag/intel/python@3.15"].name
 
   def python3 = bin/"python#{version.major_minor}"
 
@@ -386,7 +381,6 @@ class PythonAT313 < Formula
       # This file is created by Homebrew and is executed on each python startup.
       # Don't print from here, or else python command line scripts may fail!
       # <https://docs.brew.sh/Homebrew-and-Python>
-      import re
       import os
       import site
       import sys
@@ -404,22 +398,20 @@ class PythonAT313 < Formula
       if os.path.realpath(sys.executable).startswith('#{rack}'):
           # the Cellar site-packages is a symlink to the HOMEBREW_PREFIX
           # site_packages; prefer the shorter paths
-          long_prefix = re.compile(r'#{rack}/[0-9\\._abrc]+/(?:Frameworks/Python\\.framework/Versions/#{version.major_minor}/)?lib/python#{version.major_minor}/site-packages')
-          sys.path = [long_prefix.sub('#{site_packages}', p) for p in sys.path]
+          sys.path = [p.replace('#{site_packages_cellar}', '#{site_packages}') for p in sys.path]
           # Set the sys.executable to use the opt_prefix. Only do this if PYTHONEXECUTABLE is not
           # explicitly set and we are not in a virtualenv:
           if 'PYTHONEXECUTABLE' not in os.environ and sys.prefix == sys.base_prefix:
               sys.executable = sys._base_executable = '#{opt_bin}/python#{version.major_minor}'
       if 'PYTHONHOME' not in os.environ:
-          cellar_prefix = re.compile(r'#{rack}/[0-9\\._abrc]+(?=/|$)')
           if os.path.realpath(sys.base_prefix).startswith('#{rack}'):
-              new_prefix = cellar_prefix.sub('#{opt_prefix}', sys.base_prefix)
+              new_prefix = sys.base_prefix.replace('#{prefix}', '#{opt_prefix}')
               site.PREFIXES[:] = [new_prefix if x == sys.base_prefix else x for x in site.PREFIXES]
               if sys.prefix == sys.base_prefix:
                   sys.prefix = new_prefix
               sys.base_prefix = new_prefix
           if os.path.realpath(sys.base_exec_prefix).startswith('#{rack}'):
-              new_exec_prefix = cellar_prefix.sub('#{opt_prefix}', sys.base_exec_prefix)
+              new_exec_prefix = sys.base_exec_prefix.replace('#{prefix}', '#{opt_prefix}')
               site.PREFIXES[:] = [new_exec_prefix if x == sys.base_exec_prefix else x for x in site.PREFIXES]
               if sys.exec_prefix == sys.base_exec_prefix:
                   sys.exec_prefix = new_exec_prefix
@@ -520,4 +512,9 @@ class PythonAT313 < Formula
     assert_match "If you wish to install a Python library",
                  shell_output("#{python3} -m pip install pip 2>&1", 1)
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "38941445c0361dee142915bba9ff2fda58c4a8ae12c3f4079e6992b4a6c3036b"
+  end
+
 end

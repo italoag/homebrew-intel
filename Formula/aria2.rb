@@ -6,22 +6,17 @@ class Aria2 < Formula
   license "GPL-2.0-or-later"
   revision 3
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "5c9140de128ba65ebdae2b1d7cdb52ef563e49590b09af1a57698a522ec0efd3"
-  end
 
-
-  depends_on "pkgconf" => :build
-  depends_on "c-ares"
-  depends_on "libssh2"
-  depends_on "openssl@4"
-  depends_on "sqlite"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/c-ares"
+  depends_on "italoag/intel/libssh2"
+  depends_on "italoag/intel/openssl@4"
+  depends_on "italoag/intel/sqlite"
 
   uses_from_macos "libxml2"
 
   on_macos do
-    depends_on "gettext"
+    depends_on "italoag/intel/gettext"
   end
 
   on_linux do
@@ -63,4 +58,9 @@ class Aria2 < Formula
     system bin/"aria2c", "https://brew.sh/"
     assert_path_exists testpath/"index.html", "Failed to create index.html!"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "5c9140de128ba65ebdae2b1d7cdb52ef563e49590b09af1a57698a522ec0efd3"
+  end
+
 end

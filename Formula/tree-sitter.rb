@@ -12,11 +12,6 @@ class TreeSitter < Formula
     regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "3865e84af3839638d6dffd50c23d3e6fe03d89e9eb035de021e0288db86adb1c"
-  end
-
 
   deny_network_access!
 
@@ -63,4 +58,9 @@ class TreeSitter < Formula
     system ENV.cc, "test_program.c", "-L#{lib}", "-ltree-sitter", "-o", "test_program"
     assert_equal "tree creation failed", shell_output("./test_program")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "3865e84af3839638d6dffd50c23d3e6fe03d89e9eb035de021e0288db86adb1c"
+  end
+
 end

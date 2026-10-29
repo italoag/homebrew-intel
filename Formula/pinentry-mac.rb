@@ -16,17 +16,17 @@ class PinentryMac < Formula
     sha256 cellar: :any, ventura:           "e454945cc2ca007d6c030f75389380aa3892183bf9214181c98b5949cc3ecddf"
   end
 
-  depends_on "autoconf" => :build
-  depends_on "automake" => :build
-  depends_on "gettext" => :build
-  depends_on "libtool" => :build
+  depends_on "italoag/intel/autoconf" => :build
+  depends_on "italoag/intel/automake" => :build
+  depends_on "italoag/intel/gettext" => :build
+  depends_on "italoag/intel/libtool" => :build
   depends_on xcode: :build # for ibtool
-  depends_on "libassuan"
-  depends_on "libgpg-error"
+  depends_on "italoag/intel/libassuan"
+  depends_on "italoag/intel/libgpg-error"
   depends_on :macos
 
   def install
-    ENV.append_path "ACLOCAL_PATH", Formula["gettext"].pkgshare/"m4"
+    ENV.append_path "ACLOCAL_PATH", Formula["italoag/intel/gettext"].pkgshare/"m4"
 
     system "./autogen.sh"
     system "./configure", "--disable-doc",

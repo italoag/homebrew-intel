@@ -8,15 +8,10 @@ class Beads < Formula
   compatibility_version 1
   head "https://github.com/gastownhall/beads.git", branch: "main"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "4ec5ba366add6c36e16b1fe3e9341b09c4316413f818ec9ecd48beb9f54447a4"
-  end
 
-
-  depends_on "go" => :build
-  depends_on "dolt"
-  depends_on "icu4c@79"
+  depends_on "italoag/intel/go" => :build
+  depends_on "italoag/intel/dolt"
+  depends_on "italoag/intel/icu4c@79"
 
   deny_network_access!
 
@@ -54,4 +49,9 @@ class Beads < Formula
     assert_match "Beads Database Information", output
     assert_match "Issue Count: 0", output
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "4ec5ba366add6c36e16b1fe3e9341b09c4316413f818ec9ecd48beb9f54447a4"
+  end
+
 end

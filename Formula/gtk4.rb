@@ -12,49 +12,44 @@ class Gtk4 < Formula
     regex(/gtk[._-](4\.([0-8]\d*?)?[02468](?:\.\d+)*?)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "507f912c57b4ab857bbfab5f7afc0f8672295f0141f5e578ef4b9c24e8dd537d"
-  end
 
-
-  depends_on "dart-sass" => :build
-  depends_on "docbook" => :build
-  depends_on "docbook-xsl" => :build
-  depends_on "docutils" => :build
-  depends_on "gettext" => :build
-  depends_on "gobject-introspection" => :build
-  depends_on "meson" => :build
-  depends_on "ninja" => :build
-  depends_on "pkgconf" => [:build, :test]
-  depends_on "cairo"
-  depends_on "fontconfig"
-  depends_on "fribidi"
-  depends_on "gdk-pixbuf"
-  depends_on "glib"
-  depends_on "graphene"
-  depends_on "harfbuzz"
-  depends_on "hicolor-icon-theme"
-  depends_on "jpeg-turbo"
-  depends_on "libepoxy"
-  depends_on "libpng"
-  depends_on "librsvg"
-  depends_on "libtiff"
-  depends_on "pango"
+  depends_on "italoag/intel/dart-sass" => :build
+  depends_on "italoag/intel/docbook" => :build
+  depends_on "italoag/intel/docbook-xsl" => :build
+  depends_on "italoag/intel/docutils" => :build
+  depends_on "italoag/intel/gettext" => :build
+  depends_on "italoag/intel/gobject-introspection" => :build
+  depends_on "italoag/intel/meson" => :build
+  depends_on "italoag/intel/ninja" => :build
+  depends_on "italoag/intel/pkgconf" => [:build, :test]
+  depends_on "italoag/intel/cairo"
+  depends_on "italoag/intel/fontconfig"
+  depends_on "italoag/intel/fribidi"
+  depends_on "italoag/intel/gdk-pixbuf"
+  depends_on "italoag/intel/glib"
+  depends_on "italoag/intel/graphene"
+  depends_on "italoag/intel/harfbuzz"
+  depends_on "italoag/intel/hicolor-icon-theme"
+  depends_on "italoag/intel/jpeg-turbo"
+  depends_on "italoag/intel/libepoxy"
+  depends_on "italoag/intel/libpng"
+  depends_on "italoag/intel/librsvg"
+  depends_on "italoag/intel/libtiff"
+  depends_on "italoag/intel/pango"
 
   uses_from_macos "libxslt" => :build # for xsltproc
   uses_from_macos "cups"
 
   on_macos do
-    depends_on "gettext"
+    depends_on "italoag/intel/gettext"
   end
 
   on_linux do
     depends_on "wayland-protocols" => :build
-    depends_on "libx11"
+    depends_on "italoag/intel/libx11"
     depends_on "libxcursor"
     depends_on "libxdamage"
-    depends_on "libxext"
+    depends_on "italoag/intel/libxext"
     depends_on "libxfixes"
     depends_on "libxi"
     depends_on "libxinerama"
@@ -120,4 +115,9 @@ class Gtk4 < Formula
     # include a version check for the pkg-config files
     assert_match version.to_s, shell_output("cat #{lib}/pkgconfig/gtk4.pc").strip
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "507f912c57b4ab857bbfab5f7afc0f8672295f0141f5e578ef4b9c24e8dd537d"
+  end
+
 end

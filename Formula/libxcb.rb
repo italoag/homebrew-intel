@@ -19,11 +19,11 @@ class Libxcb < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "1ccb2f6e9f4feb73b3dbc56248554bc8ce30cb34771ed987eec1bd956f8563e2"
   end
 
-  depends_on "pkgconf" => :build
-  depends_on "python@3.15" => :build # match version in `xcb-proto`
-  depends_on "xcb-proto" => :build
-  depends_on "libxau"
-  depends_on "libxdmcp"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/python@3.15" => :build # match version in `xcb-proto`
+  depends_on "italoag/intel/xcb-proto" => :build
+  depends_on "italoag/intel/libxau"
+  depends_on "italoag/intel/libxdmcp"
 
   def install
     args = %W[

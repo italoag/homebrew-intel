@@ -8,11 +8,6 @@ class Libunistring < Formula
   license any_of: ["GPL-2.0-or-later", "LGPL-3.0-or-later"]
   compatibility_version 1
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "77a9b0f6cf6ffd69ad259aae6be20e6d3fd4e5d5101570a275cd42b510ad2e45"
-  end
-
 
   deny_network_access!
 
@@ -48,4 +43,9 @@ class Libunistring < Formula
                    "-o", "test"
     assert_equal "🍺", shell_output("./test").chomp
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "77a9b0f6cf6ffd69ad259aae6be20e6d3fd4e5d5101570a275cd42b510ad2e45"
+  end
+
 end

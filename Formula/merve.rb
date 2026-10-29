@@ -6,14 +6,9 @@ class Merve < Formula
   license "Apache-2.0"
   revision 4
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "8980f318b13297cf7d870554ef85433548e2f3ed1bec428fe6662811be150637"
-  end
 
-
-  depends_on "cmake" => :build
-  depends_on "simdutf"
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/simdutf"
 
   deny_network_access!
 
@@ -54,4 +49,9 @@ class Merve < Formula
     system ENV.cc, "test-merv.c", "-I#{include}", "-L#{lib}", "-lmerve", "-o", "test-merv"
     assert_equal "2 bar 2\n", shell_output("./test-merv")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "b4580cc03436a498c4ddc5db8e67bc6cf74a3de1880e088490ac7ee3e2ddc3af"
+  end
+
 end

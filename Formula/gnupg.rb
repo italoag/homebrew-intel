@@ -18,29 +18,24 @@ class Gnupg < Formula
     regex(/The current version of GnuPG is v?(\d+(?:\.\d+)+)\. /i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "89db49ea3f50d3326c996c39816e1e3b6209e7a96bd49024862426745b1e686f"
-  end
 
-
-  depends_on "pkgconf" => :build
-  depends_on "gnutls"
-  depends_on "libassuan"
-  depends_on "libgcrypt"
-  depends_on "libgpg-error"
-  depends_on "libksba"
-  depends_on "libusb"
-  depends_on "npth"
-  depends_on "pinentry"
-  depends_on "readline"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/gnutls"
+  depends_on "italoag/intel/libassuan"
+  depends_on "italoag/intel/libgcrypt"
+  depends_on "italoag/intel/libgpg-error"
+  depends_on "italoag/intel/libksba"
+  depends_on "italoag/intel/libusb"
+  depends_on "italoag/intel/npth"
+  depends_on "italoag/intel/pinentry"
+  depends_on "italoag/intel/readline"
 
   uses_from_macos "bzip2"
   uses_from_macos "openldap"
-  uses_from_macos "sqlite"
+  uses_from_macos "italoag/intel/sqlite"
 
   on_macos do
-    depends_on "gettext"
+    depends_on "italoag/intel/gettext"
   end
 
   on_linux do
@@ -65,7 +60,7 @@ class Gnupg < Formula
   deny_network_access!
 
   def install
-    libusb = Formula["libusb"]
+    libusb = Formula["italoag/intel/libusb"]
     ENV.append "CPPFLAGS", "-I#{libusb.opt_include}/libusb-#{libusb.version.major_minor}"
 
     # gpgscm otherwise hard-codes /tmp on Unix.
@@ -121,4 +116,9 @@ class Gnupg < Formula
       system bin/"gpgconf", "--kill", "gpg-agent"
     end
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "89db49ea3f50d3326c996c39816e1e3b6209e7a96bd49024862426745b1e686f"
+  end
+
 end

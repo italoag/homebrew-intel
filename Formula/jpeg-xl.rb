@@ -12,26 +12,21 @@ class JpegXl < Formula
     regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "314a25f6092600bd7a3bfb64bff508b327460cf9b48811527b1396d961ac2169"
-  end
 
-
-  depends_on "asciidoc" => :build
-  depends_on "cmake" => :build
-  depends_on "docbook-xsl" => :build
-  depends_on "pkgconf" => [:build, :test]
-  depends_on "sphinx-doc" => :build
-  depends_on "webp" => :build
-  depends_on "brotli"
-  depends_on "giflib"
-  depends_on "highway"
-  depends_on "imath"
-  depends_on "jpeg-turbo"
-  depends_on "libpng"
-  depends_on "little-cms2"
-  depends_on "openexr"
+  depends_on "italoag/intel/asciidoc" => :build
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/docbook-xsl" => :build
+  depends_on "italoag/intel/pkgconf" => [:build, :test]
+  depends_on "italoag/intel/sphinx-doc" => :build
+  depends_on "italoag/intel/webp" => :build
+  depends_on "italoag/intel/brotli"
+  depends_on "italoag/intel/giflib"
+  depends_on "italoag/intel/highway"
+  depends_on "italoag/intel/imath"
+  depends_on "italoag/intel/jpeg-turbo"
+  depends_on "italoag/intel/libpng"
+  depends_on "italoag/intel/little-cms2"
+  depends_on "italoag/intel/openexr"
 
   uses_from_macos "libxml2" => :build
   uses_from_macos "libxslt" => :build # for xsltproc
@@ -112,4 +107,9 @@ class JpegXl < Formula
     system ENV.cc, "jxl_threads_test.c", *jxl_threads_flags, "-o", "jxl_threads_test"
     system "./jxl_threads_test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "314a25f6092600bd7a3bfb64bff508b327460cf9b48811527b1396d961ac2169"
+  end
+
 end

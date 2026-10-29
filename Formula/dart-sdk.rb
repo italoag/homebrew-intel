@@ -11,18 +11,13 @@ class DartSdk < Formula
     regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "12cfeb915fa957d620ef6f9f323fa517455a82b6bba30206e14d4d85307cfd7b"
-  end
 
-
-  depends_on "ninja" => :build
-  depends_on "rust" => :build
+  depends_on "italoag/intel/ninja" => :build
+  depends_on "italoag/intel/rust" => :build
 
   uses_from_macos "curl" => :build
-  uses_from_macos "python" => :build
-  uses_from_macos "xz" => :build
+  uses_from_macos "italoag/intel/python@3.15" => :build
+  uses_from_macos "italoag/intel/xz" => :build
 
   # always pull the latest commit from https://chromium.googlesource.com/chromium/tools/depot_tools.git/+/refs/heads/main
   resource "depot-tools" do
@@ -68,4 +63,9 @@ class DartSdk < Formula
       assert_match "Hello world: 42!", shell_output("#{bin}/dart run")
     end
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "12cfeb915fa957d620ef6f9f323fa517455a82b6bba30206e14d4d85307cfd7b"
+  end
+
 end

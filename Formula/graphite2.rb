@@ -16,10 +16,10 @@ class Graphite2 < Formula
     sha256 cellar: :any, x86_64_linux:      "2c2803a27eb8365e8c02726d2c2e967496044a9af06e59348b52fef23e8360fd"
   end
 
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
 
   on_linux do
-    depends_on "freetype" => :build
+    depends_on "italoag/intel/freetype" => :build
   end
 
   resource "testfont", :test do

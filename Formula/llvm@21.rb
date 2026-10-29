@@ -13,26 +13,21 @@ class LlvmAT21 < Formula
     regex(/^llvmorg[._-]v?(21(?:\.\d+)+)$/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "6d1c5f4a1af4b1a8e9fa07a3be080474109ed4c1e17bc2f856ca418ea4b2e887"
-  end
-
 
   keg_only :versioned_formula
 
   # https://llvm.org/docs/GettingStarted.html#requirement
-  depends_on "cmake" => :build
-  depends_on "ninja" => :build
-  depends_on "python@3.15" => [:build, :test]
-  depends_on "zstd"
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/ninja" => :build
+  depends_on "italoag/intel/python@3.15" => [:build, :test]
+  depends_on "italoag/intel/zstd"
 
   uses_from_macos "libedit"
-  uses_from_macos "libffi"
+  uses_from_macos "italoag/intel/libffi"
 
   on_linux do
     depends_on "binutils" => :build # needed for LLVMgold plugin
-    depends_on "pkgconf" => :build
+    depends_on "italoag/intel/pkgconf" => :build
     depends_on "zlib-ng-compat"
   end
 
@@ -553,4 +548,9 @@ class LlvmAT21 < Formula
       end
     end
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "6d1c5f4a1af4b1a8e9fa07a3be080474109ed4c1e17bc2f856ca418ea4b2e887"
+  end
+
 end

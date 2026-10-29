@@ -3,17 +3,16 @@ class OciCli < Formula
 
   desc "Oracle Cloud Infrastructure CLI"
   homepage "https://docs.cloud.oracle.com/iaas/Content/API/Concepts/cliconcepts.htm"
-  url "https://files.pythonhosted.org/packages/2f/41/e38202a97db38799103870d2c68d1d922707e0522e4fba5bdcdcec065053/oci_cli-3.94.2.tar.gz"
-  sha256 "008abd772aa72fe9d21ce8d92bfc12093e51313b1e63e73621771928b306c008"
+  url "https://files.pythonhosted.org/packages/8b/18/edefd9613dbd2501f6e95377ea55db169756a19e42fd375cb3b1c327eb7c/oci_cli-3.95.1.tar.gz"
+  sha256 "d73767295d697ca72f24cc500aa966465e2b37ea8c58d67c151cd7fb1ada15be"
   license any_of: ["UPL-1.0", "Apache-2.0"]
   head "https://github.com/oracle/oci-cli.git", branch: "master"
 
 
-
-  depends_on "certifi" => :no_linkage
-  depends_on "cryptography" => :no_linkage
-  depends_on "libyaml"
-  depends_on "python@3.15"
+  depends_on "italoag/intel/certifi" => :no_linkage
+  depends_on "italoag/intel/cryptography" => :no_linkage
+  depends_on "italoag/intel/libyaml"
+  depends_on "italoag/intel/python@3.15"
 
   pypi_packages exclude_packages: %w[certifi cryptography]
 
@@ -23,8 +22,8 @@ class OciCli < Formula
   end
 
   resource "aiohttp" do
-    url "https://files.pythonhosted.org/packages/93/2f/6a91adaa2dc26877d6ed2f54c0370c8910f019db7d77c5c6a194611e93ea/aiohttp-3.14.4.tar.gz"
-    sha256 "831fc5bd39ec2517851e348f613ddb5447a47cf4b71cb09845af7ad7ed45d8f9"
+    url "https://files.pythonhosted.org/packages/6c/4c/bdccd81e9ee225b69c60e7766c9a5b05364f118f4d383713b89a682d772d/aiohttp-3.14.5.tar.gz"
+    sha256 "5558a7f5a05af9ecf744af91e5baefc436f93c9333e656c27ec253f9a6bbe178"
   end
 
   resource "aiosignal" do
@@ -78,13 +77,13 @@ class OciCli < Formula
   end
 
   resource "multidict" do
-    url "https://files.pythonhosted.org/packages/d6/99/1d4d69c3512d0ddbfa3a1b69cfd9a151012ab2eb4eabbb096201b1f0b7d8/multidict-6.9.1.tar.gz"
-    sha256 "0f06e60fa190aa7abd0914c2a766736fdc8e9f34878c4346338534b73d1b20e2"
+    url "https://files.pythonhosted.org/packages/f9/79/84ddb5ba16c4eb2c69c71db76ae3c579fe546e511f7170c7e27eedbab7c1/multidict-7.1.0.tar.gz"
+    sha256 "61a4e5d81b8d4e4ad61964b230129e7a2b914793d96289029078fc9009f074ec"
   end
 
   resource "oci" do
-    url "https://files.pythonhosted.org/packages/1a/f5/c70e3819018512a2557fb6d5b7041bb107292d8cfa74e0f8898ff425f3a2/oci-2.187.2.tar.gz"
-    sha256 "4c6285814754f4331cbdcbfb5cab0880f8820604f96262666921806e5b8bbcf4"
+    url "https://files.pythonhosted.org/packages/b8/69/8845bfdfbf919ab93f9539f5433cf1ababa1a621167465f050ab089c031b/oci-2.189.0.tar.gz"
+    sha256 "0df9efe9eb0f18e66f1fdf05b46e60c5a77ddfbd46f5b274ad95b2afce4dc687"
   end
 
   resource "prompt-toolkit" do
@@ -181,4 +180,5 @@ class OciCli < Formula
 
     assert_match "Could not find config file", shell_output("#{bin}/oci session validate 2>&1", 1)
   end
+
 end

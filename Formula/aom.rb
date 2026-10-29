@@ -7,18 +7,13 @@ class Aom < Formula
   license "BSD-2-Clause"
   head "https://aomedia.googlesource.com/aom.git", branch: "main"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "a145d903edd4843e1d2f0aa70d5b7bf9fe68a7abb0e6dc951a3374903dffcbd5"
-  end
 
-
-  depends_on "cmake" => :build
-  depends_on "pkgconf" => :build
-  depends_on "libvmaf"
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/libvmaf"
 
   on_intel do
-    depends_on "nasm" => :build
+    depends_on "italoag/intel/nasm" => :build
   end
 
   resource "homebrew-bus_qcif_15fps.y4m", :test do
@@ -66,4 +61,9 @@ class Aom < Formula
     system bin/"aomdec", "--output=bus_qcif_15fps_decode.y4m",
                          "bus_qcif_15fps.webm"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "a145d903edd4843e1d2f0aa70d5b7bf9fe68a7abb0e6dc951a3374903dffcbd5"
+  end
+
 end

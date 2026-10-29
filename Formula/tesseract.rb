@@ -1,10 +1,9 @@
 class Tesseract < Formula
   desc "OCR (Optical Character Recognition) engine"
   homepage "https://tesseract-ocr.github.io/"
-  url "https://github.com/tesseract-ocr/tesseract/archive/refs/tags/5.5.3.tar.gz"
-  sha256 "9218e62793116d42a9f6d14cd9348518b27f382096eea3d0f2d1a24616bb5884"
+  url "https://github.com/tesseract-ocr/tesseract/archive/refs/tags/5.5.4.tar.gz"
+  sha256 "a8dbf8b8c8ee427ff6ad1d99116502feaf59440af1adb893caf60a6576826cf4"
   license "Apache-2.0"
-  revision 1
   compatibility_version 1
   head "https://github.com/tesseract-ocr/tesseract.git", branch: "main"
 
@@ -13,28 +12,23 @@ class Tesseract < Formula
     regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "5bac293c6ea45a683a2c4d71f32b489edb5d0fddc58c9064a8323e91590e3bba"
-  end
 
-
-  depends_on "autoconf" => :build
-  depends_on "automake" => :build
-  depends_on "libtool" => :build
-  depends_on "pkgconf" => :build
-  depends_on "cairo"
-  depends_on "fontconfig"
-  depends_on "glib"
-  depends_on "harfbuzz"
-  depends_on "icu4c@79"
-  depends_on "leptonica"
-  depends_on "libarchive"
-  depends_on "pango"
+  depends_on "italoag/intel/autoconf" => :build
+  depends_on "italoag/intel/automake" => :build
+  depends_on "italoag/intel/libtool" => :build
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/cairo"
+  depends_on "italoag/intel/fontconfig"
+  depends_on "italoag/intel/glib"
+  depends_on "italoag/intel/harfbuzz"
+  depends_on "italoag/intel/icu4c@79"
+  depends_on "italoag/intel/leptonica"
+  depends_on "italoag/intel/libarchive"
+  depends_on "italoag/intel/pango"
 
   on_macos do
-    depends_on "freetype"
-    depends_on "gettext"
+    depends_on "italoag/intel/freetype"
+    depends_on "italoag/intel/gettext"
   end
 
   resource "eng" do
@@ -89,4 +83,9 @@ class Tesseract < Formula
       assert_match "The (quick) [brown] {fox} jumps!\n", File.read("output.txt")
     end
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "5bac293c6ea45a683a2c4d71f32b489edb5d0fddc58c9064a8323e91590e3bba"
+  end
+
 end

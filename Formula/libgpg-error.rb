@@ -22,7 +22,7 @@ class LibgpgError < Formula
   end
 
   on_macos do
-    depends_on "gettext"
+    depends_on "italoag/intel/gettext"
   end
 
   def install

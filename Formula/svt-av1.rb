@@ -22,10 +22,10 @@ class SvtAv1 < Formula
     sha256 cellar: :any, x86_64_linux:      "ac3f7f9240381b15060529d4fed8ee1945afddb74a44f0cee8e8741e1d29c6a4"
   end
 
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
 
   on_intel do
-    depends_on "nasm" => :build
+    depends_on "italoag/intel/nasm" => :build
   end
 
   resource "homebrew-testvideo", :test do

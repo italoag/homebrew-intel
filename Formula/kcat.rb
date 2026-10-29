@@ -28,10 +28,10 @@ class Kcat < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "2b2ab512dfbe8d359b5002d16066c2a6c2d5dca9f30e0f9e3caf2d49a9270c7c"
   end
 
-  depends_on "avro-c"
-  depends_on "librdkafka"
-  depends_on "libserdes"
-  depends_on "yajl"
+  depends_on "italoag/intel/avro-c"
+  depends_on "italoag/intel/librdkafka"
+  depends_on "italoag/intel/libserdes"
+  depends_on "italoag/intel/yajl"
 
   def install
     system "./configure", "--prefix=#{prefix}",

@@ -17,9 +17,9 @@ class Nettle < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "06c75ac3e75c761b4553312c4ffc12c31eb1757b5ec3e85ce75adc9524337302"
   end
 
-  depends_on "gmp"
+  depends_on "italoag/intel/gmp"
 
-  uses_from_macos "m4" => :build
+  uses_from_macos "italoag/intel/m4" => :build
 
   def install
     system "./configure", *std_configure_args, "--enable-shared"

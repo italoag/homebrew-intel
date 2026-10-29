@@ -17,9 +17,9 @@ class Minisign < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "8855baa30f090e94dce8a04af5f1e8e507e64a545ceb244c178934718b78cd36"
   end
 
-  depends_on "cmake" => :build
-  depends_on "pkgconf" => :build
-  depends_on "libsodium"
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/libsodium"
 
   deny_network_access!
 

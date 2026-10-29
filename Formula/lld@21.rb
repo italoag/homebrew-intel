@@ -24,9 +24,9 @@ class LldAT21 < Formula
 
   keg_only :versioned_formula
 
-  depends_on "cmake" => :build
-  depends_on "llvm@21"
-  depends_on "zstd"
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/llvm@21"
+  depends_on "italoag/intel/zstd"
 
   on_linux do
     depends_on "zlib-ng-compat"

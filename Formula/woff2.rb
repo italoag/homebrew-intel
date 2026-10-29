@@ -22,8 +22,8 @@ class Woff2 < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "cc6bb16039075d8610786f74387551da3a4852d0d6227ebefe1c5ef9add29d43"
   end
 
-  depends_on "cmake" => :build
-  depends_on "brotli"
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/brotli"
 
   resource "homebrew-roboto_1", :test do
     url "https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu4mxP.ttf"

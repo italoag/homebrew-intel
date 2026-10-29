@@ -7,17 +7,12 @@ class Libtatsu < Formula
   revision 1
   head "https://github.com/libimobiledevice/libtatsu.git", branch: "master"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "92a33c3cb4f8ae2c482a60c0af764c1a9ef85d138dc0d226d22efec5606a6a14"
-  end
 
-
-  depends_on "autoconf" => :build
-  depends_on "automake" => :build
-  depends_on "libtool" => :build
-  depends_on "pkgconf" => :build
-  depends_on "libplist"
+  depends_on "italoag/intel/autoconf" => :build
+  depends_on "italoag/intel/automake" => :build
+  depends_on "italoag/intel/libtool" => :build
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/libplist"
 
   uses_from_macos "curl"
 
@@ -39,4 +34,9 @@ class Libtatsu < Formula
     system ENV.cc, "test.c", "-L#{lib}", "-ltatsu", "-o", "test"
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "92a33c3cb4f8ae2c482a60c0af764c1a9ef85d138dc0d226d22efec5606a6a14"
+  end
+
 end

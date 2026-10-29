@@ -6,15 +6,10 @@ class Libxrender < Formula
   license "MIT"
   compatibility_version 1
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "e644ae9ed73507a825b8caca98922887d4616db65751c9dda43c0498f9daa2da"
-  end
 
-
-  depends_on "pkgconf" => :build
-  depends_on "libx11"
-  depends_on "xorgproto"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/libx11"
+  depends_on "italoag/intel/xorgproto"
 
   def install
     args = %W[
@@ -41,4 +36,9 @@ class Libxrender < Formula
     system ENV.cc, "test.c"
     assert_equal 0, $CHILD_STATUS.exitstatus
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "e644ae9ed73507a825b8caca98922887d4616db65751c9dda43c0498f9daa2da"
+  end
+
 end

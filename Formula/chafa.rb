@@ -11,33 +11,28 @@ class Chafa < Formula
     regex(/href=.*?chafa[._-]v?(\d+(?:\.\d+)+)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "93ec265f8eeed8f24eea319a465f94a15d2c8ab3e3df8259107bb23c161a00db"
-  end
-
 
   head do
     url "https://github.com/hpjansson/chafa.git", branch: "master"
-    depends_on "autoconf" => :build
-    depends_on "automake" => :build
-    depends_on "libtool" => :build
+    depends_on "italoag/intel/autoconf" => :build
+    depends_on "italoag/intel/automake" => :build
+    depends_on "italoag/intel/libtool" => :build
   end
 
-  depends_on "pkgconf" => :build
-  depends_on "cairo"
-  depends_on "freetype"
-  depends_on "glib"
-  depends_on "jpeg-turbo"
-  depends_on "jpeg-xl"
-  depends_on "libavif"
-  depends_on "librsvg"
-  depends_on "libtiff"
-  depends_on "webp"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/cairo"
+  depends_on "italoag/intel/freetype"
+  depends_on "italoag/intel/glib"
+  depends_on "italoag/intel/jpeg-turbo"
+  depends_on "italoag/intel/jpeg-xl"
+  depends_on "italoag/intel/libavif"
+  depends_on "italoag/intel/librsvg"
+  depends_on "italoag/intel/libtiff"
+  depends_on "italoag/intel/webp"
 
   on_macos do
-    depends_on "gdk-pixbuf"
-    depends_on "gettext"
+    depends_on "italoag/intel/gdk-pixbuf"
+    depends_on "italoag/intel/gettext"
   end
 
   deny_network_access!
@@ -55,4 +50,9 @@ class Chafa < Formula
     output = shell_output("#{bin}/chafa --version")
     assert_match(/Loaders:.* AVIF.* JPEG.* JXL.* SVG.* TIFF.* WebP/, output)
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "93ec265f8eeed8f24eea319a465f94a15d2c8ab3e3df8259107bb23c161a00db"
+  end
+
 end

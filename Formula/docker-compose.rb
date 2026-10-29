@@ -14,13 +14,8 @@ class DockerCompose < Formula
     strategy :github_latest
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "2ceb8909b0229c8212625e81bed76db8fcd5f5d29fdc7caeec12b55720386387"
-  end
 
-
-  depends_on "go" => :build
+  depends_on "italoag/intel/go" => :build
 
   deny_network_access!
 
@@ -51,4 +46,9 @@ class DockerCompose < Formula
     assert_match "no configuration file provided", output
     assert_match version.to_s, shell_output("#{bin}/docker-compose version")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "2ceb8909b0229c8212625e81bed76db8fcd5f5d29fdc7caeec12b55720386387"
+  end
+
 end

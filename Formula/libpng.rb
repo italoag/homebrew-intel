@@ -11,18 +11,13 @@ class Libpng < Formula
     regex(%r{url=.*?/libpng[._-]v?(\d+(?:\.\d+)+)\.t}i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "99326672729d05cf35251ebdfeaea0ebb6e0072ec5fb278488ca447082148cb5"
-  end
-
 
   head do
     url "https://github.com/pnggroup/libpng.git", branch: "libpng16"
 
-    depends_on "autoconf" => :build
-    depends_on "automake" => :build
-    depends_on "libtool" => :build
+    depends_on "italoag/intel/autoconf" => :build
+    depends_on "italoag/intel/automake" => :build
+    depends_on "italoag/intel/libtool" => :build
   end
 
   on_linux do
@@ -64,4 +59,9 @@ class Libpng < Formula
     system ENV.cc, "test.c", "-I#{include}", "-L#{lib}", "-lpng", "-o", "test"
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "99326672729d05cf35251ebdfeaea0ebb6e0072ec5fb278488ca447082148cb5"
+  end
+
 end

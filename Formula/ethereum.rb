@@ -11,13 +11,8 @@ class Ethereum < Formula
     strategy :github_latest
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "4bb73ba2c0edec29c27b474cd1cedef801d9f8ebc09f6cccc897e2fe51a57556"
-  end
 
-
-  depends_on "go" => :build
+  depends_on "italoag/intel/go" => :build
 
   deny_network_access!
 
@@ -66,4 +61,9 @@ class Ethereum < Formula
     assert_path_exists testpath/"testchain/geth/nodekey"
     assert_path_exists testpath/"testchain/geth/LOCK"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "4bb73ba2c0edec29c27b474cd1cedef801d9f8ebc09f6cccc897e2fe51a57556"
+  end
+
 end

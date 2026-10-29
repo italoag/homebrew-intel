@@ -16,7 +16,7 @@ class Llhttp < Formula
     sha256 cellar: :any, x86_64_linux:      "064d963ed771884697010f5bee50c78a8f82289cc5b0ff5793c001e5cd7acd27"
   end
 
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
 
   def install
     system "cmake", "-S", ".", "-B", "build", *std_cmake_args

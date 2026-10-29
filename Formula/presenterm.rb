@@ -16,7 +16,13 @@ class Presenterm < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "6693229d486d060cec14dd04bc6f6aed9a81dff7987594ae2461634a50f9ba7b"
   end
 
-  depends_on "rust" => :build
+  depends_on "italoag/intel/rust" => :build
+
+  deny_network_access!
+
+  def fetch
+    system "cargo", "fetch", *std_cargo_fetch_args
+  end
 
   def install
     system "cargo", "install", *std_cargo_args

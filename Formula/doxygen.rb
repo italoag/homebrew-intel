@@ -23,14 +23,14 @@ class Doxygen < Formula
     sha256 cellar: :any, x86_64_linux:      "54c060859ce305bf6feb217ae367eeb82a607de0bf9a901f13f71feccb5a49e0"
   end
 
-  depends_on "bison" => :build
-  depends_on "cmake" => :build
-  depends_on "fmt"
-  depends_on "spdlog"
+  depends_on "italoag/intel/bison" => :build
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/fmt"
+  depends_on "italoag/intel/spdlog"
 
   uses_from_macos "flex" => :build, since: :big_sur
-  uses_from_macos "python" => :build
-  uses_from_macos "sqlite"
+  uses_from_macos "italoag/intel/python@3.15" => :build
+  uses_from_macos "italoag/intel/sqlite"
 
   def install
     # Remove bundled dependencies

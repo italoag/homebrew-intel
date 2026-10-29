@@ -7,16 +7,11 @@ class Maturin < Formula
   revision 1
   head "https://github.com/PyO3/maturin.git", branch: "main"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "f622a9ad393b3203436c931f6e2a9e837a9f13ab02edfd30fc86040b2b5731c2"
-  end
 
-
-  depends_on "pkgconf" => :build
-  depends_on "rust" => [:build, :test]
-  depends_on "python@3.15" => :test
-  depends_on "xz"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/rust" => [:build, :test]
+  depends_on "italoag/intel/python@3.15" => :test
+  depends_on "italoag/intel/xz"
 
   deny_network_access!
 
@@ -49,4 +44,9 @@ class Maturin < Formula
       system python3, "-c", "import maturin"
     end
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "f622a9ad393b3203436c931f6e2a9e837a9f13ab02edfd30fc86040b2b5731c2"
+  end
+
 end

@@ -21,7 +21,7 @@ class Dnsmasq < Formula
     sha256 x86_64_linux:      "9531eadacd6f3e42d0c2c99a4d66e5669ec96f56d228b83d7072574daf394812"
   end
 
-  depends_on "pkgconf" => :build
+  depends_on "italoag/intel/pkgconf" => :build
 
   def install
     ENV.deparallelize

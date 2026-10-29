@@ -21,11 +21,6 @@ class Go < Formula
     end
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "bafae914f3bb64aa15b8acb0cf87697db9b2115f91b2cd38e225a09d37596594"
-  end
-
 
   on_macos do
     depends_on macos: :monterey
@@ -128,4 +123,9 @@ class Go < Formula
       assert_equal "Hello from cgo!\n", shell_output("#{bin}/go run hello_cgo.go")
     end
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "bafae914f3bb64aa15b8acb0cf87697db9b2115f91b2cd38e225a09d37596594"
+  end
+
 end

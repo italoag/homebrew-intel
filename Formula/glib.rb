@@ -16,27 +16,22 @@ class Glib < Formula
     regex(/glib[._-]v?(\d+\.\d*[02468](?:\.\d+)*)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "6e2aa7f93c79354b096f838b48ed686c3d17dc2020d8fb78f18b593757dcafe4"
-  end
 
-
-  depends_on "bison" => :build # for gobject-introspection
-  depends_on "gettext" => :build
-  depends_on "meson" => :build
-  depends_on "ninja" => :build
-  depends_on "pkgconf" => [:build, :test]
-  depends_on "python-setuptools" => :build # for gobject-introspection
-  depends_on "python@3.15" => :build
-  depends_on "pcre2"
+  depends_on "italoag/intel/bison" => :build # for gobject-introspection
+  depends_on "italoag/intel/gettext" => :build
+  depends_on "italoag/intel/meson" => :build
+  depends_on "italoag/intel/ninja" => :build
+  depends_on "italoag/intel/pkgconf" => [:build, :test]
+  depends_on "italoag/intel/python-setuptools" => :build # for gobject-introspection
+  depends_on "italoag/intel/python@3.15" => :build
+  depends_on "italoag/intel/pcre2"
 
   uses_from_macos "flex" => :build # for gobject-introspection
-  uses_from_macos "libffi"
-  uses_from_macos "python"
+  uses_from_macos "italoag/intel/libffi"
+  uses_from_macos "italoag/intel/python@3.15"
 
   on_macos do
-    depends_on "gettext"
+    depends_on "italoag/intel/gettext"
   end
 
   on_linux do
@@ -197,4 +192,9 @@ class Glib < Formula
     CPP
     system ENV.cxx, "-o", "typecheck", "typecheck.cpp", "-I#{include}/glib-2.0", "-I#{lib}/glib-2.0/include"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "6e2aa7f93c79354b096f838b48ed686c3d17dc2020d8fb78f18b593757dcafe4"
+  end
+
 end

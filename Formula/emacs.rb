@@ -8,30 +8,25 @@ class Emacs < Formula
   revision 1
   compatibility_version 1
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "e533f0a03233cac873b73b169642ae5d2139049b12c05337ce83ec8af0d78ec8"
-  end
-
 
   head do
     url "https://github.com/emacs-mirror/emacs.git", branch: "master"
 
-    depends_on "autoconf" => :build
+    depends_on "italoag/intel/autoconf" => :build
     depends_on "gnu-sed" => :build
   end
 
-  depends_on "pkgconf" => :build
-  depends_on "texinfo" => :build
-  depends_on "gmp"
-  depends_on "gnutls"
-  depends_on "tree-sitter"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/texinfo" => :build
+  depends_on "italoag/intel/gmp"
+  depends_on "italoag/intel/gnutls"
+  depends_on "italoag/intel/tree-sitter"
 
   uses_from_macos "libxml2"
   uses_from_macos "ncurses"
 
   on_linux do
-    depends_on "jpeg-turbo"
+    depends_on "italoag/intel/jpeg-turbo"
     depends_on "zlib-ng-compat"
   end
 
@@ -81,4 +76,9 @@ class Emacs < Formula
   test do
     assert_equal "4", shell_output("#{bin}/emacs --batch --eval=\"(print (+ 2 2))\"").strip
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "e533f0a03233cac873b73b169642ae5d2139049b12c05337ce83ec8af0d78ec8"
+  end
+
 end

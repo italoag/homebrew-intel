@@ -6,11 +6,6 @@ class Bunster < Formula
   version "0.14.0"
   license "BSD-3-Clause"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "121127f27ee456e96b6085df7f17bbbf100a633178833ae859c6e0e0a1d85cee"
-  end
-
   on_macos do
     if Hardware::CPU.arm?
       url "https://github.com/yassinebenaid/bunster/releases/download/v0.14.0/bunster_darwin-arm64.tar.gz"
@@ -40,4 +35,9 @@ class Bunster < Formula
   test do
     system "#{bin}/bunster", "--help"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "121127f27ee456e96b6085df7f17bbbf100a633178833ae859c6e0e0a1d85cee"
+  end
+
 end

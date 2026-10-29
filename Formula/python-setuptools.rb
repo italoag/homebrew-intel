@@ -9,7 +9,7 @@ class PythonSetuptools < Formula
     sha256 cellar: :any_skip_relocation, all: "03d8def7b70dd1cdb65ed9d87562e83c7e43044c299d3e3d9c0b99462f10017b"
   end
 
-  depends_on "python@3.15" => [:build, :test]
+  depends_on "italoag/intel/python@3.15" => [:build, :test]
 
   deny_network_access!
 

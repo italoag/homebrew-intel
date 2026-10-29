@@ -16,11 +16,11 @@ class Dav1d < Formula
     sha256 cellar: :any, x86_64_linux:      "6c978ac8a5eb6652bd8780911ff45d73a181e6c6a9f18d60f1c7f86184d4bdb2"
   end
 
-  depends_on "meson" => :build
-  depends_on "ninja" => :build
+  depends_on "italoag/intel/meson" => :build
+  depends_on "italoag/intel/ninja" => :build
 
   on_intel do
-    depends_on "nasm" => :build
+    depends_on "italoag/intel/nasm" => :build
   end
 
   resource "homebrew-00000000.ivf", :test do

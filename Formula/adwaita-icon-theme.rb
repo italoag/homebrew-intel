@@ -10,11 +10,11 @@ class AdwaitaIconTheme < Formula
     sha256 cellar: :any_skip_relocation, all: "f40942bda19569a8dfc6b9c89c2fc7b7e1d89231fa2f0e0478166b08a91b23fa"
   end
 
-  depends_on "gtk4" => :build # for gtk4-update-icon-cache
-  depends_on "meson" => :build
-  depends_on "ninja" => :build
-  depends_on "pkgconf" => :build
-  depends_on "librsvg"
+  depends_on "italoag/intel/gtk4" => :build # for gtk4-update-icon-cache
+  depends_on "italoag/intel/meson" => :build
+  depends_on "italoag/intel/ninja" => :build
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/librsvg"
 
   deny_network_access!
 

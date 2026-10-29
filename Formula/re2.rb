@@ -24,8 +24,8 @@ class Re2 < Formula
     sha256 cellar: :any, x86_64_linux:      "b743c2a713b079e718ef7d6af0cadc118faa6dc9039bb8ad6fe72b8f60fdd6bd"
   end
 
-  depends_on "cmake" => :build
-  depends_on "abseil"
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/abseil"
 
   deny_network_access!
 

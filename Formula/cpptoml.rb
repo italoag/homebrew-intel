@@ -12,7 +12,7 @@ class Cpptoml < Formula
     sha256 cellar: :any_skip_relocation, all: "c7277d9959d90daba22c6e5e464e5d9877c6dce18d25932a5a7d53feac061139"
   end
 
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
 
   # Fix library support for GCC 11+ by adding include for limits header.
   patch do

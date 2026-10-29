@@ -12,14 +12,9 @@ class Dolt < Formula
     strategy :github_latest
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "865f2164bf246337ca2d9573b639fa39425f8da476d4dd432e16911a4b608ac4"
-  end
 
-
-  depends_on "go" => :build
-  depends_on "icu4c@79"
+  depends_on "italoag/intel/go" => :build
+  depends_on "italoag/intel/icu4c@79"
 
   deny_network_access!
 
@@ -53,4 +48,9 @@ class Dolt < Formula
       assert_match "state_populations", shell_output("#{bin}/dolt sql -q 'show tables'")
     end
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "865f2164bf246337ca2d9573b639fa39425f8da476d4dd432e16911a4b608ac4"
+  end
+
 end

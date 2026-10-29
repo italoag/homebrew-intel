@@ -13,14 +13,9 @@ class Sdl3 < Formula
     strategy :github_latest
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "e30c0dabee494676f9d9bfcd92541a0b43fd88183f3681cbe504d732395fa9cb"
-  end
 
-
-  depends_on "cmake" => :build
-  depends_on "pkgconf" => :build
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/pkgconf" => :build
 
   on_linux do
     # Features are built into library if dependency is found at build-time.
@@ -34,9 +29,9 @@ class Sdl3 < Formula
 
     # Runtime dependencies are for older PulseAudio and X11. These are used if
     # running a Linux container on macOS and should have higher compatibility
-    depends_on "libx11" => :no_linkage
+    depends_on "italoag/intel/libx11" => :no_linkage
     depends_on "libxcursor" => :no_linkage
-    depends_on "libxext" => :no_linkage
+    depends_on "italoag/intel/libxext" => :no_linkage
     depends_on "libxfixes" => :no_linkage
     depends_on "libxi" => :no_linkage
     depends_on "libxrandr" => :no_linkage
@@ -74,4 +69,9 @@ class Sdl3 < Formula
     ENV["SDL_VIDEODRIVER"] = "dummy"
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "c6140fbaeeaabaf9bf97bbc60f6736ccc6c53e8891b830eb07851c1fa135a628"
+  end
+
 end

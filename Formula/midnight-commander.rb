@@ -25,20 +25,20 @@ class MidnightCommander < Formula
   head do
     url "https://github.com/MidnightCommander/mc.git", branch: "master"
 
-    depends_on "autoconf" => :build
-    depends_on "automake" => :build
-    depends_on "libtool" => :build
+    depends_on "italoag/intel/autoconf" => :build
+    depends_on "italoag/intel/automake" => :build
+    depends_on "italoag/intel/libtool" => :build
   end
 
-  depends_on "pkgconf" => :build
+  depends_on "italoag/intel/pkgconf" => :build
 
-  depends_on "glib"
-  depends_on "libssh2"
-  depends_on "s-lang"
+  depends_on "italoag/intel/glib"
+  depends_on "italoag/intel/libssh2"
+  depends_on "italoag/intel/s-lang"
 
   on_macos do
-    depends_on "diffutils"
-    depends_on "gettext"
+    depends_on "italoag/intel/diffutils"
+    depends_on "italoag/intel/gettext"
   end
 
   conflicts_with "minio-mc", because: "both install an `mc` binary"

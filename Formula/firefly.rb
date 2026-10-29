@@ -21,7 +21,7 @@ class Firefly < Formula
     sha256 cellar: :any,                 x86_64_linux:      "21ba828d9e926050090303fd2aff9d3a503d1f7775e7020b896ae73537b7bb03"
   end
 
-  depends_on "go" => :build
+  depends_on "italoag/intel/go" => :build
 
   deny_network_access!
 

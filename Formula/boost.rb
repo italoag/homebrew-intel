@@ -16,15 +16,10 @@ class Boost < Formula
     end
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "fb59a3bfc2d224184c3148fc7df71ca63bbb1445c27f8ccb77bb8604a53bbbfe"
-  end
 
-
-  depends_on "icu4c@79"
-  depends_on "xz"
-  depends_on "zstd"
+  depends_on "italoag/intel/icu4c@79"
+  depends_on "italoag/intel/xz"
+  depends_on "italoag/intel/zstd"
 
   uses_from_macos "bzip2"
 
@@ -135,4 +130,9 @@ class Boost < Formula
                     "-L#{formula_opt_lib("zstd")}", "-lzstd"
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "0393375e48fcd33e6f55a944a89ae71d631d986f26c8fc8cb1cb3041ff03c962"
+  end
+
 end

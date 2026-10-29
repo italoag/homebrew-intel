@@ -12,15 +12,10 @@ class Freetype < Formula
     regex(/url=.*?freetype[._-]v?(\d+(?:\.\d+)+)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "804f10e4330dc3c3627386f576093860601d67a43ca5788f641707ef81e19c4b"
-  end
 
-
-  depends_on "pkgconf" => :build
-  depends_on "brotli"
-  depends_on "libpng"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/brotli"
+  depends_on "italoag/intel/libpng"
 
   uses_from_macos "bzip2"
 
@@ -50,4 +45,9 @@ class Freetype < Formula
     system bin/"freetype-config", "--cflags", "--libs", "--ftversion",
                                   "--exec-prefix", "--prefix"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "47303bea81f2c6bc23eb0443f52321b956f028dca8492cb4e1e395e51ef42182"
+  end
+
 end

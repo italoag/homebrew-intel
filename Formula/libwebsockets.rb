@@ -13,16 +13,11 @@ class Libwebsockets < Formula
     regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "e818244f33f01aed444d6dc54906141ff257547864dc795b170526b541a38aec"
-  end
 
-
-  depends_on "cmake" => :build
-  depends_on "libevent"
-  depends_on "libuv"
-  depends_on "openssl@4"
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/libevent"
+  depends_on "italoag/intel/libuv"
+  depends_on "italoag/intel/openssl@4"
 
   deny_network_access!
 
@@ -61,4 +56,9 @@ class Libwebsockets < Formula
                    "-L#{lib}", "-lwebsockets", "-o", "test"
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "e818244f33f01aed444d6dc54906141ff257547864dc795b170526b541a38aec"
+  end
+
 end

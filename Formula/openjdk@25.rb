@@ -1,8 +1,8 @@
 class OpenjdkAT25 < Formula
   desc "Development kit for the Java programming language"
   homepage "https://openjdk.org/"
-  url "https://github.com/openjdk/jdk25u/archive/refs/tags/jdk-25.0.4.1-ga.tar.gz"
-  sha256 "1e5908f90d732e0ed3f737aac7603863c2cc157e464e036ac0accadb87af4391"
+  url "https://github.com/openjdk/jdk25u/archive/refs/tags/jdk-25.0.5.0.3-ga.tar.gz"
+  sha256 "b4dfab0e1a41ed6cc8595555323102d4b3910a7e6e14bc9ec59d945028030072"
   license "GPL-2.0-only" => { with: "Classpath-exception-2.0" }
   compatibility_version 1
 
@@ -11,29 +11,20 @@ class OpenjdkAT25 < Formula
     regex(/^jdk[._-]v?(25(?:\.\d+)*)-ga$/i)
   end
 
-  bottle do
-    sha256 cellar: :any, arm64_golden_gate: "f7840c6ec13b024123567e0f7c2d422feea611932fad408ea801dfade699bd50"
-    sha256 cellar: :any, arm64_tahoe:       "c8213a28dbfae072498205cfe160a62e4cdcacd6f8f0b437cd7432e053f358c7"
-    sha256 cellar: :any, arm64_sequoia:     "b677cf89896c762f1504c2ebff7b3356ce3d328fbe12dc5ef3f4788e7e9db0eb"
-    sha256 cellar: :any, arm64_sonoma:      "2ea2061a48c1becdb312229da028c4b4a0a576a272bf33f2011574ee4b868005"
-    sha256 cellar: :any, sonoma:            "8a89fe789e457c24a0c532e08e1dac46494feebf569ba274ad27405effddc12e"
-    sha256               arm64_linux:       "125aed54ff2195afb6b3e7f60f003dcbddf922600be2b39ac0a9399136901fb3"
-    sha256               x86_64_linux:      "6620d9ad7e34506d0e052c06dd9bc08561f07233028714e10903ab1020e1532a"
-  end
 
   keg_only :versioned_formula
 
   deprecate! date: "2030-09-30", because: :unmaintained
   disable! date: "2033-09-30", because: :unmaintained
 
-  depends_on "autoconf" => :build
-  depends_on "pkgconf" => :build
-  depends_on "freetype"
-  depends_on "giflib"
-  depends_on "harfbuzz"
-  depends_on "jpeg-turbo"
-  depends_on "libpng"
-  depends_on "little-cms2"
+  depends_on "italoag/intel/autoconf" => :build
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/freetype"
+  depends_on "italoag/intel/giflib"
+  depends_on "italoag/intel/harfbuzz"
+  depends_on "italoag/intel/jpeg-turbo"
+  depends_on "italoag/intel/libpng"
+  depends_on "italoag/intel/little-cms2"
 
   uses_from_macos "unzip" => :build
   uses_from_macos "zip" => :build
@@ -46,12 +37,12 @@ class OpenjdkAT25 < Formula
   on_linux do
     depends_on "libxt" => :build
     depends_on "alsa-lib"
-    depends_on "fontconfig" => :no_linkage
-    depends_on "libx11"
-    depends_on "libxext"
+    depends_on "italoag/intel/fontconfig" => :no_linkage
+    depends_on "italoag/intel/libx11"
+    depends_on "italoag/intel/libxext"
     depends_on "libxi"
     depends_on "libxrandr" => :no_linkage
-    depends_on "libxrender"
+    depends_on "italoag/intel/libxrender"
     depends_on "libxtst"
     depends_on "zlib-ng-compat"
   end
@@ -177,4 +168,14 @@ class OpenjdkAT25 < Formula
 
     assert_match "Hello, world!", shell_output("#{bin}/java HelloWorld")
   end
+  bottle do
+    sha256 cellar: :any, arm64_golden_gate: "f7840c6ec13b024123567e0f7c2d422feea611932fad408ea801dfade699bd50"
+    sha256 cellar: :any, arm64_tahoe:       "c8213a28dbfae072498205cfe160a62e4cdcacd6f8f0b437cd7432e053f358c7"
+    sha256 cellar: :any, arm64_sequoia:     "b677cf89896c762f1504c2ebff7b3356ce3d328fbe12dc5ef3f4788e7e9db0eb"
+    sha256 cellar: :any, arm64_sonoma:      "2ea2061a48c1becdb312229da028c4b4a0a576a272bf33f2011574ee4b868005"
+    sha256 cellar: :any, sonoma:            "8a89fe789e457c24a0c532e08e1dac46494feebf569ba274ad27405effddc12e"
+    sha256               arm64_linux:       "125aed54ff2195afb6b3e7f60f003dcbddf922600be2b39ac0a9399136901fb3"
+    sha256               x86_64_linux:      "6620d9ad7e34506d0e052c06dd9bc08561f07233028714e10903ab1020e1532a"
+  end
+
 end

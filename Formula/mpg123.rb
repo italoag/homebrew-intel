@@ -12,11 +12,6 @@ class Mpg123 < Formula
     regex(/href=.*?mpg123[._-]v?(\d+(?:\.\d+)+)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "d29540369d2c12aa486edda3b3b38609c4cd64fcc3bb7f287303c42b3ced7961"
-  end
-
 
   deny_network_access!
 
@@ -41,4 +36,9 @@ class Mpg123 < Formula
   test do
     system bin/"mpg123", "--test", test_fixtures("test.mp3")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "d29540369d2c12aa486edda3b3b38609c4cd64fcc3bb7f287303c42b3ced7961"
+  end
+
 end

@@ -11,13 +11,8 @@ class Libgcrypt < Formula
     regex(/href=.*?libgcrypt[._-]v?(\d+(?:\.\d+)+)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "e4cf7c39bc6142cca02ae67b3a8b98c320553e7923f3ce36da19f1945c63dd65"
-  end
 
-
-  depends_on "libgpg-error"
+  depends_on "italoag/intel/libgpg-error"
 
   def install
     system "./configure", "--disable-asm",
@@ -43,4 +38,9 @@ class Libgcrypt < Formula
     output = shell_output("#{bin}/hmac256 \"testing\" testing")
     assert_match "0e824ce7c056c82ba63cc40cffa60d3195b5bb5feccc999a47724cc19211aef6", output
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "01386a43706073ad6f16b9322a3d7ae2bda9b4d5d42360d973eb44b91242e638"
+  end
+
 end

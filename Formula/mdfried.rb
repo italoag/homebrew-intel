@@ -1,8 +1,8 @@
 class Mdfried < Formula
   desc "Terminal markdown viewer"
   homepage "https://github.com/benjajaja/mdfried"
-  url "https://github.com/benjajaja/mdfried/archive/refs/tags/v0.22.7.tar.gz"
-  sha256 "c6bb423d0547b563345482817b3cad7cbd25cbce68dcf9123375ecdbbedf445d"
+  url "https://github.com/benjajaja/mdfried/archive/refs/tags/v0.22.8.tar.gz"
+  sha256 "55b6b9aa22b9944f7f5f9634bbaef8d412fca091027ea0f1b08ede68d6335dec"
   license "GPL-3.0-or-later"
   head "https://github.com/benjajaja/mdfried.git", branch: "master"
 
@@ -11,19 +11,14 @@ class Mdfried < Formula
     regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "56c4c8f3a31ea4a17ae6340b35a381926601b53bd237a660da196e5cfa26c954"
-  end
 
-
-  depends_on "pkgconf" => :build
-  depends_on "rust" => :build
-  depends_on "chafa"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/rust" => :build
+  depends_on "italoag/intel/chafa"
 
   on_macos do
-    depends_on "gettext"
-    depends_on "glib"
+    depends_on "italoag/intel/gettext"
+    depends_on "italoag/intel/glib"
   end
 
   deny_network_access!
@@ -56,4 +51,9 @@ class Mdfried < Formula
     Process.kill("TERM", pid)
     Process.wait(pid)
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "56c4c8f3a31ea4a17ae6340b35a381926601b53bd237a660da196e5cfa26c954"
+  end
+
 end

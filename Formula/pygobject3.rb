@@ -7,24 +7,19 @@ class Pygobject3 < Formula
   revision 1
   compatibility_version 1
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "ef9f6fccbe2fa486c6eb14169b39f5e69bdbed874797e181144fa537ac081a41"
-  end
 
+  depends_on "italoag/intel/meson" => :build
+  depends_on "italoag/intel/ninja" => :build
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/python@3.14" => [:build, :test]
+  depends_on "italoag/intel/python@3.15" => [:build, :test]
 
-  depends_on "meson" => :build
-  depends_on "ninja" => :build
-  depends_on "pkgconf" => :build
-  depends_on "python@3.14" => [:build, :test]
-  depends_on "python@3.15" => [:build, :test]
+  depends_on "italoag/intel/cairo"
+  depends_on "italoag/intel/glib"
+  depends_on "italoag/intel/gobject-introspection"
+  depends_on "italoag/intel/py3cairo"
 
-  depends_on "cairo"
-  depends_on "glib"
-  depends_on "gobject-introspection"
-  depends_on "py3cairo"
-
-  uses_from_macos "libffi"
+  uses_from_macos "italoag/intel/libffi"
 
   def pythons
     deps.map(&:to_formula)
@@ -62,4 +57,9 @@ class Pygobject3 < Formula
       system python, "test.py"
     end
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "ef9f6fccbe2fa486c6eb14169b39f5e69bdbed874797e181144fa537ac081a41"
+  end
+
 end

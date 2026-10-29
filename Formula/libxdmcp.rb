@@ -20,8 +20,8 @@ class Libxdmcp < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "d8b9dc2969e85e26c6d426d8865244e1416d73f7f408c9f5404a2a614a62e7d4"
   end
 
-  depends_on "pkgconf" => :build
-  depends_on "xorgproto"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/xorgproto"
 
   def install
     args = %W[

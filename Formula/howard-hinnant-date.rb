@@ -15,7 +15,7 @@ class HowardHinnantDate < Formula
     sha256 cellar: :any, x86_64_linux:      "9deaee6eb543f5ada3286b05853300472fd5735cbe61f0f4cec122105e546c5c"
   end
 
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
 
   def install
     args = %w[

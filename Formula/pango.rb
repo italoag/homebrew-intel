@@ -15,23 +15,18 @@ class Pango < Formula
     regex(/pango[._-]v?(\d+(?:(?!\.9\d)\.\d+)+)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "c277bd4094a4ccb6e44d61e81f5d59239ffc164aa23460eb92da1139585146aa"
-  end
 
-
-  depends_on "gobject-introspection" => :build
-  depends_on "meson" => :build
-  depends_on "ninja" => :build
-  depends_on "pkgconf" => [:build, :test]
-  depends_on "cairo"
-  depends_on "fontconfig"
-  depends_on "freetype"
-  depends_on "fribidi"
-  depends_on "glib"
-  depends_on "harfbuzz"
-  depends_on "libthai"
+  depends_on "italoag/intel/gobject-introspection" => :build
+  depends_on "italoag/intel/meson" => :build
+  depends_on "italoag/intel/ninja" => :build
+  depends_on "italoag/intel/pkgconf" => [:build, :test]
+  depends_on "italoag/intel/cairo"
+  depends_on "italoag/intel/fontconfig"
+  depends_on "italoag/intel/freetype"
+  depends_on "italoag/intel/fribidi"
+  depends_on "italoag/intel/glib"
+  depends_on "italoag/intel/harfbuzz"
+  depends_on "italoag/intel/libthai"
 
   deny_network_access!
 
@@ -70,4 +65,9 @@ class Pango < Formula
     system ENV.cc, "test.c", "-o", "test", *flags
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "c277bd4094a4ccb6e44d61e81f5d59239ffc164aa23460eb92da1139585146aa"
+  end
+
 end

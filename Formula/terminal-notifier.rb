@@ -6,11 +6,6 @@ class TerminalNotifier < Formula
   license "MIT"
   head "https://github.com/julienXX/terminal-notifier.git", branch: "master"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "b74e5011e2c6df989af0b098b928ac0faa766097d6517f6a06534e815d553fcd"
-  end
-
 
   depends_on xcode: :build
   depends_on :macos
@@ -37,4 +32,9 @@ class TerminalNotifier < Formula
     assert_match "fr.julienxx.oss.terminal-notifier",
                  shell_output("/usr/bin/codesign -dv #{app} 2>&1")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "b74e5011e2c6df989af0b098b928ac0faa766097d6517f6a06534e815d553fcd"
+  end
+
 end

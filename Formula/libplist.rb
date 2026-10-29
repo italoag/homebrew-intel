@@ -7,16 +7,11 @@ class Libplist < Formula
   compatibility_version 2
   head "https://github.com/libimobiledevice/libplist.git", branch: "master"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "c34f66096bb3e91513e79269b79b6f895b7b54d9abe40cd2748c0b250fdc7642"
-  end
 
-
-  depends_on "autoconf" => :build
-  depends_on "automake" => :build
-  depends_on "libtool" => :build
-  depends_on "pkgconf" => :build
+  depends_on "italoag/intel/autoconf" => :build
+  depends_on "italoag/intel/automake" => :build
+  depends_on "italoag/intel/libtool" => :build
+  depends_on "italoag/intel/pkgconf" => :build
 
   deny_network_access!
 
@@ -52,4 +47,9 @@ class Libplist < Formula
     system bin/"plistutil", "-i", "test.plist", "-o", "test_binary.plist"
     assert_path_exists testpath/"test_binary.plist", "Failed to create converted plist!"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "fb17f829c9e6dbf4f41234421e3b0f19d6c03c26ff48bf649fc277974bbc0665"
+  end
+
 end

@@ -7,13 +7,8 @@ class Helm < Formula
   license "Apache-2.0"
   head "https://github.com/helm/helm.git", branch: "main"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "c70992012677650e99da3be47c87f8828ad6dd3828261ea5485af4e5f1e9276f"
-  end
 
-
-  depends_on "go" => :build
+  depends_on "italoag/intel/go" => :build
 
   deny_network_access!
 
@@ -42,4 +37,9 @@ class Helm < Formula
     assert_match "GitCommit:\"#{stable.specs[:revision]}\"", version_output
     assert_match "Version:\"v#{version}\"", version_output
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "c70992012677650e99da3be47c87f8828ad6dd3828261ea5485af4e5f1e9276f"
+  end
+
 end

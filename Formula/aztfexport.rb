@@ -17,7 +17,7 @@ class Aztfexport < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "13926213180bbdc676dd855cd0626eb92fe836c82faf094ac46faa6ce4ffe704"
   end
 
-  depends_on "go" => :build
+  depends_on "italoag/intel/go" => :build
 
   deny_network_access!
 

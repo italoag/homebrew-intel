@@ -8,20 +8,15 @@ class Cryptography < Formula
   compatibility_version 2
   head "https://github.com/pyca/cryptography.git", branch: "main"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "8d8218d774a4b2e88d00d487491a651a81245bea05cd050790ae68fb4c3a54e0"
-  end
 
-
-  depends_on "maturin" => :build
-  depends_on "pkgconf" => :build
-  depends_on "python-setuptools" => :build
-  depends_on "python@3.14" => [:build, :test]
-  depends_on "python@3.15" => [:build, :test]
-  depends_on "rust" => :build
-  depends_on "cffi"
-  depends_on "openssl@4"
+  depends_on "italoag/intel/maturin" => :build
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/python-setuptools" => :build
+  depends_on "italoag/intel/python@3.14" => [:build, :test]
+  depends_on "italoag/intel/python@3.15" => [:build, :test]
+  depends_on "italoag/intel/rust" => :build
+  depends_on "italoag/intel/cffi"
+  depends_on "italoag/intel/openssl@4"
 
   pypi_packages exclude_packages: ["cffi", "pycparser"]
 
@@ -51,4 +46,9 @@ class Cryptography < Formula
       assert_match "b'homebrew'", shell_output("#{python3} test.py")
     end
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "8d8218d774a4b2e88d00d487491a651a81245bea05cd050790ae68fb4c3a54e0"
+  end
+
 end

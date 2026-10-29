@@ -8,29 +8,24 @@ class Coreutils < Formula
   revision 1
   compatibility_version 1
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "747638022573891eaa2aa92317e662ccfc1849ccae4df711af6422fa8311e113"
-  end
-
 
   head do
     url "https://git.savannah.gnu.org/git/coreutils.git", branch: "master"
 
-    depends_on "autoconf" => :build
-    depends_on "automake" => :build
-    depends_on "bison" => :build
-    depends_on "gettext" => :build
+    depends_on "italoag/intel/autoconf" => :build
+    depends_on "italoag/intel/automake" => :build
+    depends_on "italoag/intel/bison" => :build
+    depends_on "italoag/intel/gettext" => :build
     depends_on "wget" => :build
-    depends_on "xz" => :build
+    depends_on "italoag/intel/xz" => :build
   end
 
-  depends_on "texinfo" => :build
-  depends_on "gmp"
+  depends_on "italoag/intel/texinfo" => :build
+  depends_on "italoag/intel/gmp"
   uses_from_macos "gperf" => :build
 
   on_macos do
-    depends_on "openssl@4"
+    depends_on "italoag/intel/openssl@4"
   end
 
   on_sonoma :or_older do
@@ -141,4 +136,9 @@ class Coreutils < Formula
     system bin/"gsha1sum", "-c", "test.sha1"
     system bin/"gln", "-f", "test", "test.sha1"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "747638022573891eaa2aa92317e662ccfc1849ccae4df711af6422fa8311e113"
+  end
+
 end

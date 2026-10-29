@@ -17,8 +17,8 @@ class Spdlog < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "ff71007269f44e4b90e0e3cabc7d4969ebddac67b2f0469d39a9b403d85c05b8"
   end
 
-  depends_on "cmake" => :build
-  depends_on "fmt"
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/fmt"
 
   deny_network_access!
 

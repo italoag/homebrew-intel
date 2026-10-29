@@ -26,7 +26,7 @@ class DocbookXsl < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "97d7b10fee85c4ad08218efa4b9527b40a412d1e6b439612a76c5eb9c3fe22cd"
   end
 
-  depends_on "docbook"
+  depends_on "italoag/intel/docbook"
 
   resource "ns" do
     url "https://github.com/docbook/xslt10-stylesheets/releases/download/release%2F1.79.2/docbook-xsl-1.79.2.tar.bz2"

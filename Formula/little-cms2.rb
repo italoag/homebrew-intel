@@ -18,14 +18,9 @@ class LittleCms2 < Formula
     regex(/Little\s*CMS\s+v?(\d+(?:\.\d+)+)\s+released/im)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "7f466a517763f9ac26cbae991589f237ae97f954e4e154ebdf7112d8ba0a6bcd"
-  end
 
-
-  depends_on "jpeg-turbo"
-  depends_on "libtiff"
+  depends_on "italoag/intel/jpeg-turbo"
+  depends_on "italoag/intel/libtiff"
 
   deny_network_access!
 
@@ -41,4 +36,9 @@ class LittleCms2 < Formula
     system bin/"jpgicc", test_fixtures("test.jpg"), "out.jpg"
     assert_path_exists testpath/"out.jpg"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "99e09879fdf66344e56ba934a3d65ad42249f99627292783cf25df4ae152d753"
+  end
+
 end

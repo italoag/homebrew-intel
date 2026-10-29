@@ -8,14 +8,9 @@ class Yamllint < Formula
   license "GPL-3.0-or-later"
   head "https://github.com/adrienverge/yamllint.git", branch: "master"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "6db17fc66d6d0516a96518090d7a196a9acd4e3aa3acfde78da6299b969ed6e2"
-  end
 
-
-  depends_on "libyaml"
-  depends_on "python@3.15"
+  depends_on "italoag/intel/libyaml"
+  depends_on "italoag/intel/python@3.15"
 
   resource "pathspec" do
     url "https://files.pythonhosted.org/packages/5a/82/42f767fc1c1143d6fd36efb827202a2d997a375e160a71eb2888a925aac1/pathspec-1.1.1.tar.gz"
@@ -45,4 +40,9 @@ class Yamllint < Formula
     YAML
     assert_empty shell_output("#{bin}/yamllint -f parsable -s good.yaml")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "557df81ee7effa085ff2799e977a2bcf1dd87d22a48f4870a1139db471324e3b"
+  end
+
 end

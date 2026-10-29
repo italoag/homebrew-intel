@@ -17,8 +17,8 @@ class HicolorIconTheme < Formula
     sha256 cellar: :any_skip_relocation, all: "76779247990b538d304e98b042fde85677491e428d0381a59383264ce8ef199f"
   end
 
-  depends_on "meson" => :build
-  depends_on "ninja" => :build
+  depends_on "italoag/intel/meson" => :build
+  depends_on "italoag/intel/ninja" => :build
 
   def install
     system "meson", "setup", "build", *std_meson_args

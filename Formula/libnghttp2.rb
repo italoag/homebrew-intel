@@ -14,21 +14,16 @@ class Libnghttp2 < Formula
     formula "nghttp2"
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "e4ba697f32efe216aa4d2dffb39c8a4e81aecd5fa22eaf117a0e21aceec266cb"
-  end
-
 
   head do
     url "https://github.com/nghttp2/nghttp2.git", branch: "master"
 
-    depends_on "autoconf" => :build
-    depends_on "automake" => :build
-    depends_on "libtool" => :build
+    depends_on "italoag/intel/autoconf" => :build
+    depends_on "italoag/intel/automake" => :build
+    depends_on "italoag/intel/libtool" => :build
   end
 
-  depends_on "pkgconf" => :build
+  depends_on "italoag/intel/pkgconf" => :build
 
   # These used to live in `nghttp2`.
   link_overwrite "include/nghttp2"
@@ -63,4 +58,9 @@ class Libnghttp2 < Formula
     system ENV.cc, "test.c", "-I#{include}", "-L#{lib}", "-lnghttp2", "-o", "test"
     assert_equal version.to_s, shell_output("./test")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "e4ba697f32efe216aa4d2dffb39c8a4e81aecd5fa22eaf117a0e21aceec266cb"
+  end
+
 end

@@ -27,7 +27,7 @@ class Ucl < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "f1733761c7ce4452219f15055b4d72ca6e287c9c18691d9aa66c4aae0349d28c"
   end
 
-  depends_on "automake" => :build
+  depends_on "italoag/intel/automake" => :build
 
   def install
     # Workaround to build with newer GCC
@@ -40,7 +40,7 @@ class Ucl < Formula
     # Workaround for ancient config.sub files not recognising aarch64 macos.
     # As above, autoremake would be nicer, but that does not work.
     %w[config.guess config.sub].each do |fn|
-      cp "#{formula_opt_prefix("automake")}/share/automake-#{Formula["automake"].version.major_minor}/#{fn}",
+      cp "#{formula_opt_prefix("automake")}/share/automake-#{Formula["italoag/intel/automake"].version.major_minor}/#{fn}",
          "acconfig/#{fn}"
     end
 

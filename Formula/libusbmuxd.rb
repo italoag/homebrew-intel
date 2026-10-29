@@ -7,23 +7,18 @@ class Libusbmuxd < Formula
   revision 1
   compatibility_version 1
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "d7a94b7bb0fb0a5ae1314cfbe08a05cab8bff883cff0a0199d7790571c24528f"
-  end
-
 
   head do
     url "https://github.com/libimobiledevice/libusbmuxd.git", branch: "master"
 
-    depends_on "autoconf" => :build
-    depends_on "automake" => :build
-    depends_on "libtool" => :build
+    depends_on "italoag/intel/autoconf" => :build
+    depends_on "italoag/intel/automake" => :build
+    depends_on "italoag/intel/libtool" => :build
   end
 
-  depends_on "pkgconf" => :build
-  depends_on "libimobiledevice-glue"
-  depends_on "libplist"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/libimobiledevice-glue"
+  depends_on "italoag/intel/libplist"
 
   allow_network_access! :test
 
@@ -48,4 +43,9 @@ class Libusbmuxd < Formula
       Process.wait(pid)
     end
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "d7a94b7bb0fb0a5ae1314cfbe08a05cab8bff883cff0a0199d7790571c24528f"
+  end
+
 end

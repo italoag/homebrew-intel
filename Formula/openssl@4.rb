@@ -11,13 +11,8 @@ class OpensslAT4 < Formula
     regex(/href=.*?openssl[._-]v?(4(?:\.\d+)+)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "ff8a79a313031b0536a5aaf09c5b8cbd1dfddf5121013d8eccf4d4eb36c36435"
-  end
 
-
-  depends_on "ca-certificates" => :no_linkage
+  depends_on "italoag/intel/ca-certificates" => :no_linkage
 
   uses_from_macos "perl" => :build
 
@@ -120,4 +115,9 @@ class OpensslAT4 < Formula
     assert_match "verification failed", output
     refute_match "error:80000002", output
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "ff8a79a313031b0536a5aaf09c5b8cbd1dfddf5121013d8eccf4d4eb36c36435"
+  end
+
 end

@@ -11,15 +11,10 @@ class Gpgmepp < Formula
     regex(/href=.*?gpgmepp[._-]v?(\d+(?:\.\d+)+)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "26e2f1efa7fab91a2028388b9e563c0d1c02e24d216a37f5a1fde9b8ccae769f"
-  end
 
-
-  depends_on "cmake" => :build
-  depends_on "pkgconf" => [:build, :test]
-  depends_on "gpgme"
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/pkgconf" => [:build, :test]
+  depends_on "italoag/intel/gpgme"
 
   deny_network_access!
 
@@ -39,4 +34,9 @@ class Gpgmepp < Formula
                     "-I#{include}/gpgme++", *flags
     system "./test", "--number", "10"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "26e2f1efa7fab91a2028388b9e563c0d1c02e24d216a37f5a1fde9b8ccae769f"
+  end
+
 end

@@ -42,18 +42,18 @@ class Gnutls < Formula
     sha256               x86_64_linux:      "8ac010d174af7ca336b9113fa208aa05104eb6b60e4e42f86c4212ad77ff6ad2"
   end
 
-  depends_on "pkgconf" => :build
-  depends_on "texinfo" => :build
-  depends_on "ca-certificates" => :no_linkage
-  depends_on "gmp"
-  depends_on "libidn2"
-  depends_on "libtasn1"
-  depends_on "libunistring"
-  depends_on "nettle"
-  depends_on "p11-kit"
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/texinfo" => :build
+  depends_on "italoag/intel/ca-certificates" => :no_linkage
+  depends_on "italoag/intel/gmp"
+  depends_on "italoag/intel/libidn2"
+  depends_on "italoag/intel/libtasn1"
+  depends_on "italoag/intel/libunistring"
+  depends_on "italoag/intel/nettle"
+  depends_on "italoag/intel/p11-kit"
 
   on_macos do
-    depends_on "gettext"
+    depends_on "italoag/intel/gettext"
   end
 
   # Backport support for building with older clang

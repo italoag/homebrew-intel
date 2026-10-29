@@ -21,8 +21,8 @@ class Libthai < Formula
     sha256 x86_64_linux:      "54551ab441971407573f2f97d085cd26ec3b61eda8fbf6d599ce2a41bfdb5f02"
   end
 
-  depends_on "pkgconf" => [:build, :test]
-  depends_on "libdatrie"
+  depends_on "italoag/intel/pkgconf" => [:build, :test]
+  depends_on "italoag/intel/libdatrie"
 
   def install
     system "./configure", "--disable-silent-rules",

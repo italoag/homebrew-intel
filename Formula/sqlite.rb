@@ -15,15 +15,10 @@ class Sqlite < Formula
     end
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "3bf026b25d2d4942d8e7c27174fbda9b7456f2f99e4dbf587b59364043530989"
-  end
-
 
   keg_only :provided_by_macos
 
-  depends_on "readline"
+  depends_on "italoag/intel/readline"
 
   on_linux do
     depends_on "zlib-ng-compat"
@@ -80,4 +75,9 @@ class Sqlite < Formula
     names = pipe_output(bin/"sqlite3", school, 0).strip.split("\n")
     assert_equal %w[Sue Tim Bob], names
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "3bf026b25d2d4942d8e7c27174fbda9b7456f2f99e4dbf587b59364043530989"
+  end
+
 end

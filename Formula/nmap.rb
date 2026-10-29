@@ -1,33 +1,33 @@
 class Nmap < Formula
   desc "Port scanning utility for large networks"
   homepage "https://nmap.org/"
-  url "https://nmap.org/dist/nmap-7.992.tar.bz2"
-  sha256 "0c12660eddbf7eabeff6996cb0c044a4eadf2bb0c6fbcb340d6cf72b1caee402"
+  url "https://nmap.org/dist/nmap-7.993.tar.bz2"
+  sha256 "270e55f04915bfcecb5db8feb959d4c5ba86a48c094520a4f1c07571e1c79c59"
   license :cannot_represent
   compatibility_version 1
-  head "https://svn.nmap.org/nmap/"
 
   livecheck do
     url "https://nmap.org/download"
     regex(/href=.*?nmap[._-]v?(\d+(?:\.\d+)+)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "1ec070eff02691b63902ebcb53f141271baa9ff2597956c675388a9ecdb7b873"
+
+  head do
+    url "https://svn.nmap.org/nmap/"
+
+    depends_on "italoag/intel/autoconf" => :build
   end
 
-
-  depends_on "python-setuptools" => :build
-  depends_on "liblinear"
-  depends_on "libssh2"
+  depends_on "italoag/intel/python-setuptools" => :build
+  depends_on "italoag/intel/liblinear"
+  depends_on "italoag/intel/libssh2"
   # Check supported Lua version at https://github.com/nmap/nmap/tree/master/liblua.
-  depends_on "lua"
-  depends_on "openssl@4"
-  depends_on "pcre2"
-  depends_on "python@3.15" # for ndiff
+  depends_on "italoag/intel/lua"
+  depends_on "italoag/intel/openssl@4"
+  depends_on "italoag/intel/pcre2"
+  depends_on "italoag/intel/python@3.15" # for ndiff
 
-  uses_from_macos "bison" => :build
+  uses_from_macos "italoag/intel/bison" => :build
   uses_from_macos "flex" => :build
   uses_from_macos "libpcap"
 
@@ -74,4 +74,9 @@ class Nmap < Formula
     cp "scan1.xml", "scan2.xml"
     system bin/"ndiff", "scan1.xml", "scan2.xml"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "900c8e1878d8fd7313d68a54e7836bbcd1784bb63996375d95f1c726e44b8f3e"
+  end
+
 end

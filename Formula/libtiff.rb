@@ -12,16 +12,11 @@ class Libtiff < Formula
     regex(/href=.*?tiff[._-]v?(\d+(?:\.\d+)+)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "824e353ceb42d77a31c9f0e70d996860db98d556243d2cf4f530d0f7df6fe321"
-  end
 
-
-  depends_on "jpeg-turbo"
-  depends_on "webp"
-  depends_on "xz"
-  depends_on "zstd"
+  depends_on "italoag/intel/jpeg-turbo"
+  depends_on "italoag/intel/webp"
+  depends_on "italoag/intel/xz"
+  depends_on "italoag/intel/zstd"
 
   on_linux do
     depends_on "zlib-ng-compat"
@@ -88,4 +83,9 @@ class Libtiff < Formula
     system "./test_webp", "webp.tif"
     assert_match "Compression Scheme: WEBP", shell_output("#{bin}/tiffinfo webp.tif")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "1a7b14acbd0b8dfe8e4a1dafa6e9aa7e9d3dbd780d2f6ec89f04dcef112b1bfc"
+  end
+
 end

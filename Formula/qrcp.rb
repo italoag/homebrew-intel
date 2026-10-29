@@ -10,13 +10,8 @@ class Qrcp < Formula
     strategy :github_latest
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "4d8a2798b7fc5faaaf11db87e5db6adff505cff89bdf13d21365b9cfbd89fce7"
-  end
 
-
-  depends_on "go" => :build
+  depends_on "italoag/intel/go" => :build
 
   allow_network_access! :test
 
@@ -56,4 +51,9 @@ class Qrcp < Formula
     # User-Agent header needed in order for curl to be able to receive file
     assert_equal data, shell_output("curl -H \"User-Agent: Mozilla\" #{server_url}")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "4d8a2798b7fc5faaaf11db87e5db6adff505cff89bdf13d21365b9cfbd89fce7"
+  end
+
 end

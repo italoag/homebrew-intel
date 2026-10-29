@@ -5,20 +5,15 @@ class Lftp < Formula
   sha256 "68116cc184ab660a78a4cef323491e89909e5643b59c7b5f0a14f7c2b20e0a29"
   license "GPL-3.0-or-later"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "7f9b7dde144aa78bbe7eeca1794009aa5cbca5f10fe3b96686a35e67d5a754a4"
-  end
 
-
-  depends_on "libidn2"
-  depends_on "openssl@4"
-  depends_on "readline"
+  depends_on "italoag/intel/libidn2"
+  depends_on "italoag/intel/openssl@4"
+  depends_on "italoag/intel/readline"
 
   uses_from_macos "ncurses"
 
   on_macos do
-    depends_on "gettext"
+    depends_on "italoag/intel/gettext"
   end
 
   on_linux do
@@ -55,4 +50,9 @@ class Lftp < Formula
     system bin/"lftp", "-c", "open file:#{testpath}/src; mirror . #{testpath}/dst"
     assert_equal "hello from lftp", (testpath/"dst/hello.txt").read
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "7f9b7dde144aa78bbe7eeca1794009aa5cbca5f10fe3b96686a35e67d5a754a4"
+  end
+
 end

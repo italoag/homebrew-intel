@@ -16,7 +16,7 @@ class Googletest < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "b1f9c006572fda7fd19c2c4592c0ba8dc80ec23053ee3fc7514587187f4fe1aa"
   end
 
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
 
   deny_network_access!
 

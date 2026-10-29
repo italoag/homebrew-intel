@@ -17,7 +17,7 @@ class Libidn < Formula
     sha256               x86_64_linux:      "87c70a4f75f4c37a4c9c7bd2bc2fdaaa3ce21d84a9aa4236adfe55de94e6e772"
   end
 
-  depends_on "pkgconf" => :build
+  depends_on "italoag/intel/pkgconf" => :build
 
   def install
     system "./configure", "--disable-csharp",

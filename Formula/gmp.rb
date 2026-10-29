@@ -14,17 +14,12 @@ class Gmp < Formula
     regex(/href=.*?gmp[._-]v?(\d+(?:\.\d+)+)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "447f6264ffed119a464b968cb02080553d05a4e68630ffa5c36cc0f02b274494"
-  end
 
+  depends_on "italoag/intel/autoconf" => :build
+  depends_on "italoag/intel/automake" => :build
+  depends_on "italoag/intel/libtool" => :build
 
-  depends_on "autoconf" => :build
-  depends_on "automake" => :build
-  depends_on "libtool" => :build
-
-  uses_from_macos "m4" => :build
+  uses_from_macos "italoag/intel/m4" => :build
 
   deny_network_access!
 
@@ -82,4 +77,9 @@ class Gmp < Formula
     system ENV.cc, "test.c", "#{lib}/libgmp.a", "-o", "test"
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "447f6264ffed119a464b968cb02080553d05a4e68630ffa5c36cc0f02b274494"
+  end
+
 end

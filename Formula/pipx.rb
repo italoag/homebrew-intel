@@ -3,18 +3,13 @@ class Pipx < Formula
 
   desc "Execute binaries from Python packages in isolated environments"
   homepage "https://pipx.pypa.io"
-  url "https://files.pythonhosted.org/packages/43/33/5986c0bc019beb9e7ef914378f939b806a55de349d730e7badc9520c62d5/pipx-1.18.2.tar.gz"
-  sha256 "5116b1a1fb09494c0f38df5388787b2910f41eb58e9a64172af970f81c0d94e4"
+  url "https://files.pythonhosted.org/packages/09/8e/747b9515f6f4a2f68e1ce72747d433230bc6666fb8ce9816c563b5dcd3c6/pipx-1.18.5.tar.gz"
+  sha256 "7c1f88cdcc08937dc63edddd28ccfbc397150ef1dff26afe2e7456c4db000f02"
   license "MIT"
   head "https://github.com/pypa/pipx.git", branch: "main"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "13919c48aa7a72c7feb4d40e990132f831509367ef6776903837e22c8c5313ef"
-  end
 
-
-  depends_on "python@3.15"
+  depends_on "italoag/intel/python@3.15"
 
   resource "argcomplete" do
     url "https://files.pythonhosted.org/packages/87/6f/5a73f04007ca950701765949209f068da628bd11f9c2da287278ce91e0ee/argcomplete-3.7.2.tar.gz"
@@ -27,8 +22,8 @@ class Pipx < Formula
   end
 
   resource "filelock" do
-    url "https://files.pythonhosted.org/packages/f4/a9/1af41b37c3279712b22cdc63aac78a52432202b6fe1f9666a2a3d2831fb4/filelock-4.2.0.tar.gz"
-    sha256 "7a60906c75227cf04d0c273afadc8219400f11aeb13cc69591d4f6cdc6c8036e"
+    url "https://files.pythonhosted.org/packages/d8/28/3893324bcadf8f89b1616637468d766af3f625008c0735bf704fdfa86617/filelock-4.2.4.tar.gz"
+    sha256 "c6d8663535e1650ee430507b4ffbac7b464dd64b7647ea0112a9f406499d163d"
   end
 
   resource "packaging" do
@@ -37,8 +32,8 @@ class Pipx < Formula
   end
 
   resource "platformdirs" do
-    url "https://files.pythonhosted.org/packages/da/91/4a03cfdb03314cfca262921797fff04ff4054bd86a160aed76eddf8aa12b/platformdirs-4.13.3.tar.gz"
-    sha256 "5e567f664eb087ab8521c0179cd8d1bd60857d271136567a39719e28e2d383ce"
+    url "https://files.pythonhosted.org/packages/1a/43/8c4b5fe23f0e119cf4e1b16c2d16240ab9057cdbb138568c91d5a48abf81/platformdirs-4.13.6.tar.gz"
+    sha256 "211d176e24674b5895dedf9021c262bcf9fad008a70610bfb147d4a8d6d8fe1b"
   end
 
   resource "userpath" do
@@ -71,4 +66,9 @@ class Pipx < Formula
     system bin/"pipx", "uninstall", "csvkit"
     refute_match "csvjoin", shell_output("#{bin}/pipx list")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "81f8cdabf5f34f6020abfd64546cd3e8edc579bf3ccd70f3cab004d86596d82d"
+  end
+
 end

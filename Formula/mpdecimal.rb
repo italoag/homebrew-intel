@@ -11,11 +11,6 @@ class Mpdecimal < Formula
     regex(/href=.*?mpdecimal[._-]v?(\d+(?:\.\d+)+)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "e7d2812e70468280d4d2c71c2131cd9c22515c7f6b7164f0f107912a51e28040"
-  end
-
 
   deny_network_access!
 
@@ -62,4 +57,9 @@ class Mpdecimal < Formula
     system ENV.cc, "test.c", "-o", "test", "-L#{lib}", "-lmpdec"
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "e7d2812e70468280d4d2c71c2131cd9c22515c7f6b7164f0f107912a51e28040"
+  end
+
 end

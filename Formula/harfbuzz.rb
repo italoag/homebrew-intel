@@ -8,24 +8,19 @@ class Harfbuzz < Formula
   compatibility_version 1
   head "https://github.com/harfbuzz/harfbuzz.git", branch: "main"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "79d7e021d877c216b4fa0eec9b8e73ba07faa8b38b809e51899631c34d69018e"
-  end
 
-
-  depends_on "gobject-introspection" => :build
-  depends_on "meson" => :build
-  depends_on "ninja" => :build
-  depends_on "pkgconf" => :build
-  depends_on "python@3.15" => [:build, :test]
-  depends_on "pygobject3" => :test
-  depends_on "cairo"
-  depends_on "freetype"
-  depends_on "glib"
-  depends_on "graphite2"
-  depends_on "icu4c@79"
-  depends_on "libpng"
+  depends_on "italoag/intel/gobject-introspection" => :build
+  depends_on "italoag/intel/meson" => :build
+  depends_on "italoag/intel/ninja" => :build
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/python@3.15" => [:build, :test]
+  depends_on "italoag/intel/pygobject3" => :test
+  depends_on "italoag/intel/cairo"
+  depends_on "italoag/intel/freetype"
+  depends_on "italoag/intel/glib"
+  depends_on "italoag/intel/graphite2"
+  depends_on "italoag/intel/icu4c@79"
+  depends_on "italoag/intel/libpng"
 
   on_linux do
     depends_on "zlib-ng-compat"
@@ -65,4 +60,9 @@ class Harfbuzz < Formula
     end
     system python3, "-c", "from gi.repository import HarfBuzz"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "79d7e021d877c216b4fa0eec9b8e73ba07faa8b38b809e51899631c34d69018e"
+  end
+
 end

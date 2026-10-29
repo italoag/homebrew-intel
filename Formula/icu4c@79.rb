@@ -17,11 +17,6 @@ class Icu4cAT79 < Formula
     end
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "71fc7a311c9529a14a1786272653c6ae8ce86a62a7e964a8685d90bde4eeaea3"
-  end
-
 
   keg_only :shadowed_by_macos, "macOS provides libicucore.dylib (but nothing else)"
 
@@ -54,4 +49,9 @@ class Icu4cAT79 < Formula
       system bin/"gendict", "--uchars", "hello", "dict"
     end
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "71fc7a311c9529a14a1786272653c6ae8ce86a62a7e964a8685d90bde4eeaea3"
+  end
+
 end

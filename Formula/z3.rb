@@ -13,16 +13,11 @@ class Z3 < Formula
     strategy :github_latest
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "eb2aa768d3822e37063cea01107655c3424fb7aaab0f49f0eb1ee6cd5285dadd"
-  end
 
-
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
   # Has Python bindings but are supplementary to the main library
   # which does not need Python.
-  depends_on "python@3.15" => [:build, :test]
+  depends_on "italoag/intel/python@3.15" => [:build, :test]
 
   # The following macOS conditional should be the inverse of LLVM's Z3 conditional
   on_ventura :or_older do
@@ -70,4 +65,9 @@ class Z3 < Formula
     system "./test"
     assert_equal version.to_s, shell_output("#{python3} -c 'import z3; print(z3.get_version_string())'").strip
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "eb2aa768d3822e37063cea01107655c3424fb7aaab0f49f0eb1ee6cd5285dadd"
+  end
+
 end

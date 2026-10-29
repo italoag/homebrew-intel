@@ -16,11 +16,11 @@ class AvroC < Formula
     sha256 cellar: :any, x86_64_linux:      "a7562a33b60c43d3255e69bb13cb16c37f9efd1511c86ecd16284c049184da74"
   end
 
-  depends_on "cmake" => :build
-  depends_on "pkgconf" => :build
-  depends_on "jansson"
-  depends_on "snappy"
-  depends_on "xz"
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/jansson"
+  depends_on "italoag/intel/snappy"
+  depends_on "italoag/intel/xz"
 
   on_linux do
     depends_on "zlib-ng-compat"

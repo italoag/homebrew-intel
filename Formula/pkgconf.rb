@@ -13,11 +13,6 @@ class Pkgconf < Formula
     regex(/href=.*?pkgconf[._-]v?(\d+\.\d+(?:\.[1-8]?\d(?:\.\d+)*)?)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "808757968f621c22b3d12eec6e10649cb7ccfddb79bd40899ae35285919025da"
-  end
-
 
   head do
     url "https://github.com/pkgconf/pkgconf.git", branch: "main"
@@ -136,4 +131,9 @@ class Pkgconf < Formula
       refute_match "-L/usr/lib", shell_output("#{bin}/pkgconf --libs libcurl")
     end
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "808757968f621c22b3d12eec6e10649cb7ccfddb79bd40899ae35285919025da"
+  end
+
 end

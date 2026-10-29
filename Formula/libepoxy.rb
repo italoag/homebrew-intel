@@ -29,9 +29,9 @@ class Libepoxy < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "8798e1682f355df0c5009b8b968ecb2b9bd447f32683ad21f10e68ea60320819"
   end
 
-  depends_on "meson" => :build
-  depends_on "ninja" => :build
-  depends_on "pkgconf" => :build
+  depends_on "italoag/intel/meson" => :build
+  depends_on "italoag/intel/ninja" => :build
+  depends_on "italoag/intel/pkgconf" => :build
 
   on_linux do
     depends_on "freeglut"

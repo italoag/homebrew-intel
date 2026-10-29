@@ -17,12 +17,12 @@ class WebpPixbufLoader < Formula
     sha256               x86_64_linux:      "49cab10c1cf8f1b8ffadd24002c689ce1dbaf190e66f6c6b17d75292fe2bfbe3"
   end
 
-  depends_on "meson" => :build
-  depends_on "ninja" => :build
-  depends_on "pkgconf" => [:build, :test]
-  depends_on "gdk-pixbuf"
-  depends_on "glib"
-  depends_on "webp"
+  depends_on "italoag/intel/meson" => :build
+  depends_on "italoag/intel/ninja" => :build
+  depends_on "italoag/intel/pkgconf" => [:build, :test]
+  depends_on "italoag/intel/gdk-pixbuf"
+  depends_on "italoag/intel/glib"
+  depends_on "italoag/intel/webp"
 
   def install
     system "meson", "setup", "build", *std_meson_args
@@ -57,7 +57,7 @@ class WebpPixbufLoader < Formula
       }
     C
 
-    gdk_pixbuf_pc = Formula["gdk-pixbuf"].lib.glob("pkgconfig/gdk-pixbuf-*.pc").first.basename(".pc")
+    gdk_pixbuf_pc = Formula["italoag/intel/gdk-pixbuf"].lib.glob("pkgconfig/gdk-pixbuf-*.pc").first.basename(".pc")
     flags = shell_output("pkgconf --cflags --libs #{gdk_pixbuf_pc}").chomp.split
     system ENV.cc, "test.c", "-o", "test_loader", *flags
     system "./test_loader", "test.webp"

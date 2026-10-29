@@ -11,15 +11,10 @@ class DartSass < Formula
     regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "c088b1144c3d5665ec4aa35446daaabce0dca6f286cbde89525891d2f7d649fe"
-  end
 
-
-  depends_on "buf" => :build
-  depends_on "dart-sdk" => :build
-  depends_on "dartaotruntime"
+  depends_on "italoag/intel/buf" => :build
+  depends_on "italoag/intel/dart-sdk" => :build
+  depends_on "italoag/intel/dartaotruntime"
 
   resource "language" do
     url "https://github.com/sass/sass/archive/refs/tags/embedded-protocol-3.3.0.tar.gz"
@@ -44,7 +39,7 @@ class DartSass < Formula
 
     args = %W[
       -Dversion=#{version}
-      -Ddart-version=#{Formula["dart-sdk"].version}
+      -Ddart-version=#{Formula["italoag/intel/dart-sdk"].version}
       -Dcompiler-version=#{version}
       -Dprotocol-version=#{resource("language").version}
     ]
@@ -74,4 +69,9 @@ class DartSass < Formula
     assert_equal "div img{border:0px}",
     shell_output("#{bin}/sass --style compressed input.scss").strip
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "c088b1144c3d5665ec4aa35446daaabce0dca6f286cbde89525891d2f7d649fe"
+  end
+
 end

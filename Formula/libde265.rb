@@ -6,13 +6,8 @@ class Libde265 < Formula
   license "LGPL-3.0-or-later"
   compatibility_version 1
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "710dc4aab05bb0712d4e8ef86a020873c70aea40a352f13378e2a0b5fe05b171"
-  end
 
-
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
 
   deny_network_access!
 
@@ -61,4 +56,9 @@ class Libde265 < Formula
     system ENV.cc, "test.c", "-I#{include}", "-L#{lib}", "-lde265", "-o", "test"
     assert_equal version.to_s, shell_output("./test").strip
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "f29a5bf2f7b178b8620b11d8b60897d998366e30ab68f5c58d9ef7a415133aa8"
+  end
+
 end

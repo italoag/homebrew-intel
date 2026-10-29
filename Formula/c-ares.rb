@@ -12,13 +12,8 @@ class CAres < Formula
     regex(/href=.*?c-ares[._-](\d+(?:\.\d+)+)\.t/i)
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "590769e57b578add457d7f6093cd658442c24ca7025b953387aab9b88d7182c9"
-  end
 
-
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
 
   def install
     args = %W[
@@ -49,4 +44,9 @@ class CAres < Formula
 
     system bin/"ahost", "127.0.0.1"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "5512949a3033474b2827e3c84941eb86a5c1c990932917716d20423fcf6d8f2f"
+  end
+
 end

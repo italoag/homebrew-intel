@@ -22,8 +22,8 @@ class Rustscan < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "045f1455224bee1648c5024d83de72ca209ef19e4784adb2bd5d479bef875bf0"
   end
 
-  depends_on "rust" => :build
-  depends_on "nmap"
+  depends_on "italoag/intel/rust" => :build
+  depends_on "italoag/intel/nmap"
 
   deny_network_access!
 

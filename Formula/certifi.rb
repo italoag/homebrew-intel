@@ -10,9 +10,9 @@ class Certifi < Formula
     sha256 cellar: :any_skip_relocation, all: "6a1ad67a87b9d987dc2e62ca1bb553345e003870a4664f23063f9cb4a38b165a"
   end
 
-  depends_on "python-setuptools" => :build
-  depends_on "python@3.15" => [:build, :test]
-  depends_on "ca-certificates" => :no_linkage
+  depends_on "italoag/intel/python-setuptools" => :build
+  depends_on "italoag/intel/python@3.15" => [:build, :test]
+  depends_on "italoag/intel/ca-certificates" => :no_linkage
 
   deny_network_access!
 
@@ -22,7 +22,7 @@ class Certifi < Formula
     # Use brewed ca-certificates PEM file instead of the bundled copy
     site_packages = prefix/Language::Python.site_packages(python3)
     rm site_packages/"certifi/cacert.pem"
-    (site_packages/"certifi").install_symlink Formula["ca-certificates"].pkgetc/"cert.pem" => "cacert.pem"
+    (site_packages/"certifi").install_symlink Formula["italoag/intel/ca-certificates"].pkgetc/"cert.pem" => "cacert.pem"
 
     # Add symlinks to use on all externally-managed pythons
     extra_pythons = Keg.for(python3).to_formula.versioned_formulae.select { |f| f.version >= "3.12" }
@@ -37,7 +37,7 @@ class Certifi < Formula
 
   test do
     output = shell_output("#{python3} -m certifi").chomp
-    assert_equal Formula["ca-certificates"].pkgetc/"cert.pem", Pathname(output).realpath
+    assert_equal Formula["italoag/intel/ca-certificates"].pkgetc/"cert.pem", Pathname(output).realpath
 
     # Check that the wheel is safe to use on all pythons
     wheel = prefix/Language::Python.site_packages(python3)/"certifi-#{version}.dist-info/WHEEL"

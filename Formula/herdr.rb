@@ -11,14 +11,9 @@ class Herdr < Formula
     strategy :github_latest
   end
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "212d59ef724ebf922881a6c45a731e6bfec585af6aa1d2e8a66c159449706fee"
-  end
 
-
-  depends_on "rust" => :build
-  depends_on "zig@0.16" => :build
+  depends_on "italoag/intel/rust" => :build
+  depends_on "italoag/intel/zig@0.16" => :build
 
   deny_network_access!
 
@@ -66,4 +61,9 @@ class Herdr < Formula
     Process.kill("TERM", pid)
     Process.wait(pid)
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "212d59ef724ebf922881a6c45a731e6bfec585af6aa1d2e8a66c159449706fee"
+  end
+
 end

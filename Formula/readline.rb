@@ -7,11 +7,6 @@ class Readline < Formula
   sha256 "fe5383204467828cd495ee8d1d3c037a7eba1389c22bc6a041f627976f9061cc"
   license "GPL-3.0-or-later"
 
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "50bba05b01af3c0942a6bf674805e39fa5b69098307eee798a4f52d89a620f2e"
-  end
-
   # Add new patches using this format:
   #
   # patch_checksum_pairs = %w[
@@ -109,4 +104,9 @@ class Readline < Formula
     system ENV.cc, "-L", lib, "test.c", "-L#{lib}", "-lreadline", "-o", "test"
     assert_equal "test> Hello, World!\nHello, World!", pipe_output("./test", "Hello, World!\n").strip
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "50bba05b01af3c0942a6bf674805e39fa5b69098307eee798a4f52d89a620f2e"
+  end
+
 end
