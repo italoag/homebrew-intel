@@ -1,8 +1,8 @@
 class DartSass < Formula
   desc "Reference implementation of Sass, written in Dart"
   homepage "https://sass-lang.com/dart-sass"
-  url "https://github.com/sass/dart-sass/archive/refs/tags/1.106.1.tar.gz"
-  sha256 "5742589847d5f08000f21cf9df61f70ab61dec486f43301cf5e58d88086e2313"
+  url "https://github.com/sass/dart-sass/archive/refs/tags/1.107.0.tar.gz"
+  sha256 "df71b5d88d00bd3c8e19af8bb7e6c244a801519f5ee41b9f0e9106cbb38dca81"
   license "MIT"
 
   # Some tags are used for sass-api/sass-parser
@@ -16,9 +16,12 @@ class DartSass < Formula
   depends_on "italoag/intel/dart-sdk" => :build
   depends_on "italoag/intel/dartaotruntime"
 
+  # 1.107.0 needs `fatal_deprecation_except` from sass/sass main, which is not
+  # in a tagged embedded protocol release yet (EMBEDDED_PROTOCOL_VERSION is still 3.3.0)
   resource "language" do
-    url "https://github.com/sass/sass/archive/refs/tags/embedded-protocol-3.3.0.tar.gz"
-    sha256 "17ea26c8ae3bb03a7dc72f841d7d832b64410230483cdde8807ab4b7f9204ce8"
+    url "https://github.com/sass/sass/archive/53e8d7548be7dc56b13e6914a82eedd69f0bd719.tar.gz"
+    version "3.3.0"
+    sha256 "f639f6ff603d89bd190bdf215b5caf4d11a29680db9f8c810782c888f36b5de8"
 
     livecheck do
       url :url

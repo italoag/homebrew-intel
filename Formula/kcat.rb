@@ -33,6 +33,8 @@ class Kcat < Formula
   depends_on "italoag/intel/libserdes"
   depends_on "italoag/intel/yajl"
 
+  deny_network_access!
+
   def install
     system "./configure", "--prefix=#{prefix}",
                           "--enable-json",

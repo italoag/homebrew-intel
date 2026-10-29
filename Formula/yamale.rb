@@ -51,7 +51,7 @@ class Yamale < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "981ea70c40d1c2a074ebacaea2304320709037057b440d008ff35dcfe0fb80eb"
+    sha256 cellar: :any, tahoe: "260cdf00a8d5ebc02d97f4476c768d7749a99846dd856c4be1d5b839fe3e6da2"
   end
 
 end

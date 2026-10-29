@@ -67,7 +67,7 @@ class Z3 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "eb2aa768d3822e37063cea01107655c3424fb7aaab0f49f0eb1ee6cd5285dadd"
+    sha256 cellar: :any, tahoe: "aff321a7bb125b83d2683744aa2b7bd9fb9def4c911ebd0966e3934815a86a06"
   end
 
 end

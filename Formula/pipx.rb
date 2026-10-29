@@ -3,11 +3,15 @@ class Pipx < Formula
 
   desc "Execute binaries from Python packages in isolated environments"
   homepage "https://pipx.pypa.io"
-  url "https://files.pythonhosted.org/packages/09/8e/747b9515f6f4a2f68e1ce72747d433230bc6666fb8ce9816c563b5dcd3c6/pipx-1.18.5.tar.gz"
-  sha256 "7c1f88cdcc08937dc63edddd28ccfbc397150ef1dff26afe2e7456c4db000f02"
+  url "https://files.pythonhosted.org/packages/d9/48/135b5ce453bdee14f5a7a20a432ec7bb51a079c0f3a85b011a68b9f25ebe/pipx-1.18.7.tar.gz"
+  sha256 "cdeac1c999977b1847bbbff6b39c14a7d27cf2284dddc911d4410bcaec4ccec4"
   license "MIT"
   head "https://github.com/pypa/pipx.git", branch: "main"
 
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "81f8cdabf5f34f6020abfd64546cd3e8edc579bf3ccd70f3cab004d86596d82d"
+  end
 
   depends_on "italoag/intel/python@3.15"
 
@@ -32,8 +36,8 @@ class Pipx < Formula
   end
 
   resource "platformdirs" do
-    url "https://files.pythonhosted.org/packages/1a/43/8c4b5fe23f0e119cf4e1b16c2d16240ab9057cdbb138568c91d5a48abf81/platformdirs-4.13.6.tar.gz"
-    sha256 "211d176e24674b5895dedf9021c262bcf9fad008a70610bfb147d4a8d6d8fe1b"
+    url "https://files.pythonhosted.org/packages/35/e9/bf409046a91b6a9ca652e9b0ac3c39481674f6774e23e58b52315516099a/platformdirs-4.13.7.tar.gz"
+    sha256 "f7f351c027d6632c30471124e1fdb6ac0fef9ccc5cbac1b34cb333431b1fc3e1"
   end
 
   resource "userpath" do
@@ -66,9 +70,4 @@ class Pipx < Formula
     system bin/"pipx", "uninstall", "csvkit"
     refute_match "csvjoin", shell_output("#{bin}/pipx list")
   end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "81f8cdabf5f34f6020abfd64546cd3e8edc579bf3ccd70f3cab004d86596d82d"
-  end
-
 end

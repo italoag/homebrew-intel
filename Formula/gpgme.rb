@@ -16,6 +16,8 @@ class Gpgme < Formula
   depends_on "italoag/intel/libassuan"
   depends_on "italoag/intel/libgpg-error"
 
+  deny_network_access!
+
   def install
     system "./configure", "--disable-silent-rules",
                           "--enable-static",

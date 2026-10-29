@@ -85,7 +85,7 @@ class X265 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "868bb35aecc0eb607456ac8cca1cc9ee7598b497c546928e7407c132a4158b0d"
+    sha256 cellar: :any, tahoe: "89a5fc7685a1191e5a0159308cb9e7c39109c3fd2d0bdc8e475da751c7626ff1"
   end
 
 end

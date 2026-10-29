@@ -45,7 +45,7 @@ class Py3cairo < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "0cba0df9d6dfa9a30d30263f7bf2d54563b6e484a1e7798f320fd129c613b13d"
+    sha256 cellar: :any, tahoe: "1bb68086932e1a2466095c82d55917df08fc6584ddf4aad81423ed05479b375b"
   end
 
 end

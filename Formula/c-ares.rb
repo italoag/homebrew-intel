@@ -46,7 +46,7 @@ class CAres < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "5512949a3033474b2827e3c84941eb86a5c1c990932917716d20423fcf6d8f2f"
+    sha256 cellar: :any, tahoe: "016663efd34eccb231e520cb03bc609277d97c467cd6dfe5a623488f79cf7079"
   end
 
 end
