@@ -263,6 +263,33 @@ end
                              {**normalized, 'x/t/mods': 'ext-src-2'}, file_owner)
         self.assertEqual(fps['consumer'], other['consumer'])
 
+    def test_dead_tap_keeps_published_member_and_skips_unpublished(self):
+        # Tap de origem sumiu: membro já publicado segue congelado a partir do
+        # .rb local; membro nunca publicado sai do plano em vez de matar o plan.
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'Formula').mkdir()
+            (root / 'Formula' / 'opsy.rb').write_text('class Opsy < Formula\nend\n')
+
+            def info(name):
+                if name.endswith(('opsy', 'never')):
+                    raise p.subprocess.CalledProcessError(1, 'brew')
+                return {'full_name': 'jq', 'bottle': {}, 'aliases': [], 'oldnames': []}
+
+            with patch.object(p, 'ROOT', root), \
+                 patch.object(p, 'formula_info', side_effect=info), \
+                 patch.object(p, 'deps', return_value=[]), \
+                 patch.object(p, 'run', return_value='class Jq < Formula\nend\n'):
+                graph, sources, reusable, aux = p.build_graph(
+                    ['jq', 'datolabs-io/opsy/opsy', 'gone/tap/never'],
+                    {'datolabs-io/opsy', 'gone/tap'})
+            self.assertEqual(aux['frozen'], ['datolabs-io/opsy/opsy'])
+            self.assertEqual(aux['skipped'], ['gone/tap/never'])
+            self.assertIn('Opsy', sources['datolabs-io/opsy/opsy'])
+            self.assertEqual(graph['datolabs-io/opsy/opsy'], [])
+            self.assertTrue(reusable['datolabs-io/opsy/opsy'])
+            self.assertNotIn('gone/tap/never', graph)
+
     def test_partition_covers_members_and_clusters_deps(self):
         order = ['m4', 'autoconf', 'wget', 'jq']
         graph = {'m4': [], 'autoconf': ['m4'], 'wget': [], 'jq': ['oniguruma'],

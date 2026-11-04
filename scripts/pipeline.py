@@ -351,14 +351,33 @@ def link_own_tap(owner, repository, tap):
 
 def build_graph(roots, external_taps):
     graph, sources, reusable = {}, {}, {}
-    aux = {'aliases': {}, 'renames': {}}
+    aux = {'aliases': {}, 'renames': {}, 'frozen': [], 'skipped': []}
     pending = list(roots)
     while pending:
         name = pending.pop()
         if name in graph:
             continue
         full_ref = name if '/' in name else 'homebrew/core/' + name
-        info = formula_info(full_ref)
+        local_rb = ROOT / 'Formula' / (short_name(name) + '.rb')
+        try:
+            info = formula_info(full_ref)
+        except subprocess.CalledProcessError:
+            # Tap de origem sumiu (formula removida upstream): um membro já
+            # publicado segue no plano a partir do .rb local com o fp do
+            # manifesto; um nunca publicado sai do plano. Um tap morto não
+            # pode derrubar o plan inteiro.
+            if local_rb.exists():
+                print(f'Fórmula indisponível na origem; mantendo a publicada: {name}',
+                      flush=True)
+                graph[name] = []
+                sources[name] = local_rb.read_text()
+                reusable[name] = True
+                aux['frozen'].append(name)
+            else:
+                print(f'Fórmula indisponível na origem; fora do plano: {name}',
+                      flush=True)
+                aux['skipped'].append(name)
+            continue
         if info['full_name'].removeprefix('homebrew/core/') != name:
             raise RuntimeError('Use nome canônico em vez de alias: ' + name)
         graph[name] = [canonical(dep, external_taps) for dep in deps(full_ref)]
@@ -554,6 +573,11 @@ def plan():
     external_taps = {name.rsplit('/', 1)[0] for name in roots if '/' in name}
     tap_source_taps(external_taps)
     graph, sources, reusable, aux = build_graph(roots, external_taps)
+    skipped = set(aux.get('skipped') or [])
+    if skipped:
+        roots = [r for r in roots if r not in skipped]
+        graph = {n: [d for d in ds if d not in skipped]
+                 for n, ds in graph.items() if n not in skipped}
     if aux.get('disabled'):
         raise RuntimeError('Fórmulas desabilitadas upstream; remova de '
                            'packages.txt: ' + ', '.join(sorted(aux['disabled'])))
@@ -590,9 +614,15 @@ def plan():
         dest = ROOT / rel
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_text(content)
-    fps = member_fps(order, graph, sources, file_owner, patch_shas)
     release = release_for_tag(create=True)
     manifest = load_manifest(release)
+    fps = member_fps(order, graph, sources, file_owner, patch_shas)
+    # Membro congelado (origem sumiu): fp do manifesto preserva o bottle já
+    # publicado; recalcular sobre o .rb local invalidaria e tentaria rebuild.
+    for name in aux.get('frozen') or []:
+        entry = manifest.get(short_name(name)) or {}
+        if entry.get('fp'):
+            fps[name] = entry['fp']
     if manifest:
         # Migração de fingerprint: se a fonte upstream e as deps de um membro
         # publicado não mudaram (fp legado confere), só atualiza o fp —
