@@ -106,6 +106,9 @@ def transform(source, tap, names, keep_bottle=False, lookup=None):
             raise RuntimeError('Formato de bottle não suportado; revisar importação.')
     # no_autobump! só é permitido em taps oficiais; metadado de manutenção upstream.
     source = re.sub(r'(?m)^\s*no_autobump![^\n]*\n', '', source)
+    # disable! faz o brew recusar o install: o tap preserva versões que o
+    # upstream desabilitou, então a diretiva não pode viajar na cópia.
+    source = re.sub(r'(?m)^\s*disable![^\n]*\n', '', source)
     lookup = lookup or {}
     pattern = r'((?:depends_on|uses_from_macos)\s+|Formula\[)([\"\x27])([^\"\x27]+)\2'
     def replace(match):
@@ -574,13 +577,25 @@ def plan():
     tap_source_taps(external_taps)
     graph, sources, reusable, aux = build_graph(roots, external_taps)
     skipped = set(aux.get('skipped') or [])
+    # Desabilitada upstream: brew recusa o install, então congelamos a versão
+    # já publicada (o tap existe para preservar bottles que o upstream largou);
+    # sem publicação anterior não há o que preservar e o membro sai do plano.
+    for name in sorted(set(aux.get('disabled') or [])):
+        local_rb = ROOT / 'Formula' / (short_name(name) + '.rb')
+        if local_rb.exists():
+            print(f'Fórmula desabilitada upstream; mantendo a publicada: {name}',
+                  flush=True)
+            aux['frozen'].append(name)
+            sources[name] = local_rb.read_text()
+            reusable[name] = True
+        else:
+            print(f'Fórmula desabilitada upstream; fora do plano: {name}',
+                  flush=True)
+            skipped.add(name)
     if skipped:
         roots = [r for r in roots if r not in skipped]
         graph = {n: [d for d in ds if d not in skipped]
                  for n, ds in graph.items() if n not in skipped}
-    if aux.get('disabled'):
-        raise RuntimeError('Fórmulas desabilitadas upstream; remova de '
-                           'packages.txt: ' + ', '.join(sorted(aux['disabled'])))
     if aux.get('deprecated'):
         print('Aviso: deprecated upstream: ' + ', '.join(sorted(aux['deprecated'])),
               flush=True)

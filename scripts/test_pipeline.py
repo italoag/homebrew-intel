@@ -130,6 +130,12 @@ end
                   'end\n')
         self.assertNotIn('no_autobump', p.transform(source, 'user/intel', set()))
 
+    def test_transform_removes_disable_so_preserved_versions_install(self):
+        source = ('class Icu4cAT77 < Formula\n'
+                  '  disable! date: "2026-10-30", because: :versioned_formula\n'
+                  'end\n')
+        self.assertNotIn('disable!', p.transform(source, 'user/intel', set()))
+
     def test_implicit_extractor_dep_maps_to_tap_and_installs_in_order(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
