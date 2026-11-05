@@ -29,7 +29,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 WORK = ROOT / '.work'
 TAG = 'tahoe-bottles'  # release rolante: assets persistem entre runs (retomada)
-SHARDS = 6
+# Casa com os 5 runners macos-26-intel simultâneos da conta: um shard a mais
+# ficaria na fila até um terminar e o run só fecharia com os outros ociosos.
+SHARDS = 5
+# O job do GitHub morre em 6h (timeout-minutes no workflow) e leva junto o
+# membro em voo; parar de pegar membros novos antes preserva o trabalho já
+# publicado e libera o runner para o shard na fila. O restante retoma na run
+# seguinte (fragmentos por membro servem de checkpoint).
+BUILD_BUDGET_SECONDS = 5 * 3600
 HEAVY = (('llvm', 40), ('lld', 40), ('rust', 45), ('openjdk', 35), ('gcc', 30),
          ('qt', 30), ('node', 30), ('ffmpeg', 25), ('go', 25), ('gtk', 20),
          ('boost', 20), ('emacs', 20), ('python@', 15), ('postgresql', 15),
@@ -905,6 +912,7 @@ def install_missing_deps(full, tap, order_index, release=None,
 
 def build_shard(idx):
     checks()
+    started = time.monotonic()
     owner, repository, tap = repo_tap()
     WORK.mkdir(exist_ok=True)
     run('brew', 'update')
@@ -952,6 +960,10 @@ def build_shard(idx):
         if (done.get(short) or {}).get('fp') == fps[name]:
             print(f'[{idx}] {short}: já publicado; pulando', flush=True)
             continue
+        if time.monotonic() - started > BUILD_BUDGET_SECONDS:
+            print(f'[{idx}] Orçamento de {BUILD_BUDGET_SECONDS // 3600}h '
+                  'esgotado; restantes ficam para a próxima run', flush=True)
+            break
         try:
             process_member(name, idx, tap, full, short, build_set, reusable,
                            release, fragment, order_index, root_url, fps,
