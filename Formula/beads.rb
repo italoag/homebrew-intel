@@ -1,10 +1,9 @@
 class Beads < Formula
   desc "Memory upgrade for your coding agent"
   homepage "https://github.com/gastownhall/beads"
-  url "https://github.com/gastownhall/beads/archive/refs/tags/v1.3.2.tar.gz"
-  sha256 "d2969ec18f4754dee4f08cb05a0d978dfcca750aa6db9a72b3f35ef3cd62dcc9"
+  url "https://github.com/gastownhall/beads/archive/refs/tags/v1.3.4.tar.gz"
+  sha256 "450284d684e9b114a59ea60afb578dbdca40b2e5307d2c349a9ec37760409c46"
   license "MIT"
-  revision 1
   compatibility_version 1
   head "https://github.com/gastownhall/beads.git", branch: "main"
 
@@ -51,7 +50,7 @@ class Beads < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "4ec5ba366add6c36e16b1fe3e9341b09c4316413f818ec9ecd48beb9f54447a4"
+    sha256 cellar: :any, tahoe: "d9f1d07e3a265c0e52482396c2b4fa4eea5f6e255fd2c383780ac1bbaeedb930"
   end
 
 end

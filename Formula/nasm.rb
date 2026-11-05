@@ -4,6 +4,7 @@ class Nasm < Formula
   url "https://www.nasm.us/pub/nasm/releasebuilds/3.02/nasm-3.02.tar.xz"
   sha256 "87336eba53b4acfe917424ab5d500d2b0054d9f5148d35c2273ccf2cfb712f0d"
   license "BSD-2-Clause"
+  compatibility_version 1
 
   livecheck do
     url "https://www.nasm.us/pub/nasm/releasebuilds/"
@@ -22,11 +23,14 @@ class Nasm < Formula
 
   head do
     url "https://github.com/netwide-assembler/nasm.git", branch: "master"
+
     depends_on "italoag/intel/asciidoc" => :build
     depends_on "italoag/intel/autoconf" => :build
     depends_on "italoag/intel/automake" => :build
     depends_on "xmlto" => :build
   end
+
+  deny_network_access!
 
   def install
     system "./autogen.sh" if build.head?

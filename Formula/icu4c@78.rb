@@ -19,7 +19,6 @@ class Icu4cAT78 < Formula
   keg_only :versioned_formula
 
   deprecate! date: "2026-10-30", because: :versioned_formula
-  disable! date: "2027-10-30", because: :versioned_formula
 
   deny_network_access!
 

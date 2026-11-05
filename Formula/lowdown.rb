@@ -15,6 +15,8 @@ class Lowdown < Formula
 
   depends_on "italoag/intel/bmake" => :build
 
+  deny_network_access!
+
   def install
     configure_args = %W[MANDIR=#{man} PREFIX=#{prefix}]
     if OS.mac?
@@ -54,7 +56,7 @@ class Lowdown < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "02e05b781db3fa8b48c32dd5139a7af42b08cc69d026e72876c947cc569e26c9"
+    sha256 cellar: :any, tahoe: "489bd84b440a8d7f20b82081bd300575948505f08df7bd11bfeb4bce423af0c6"
   end
 
 end

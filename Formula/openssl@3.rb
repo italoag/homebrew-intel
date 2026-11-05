@@ -18,7 +18,6 @@ class OpensslAT3 < Formula
   # https://openssl-library.org/post/2026-09-16-eol30/
   # OpenSSL 3.5 is a LTS version
   deprecate! date: "2030-04-08", because: :unmaintained
-  disable! date: "2031-04-08", because: :unmaintained
 
   depends_on "italoag/intel/ca-certificates" => :no_linkage
 

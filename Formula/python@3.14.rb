@@ -14,7 +14,6 @@ class PythonAT314 < Formula
 
   # https://devguide.python.org/versions/#versions
   deprecate! date: "2030-11-01", because: :deprecated_upstream
-  disable! date: "2031-11-01", because: :deprecated_upstream
 
   depends_on "italoag/intel/pkgconf" => :build
   depends_on "italoag/intel/ca-certificates" => :no_linkage

@@ -23,6 +23,8 @@ class Talloc < Formula
 
   uses_from_macos "italoag/intel/python@3.15" => :build
 
+  deny_network_access!
+
   def install
     system "./configure", "--prefix=#{prefix}",
                           "--disable-rpath",

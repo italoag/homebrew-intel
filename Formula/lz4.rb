@@ -6,6 +6,7 @@ class Lz4 < Formula
   mirror "http://fresh-center.net/linux/misc/legacy/lz4-1.10.0.tar.gz"
   sha256 "537512904744b35e232912055ccf8ec66d768639ff3abe5788d90d792ec5f48b"
   license "BSD-2-Clause"
+  compatibility_version 1
   head "https://github.com/lz4/lz4.git", branch: "dev"
 
   livecheck do
@@ -48,7 +49,7 @@ class Lz4 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "af9db4198c505d578e886993e8f72389ca0622fb565d590d3b04f7a84edb8165"
+    sha256 cellar: :any, tahoe: "d27e7ed5c0381a5b4eb61879d424ad53279542e1f72ce9ad9b67fede238c0d64"
   end
 
 end

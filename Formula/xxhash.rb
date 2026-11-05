@@ -7,6 +7,7 @@ class Xxhash < Formula
     "BSD-2-Clause", # library
     "GPL-2.0-or-later", # `xxhsum` command line utility
   ]
+  compatibility_version 1
 
   livecheck do
     url :stable
@@ -76,7 +77,7 @@ class Xxhash < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "24e0210df35580c648ebe9b45620b100fa3f7e3a7a3a9730ca88071ed01f6ec6"
+    sha256 cellar: :any, tahoe: "fe3ea612bb7753e62d3b23cfe86108acd1f6438cc89983c96f980dd292f8fa36"
   end
 
 end

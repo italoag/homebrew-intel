@@ -5,6 +5,7 @@ class Merve < Formula
   sha256 "8f19c2132447b9113545ffd399cb2bc1e61c6166743921b04883f8e1d778d69e"
   license "Apache-2.0"
   revision 4
+  compatibility_version 1
 
 
   depends_on "italoag/intel/cmake" => :build

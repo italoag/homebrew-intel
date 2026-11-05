@@ -67,7 +67,7 @@ class JpegTurbo < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "32303d030bf2fe1de6a4d77946cb73195b7abf24d7b52224813f23fac02cf181"
+    sha256 cellar: :any, tahoe: "b33ec79713725c101d4631c4b3fcbedc2f736ca87680c8567bbcf1b4fb036d00"
   end
 
 end

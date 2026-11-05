@@ -4,6 +4,7 @@ class Bmake < Formula
   url "https://www.crufty.net/ftp/pub/sjg/bmake-20260912.tar.gz"
   sha256 "b6bd32964cbe451be2838822c9d200b7c7e76a2a5947c03feb71dc6bd72988bd"
   license "BSD-3-Clause"
+  compatibility_version 1
 
   livecheck do
     url "https://www.crufty.net/ftp/pub/sjg/"
@@ -43,7 +44,7 @@ class Bmake < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "ed85c27b84c7ebd663ec77e9a3193ef329777fe1bffaeb9ba79d3bc94f644f68"
+    sha256 tahoe: "09633e689a8d1d8b840722f70cf2f93e4e0d856b64df83ab16b7bb0bbfd21209"
   end
 
 end

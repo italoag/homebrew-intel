@@ -15,7 +15,6 @@ class OpenjdkAT25 < Formula
   keg_only :versioned_formula
 
   deprecate! date: "2030-09-30", because: :unmaintained
-  disable! date: "2033-09-30", because: :unmaintained
 
   depends_on "italoag/intel/autoconf" => :build
   depends_on "italoag/intel/pkgconf" => :build

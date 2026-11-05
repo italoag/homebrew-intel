@@ -15,6 +15,8 @@ class Xorgproto < Formula
   depends_on "italoag/intel/pkgconf" => [:build, :test]
   depends_on "italoag/intel/util-macros" => :build
 
+  deny_network_access!
+
   def install
     args = %W[
       --sysconfdir=#{etc}
@@ -32,7 +34,7 @@ class Xorgproto < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "ce40a9d4c05b96cb3a5f6e6be5a4dd129d7d02f372019d8770a0fd7f8a66a7bc"
+    sha256 cellar: :any_skip_relocation, tahoe: "02301fe958df04d33c2ff9ffb438a217037f05e1abe2792f770d9f4b1cae186f"
   end
 
 end

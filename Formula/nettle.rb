@@ -21,6 +21,8 @@ class Nettle < Formula
 
   uses_from_macos "italoag/intel/m4" => :build
 
+  deny_network_access!
+
   def install
     system "./configure", *std_configure_args, "--enable-shared"
     system "make"

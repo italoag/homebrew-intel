@@ -1,9 +1,10 @@
 class Openexr < Formula
   desc "High dynamic-range image file format"
   homepage "https://www.openexr.com/"
-  url "https://github.com/AcademySoftwareFoundation/openexr/archive/refs/tags/v3.5.2.tar.gz"
-  sha256 "85a291b9b8563fabef1aa3f6e912d744ce1d4b9fd5a8f978eda194cd51b15ae9"
+  url "https://github.com/AcademySoftwareFoundation/openexr/archive/refs/tags/v3.5.3.tar.gz"
+  sha256 "ff1de95f4031c1c57c633e647dc97c15282d3aa3bc7fb90745f00f74de4a054f"
   license "BSD-3-Clause"
+  revision 1
   compatibility_version 2
 
 
@@ -44,7 +45,7 @@ class Openexr < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "310b9cfb9cbe16d3aaf03f3f4c7e35f9d121b09f9332a54ad42ccdf34f9aa58c"
+    sha256 cellar: :any, tahoe: "f6219c59751c176ec1e4cfbf2e2bd62130133da3bee601ce7e9b31199228ba66"
   end
 
 end

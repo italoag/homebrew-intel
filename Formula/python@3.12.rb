@@ -14,7 +14,6 @@ class PythonAT312 < Formula
 
   # https://devguide.python.org/versions/#versions
   deprecate! date: "2028-11-01", because: :deprecated_upstream
-  disable! date: "2029-11-01", because: :deprecated_upstream
 
   depends_on "italoag/intel/pkgconf" => :build
   depends_on "italoag/intel/mpdecimal"

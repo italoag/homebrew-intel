@@ -2,9 +2,10 @@ class Aom < Formula
   desc "Codec library for encoding and decoding AV1 video streams"
   homepage "https://aomedia.googlesource.com/aom"
   url "https://aomedia.googlesource.com/aom.git",
-      tag:      "v3.15.2",
-      revision: "af3dc9aadc793c1b00edc003e3fc19a44fdeb574"
+      tag:      "v3.15.3",
+      revision: "b141d9c45db236335351c8a4b2a14b3ade27c937"
   license "BSD-2-Clause"
+  compatibility_version 1
   head "https://aomedia.googlesource.com/aom.git", branch: "main"
 
 
@@ -63,7 +64,7 @@ class Aom < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "a145d903edd4843e1d2f0aa70d5b7bf9fe68a7abb0e6dc951a3374903dffcbd5"
+    sha256 cellar: :any, tahoe: "39f7e078b2c79fe054e50801bca440d8fcb8be77a3108f3b96789350ee7ac31d"
   end
 
 end

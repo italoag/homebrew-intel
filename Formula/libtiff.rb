@@ -85,7 +85,7 @@ class Libtiff < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "1a7b14acbd0b8dfe8e4a1dafa6e9aa7e9d3dbd780d2f6ec89f04dcef112b1bfc"
+    sha256 cellar: :any, tahoe: "534a0715a3e47c2b9f8962dd20431e96a894eb0439ebf88452ca83ddb5b51ffa"
   end
 
 end

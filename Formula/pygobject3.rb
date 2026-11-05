@@ -21,6 +21,8 @@ class Pygobject3 < Formula
 
   uses_from_macos "italoag/intel/libffi"
 
+  deny_network_access!
+
   def pythons
     deps.map(&:to_formula)
         .select { |f| f.name.match?(/^python@\d\.\d+$/) }
@@ -59,7 +61,7 @@ class Pygobject3 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "6ee51bad5fb0e65cbc1fa81e31490d59b07eb4959dcbfa4fadbdc6436f07e8e2"
+    sha256 cellar: :any, tahoe: "00c42f88f9259363b795a7212a8a2709b655303d649d4abd9a1c4e435a2de3e3"
   end
 
 end

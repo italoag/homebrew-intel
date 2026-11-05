@@ -55,6 +55,8 @@ class X264 < Formula
     depends_on "italoag/intel/nasm" => :build
   end
 
+  deny_network_access!
+
   def install
     args = %W[
       --prefix=#{prefix}

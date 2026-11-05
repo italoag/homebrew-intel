@@ -6,8 +6,7 @@ class ZigAT016 < Formula
   license "MIT"
 
   livecheck do
-    url "https://ziglang.org/download/"
-    regex(/href=.*?zig[._-]v?(0\.16(?:\.\d+)+)\.t/i)
+    skip "No longer developed or maintained"
   end
 
 
@@ -16,7 +15,6 @@ class ZigAT016 < Formula
   # Unsupported since Zig 0.17 was released on 2026-10-01, but we are
   # giving an extra 1 year for dependents to migrate to newer Zig
   deprecate! date: "2027-10-01", because: :unsupported
-  disable! date: "2028-10-01", because: :unsupported
 
   depends_on "italoag/intel/cmake" => :build
   depends_on "italoag/intel/lld@21"

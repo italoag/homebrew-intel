@@ -4,6 +4,7 @@ class PythonAT315 < Formula
   url "https://www.python.org/ftp/python/3.15.2/Python-3.15.2.tgz"
   sha256 "f74e1db0eabd651cd01e4e2a00201bd41866abe74869ab716f9bf33cbbaa0943"
   license "Python-2.0"
+  compatibility_version 1
 
   livecheck do
     url "https://www.python.org/downloads/source/"
@@ -13,7 +14,6 @@ class PythonAT315 < Formula
 
   # https://devguide.python.org/versions/#versions
   deprecate! date: "2031-11-01", because: :deprecated_upstream
-  disable! date: "2032-11-01", because: :deprecated_upstream
 
   depends_on "italoag/intel/pkgconf" => :build
   depends_on "italoag/intel/ca-certificates" => :no_linkage
@@ -142,7 +142,8 @@ class PythonAT315 < Formula
       args << "--enable-framework=#{frameworks}"
       args << "--with-dtrace"
       args << "--with-dbmliborder=ndbm"
-      args << "--with-tail-call-interp"
+      # Tail calling needs LLVM 19, which Apple Clang is based on since 17.
+      args << "--with-tail-call-interp" if DevelopmentTools.clang_build_version >= 1700
 
       # Avoid linking to libgcc https://mail.python.org/pipermail/python-dev/2012-February/116205.html
       args << "MACOSX_DEPLOYMENT_TARGET=#{MacOS.version}"
@@ -513,7 +514,7 @@ class PythonAT315 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "3e2f699827447ce70935a25a0f543c286703f3ab289deb7bd5edb332ac28d80b"
+    sha256 tahoe: "39efd6c33138bdb28fbd11a8ccf40c67486bb24f2af7521ea4e8dc61ad738b88"
   end
 
 end

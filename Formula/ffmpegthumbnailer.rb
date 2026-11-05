@@ -1,8 +1,8 @@
 class Ffmpegthumbnailer < Formula
   desc "Create thumbnails for your video files"
   homepage "https://github.com/dirkvdb/ffmpegthumbnailer"
-  url "https://github.com/dirkvdb/ffmpegthumbnailer/archive/refs/tags/v2.4.0.tar.gz"
-  sha256 "0f2ed039b7f495da217e266a509108e914156ef0e321b49342ebb37b345ccec6"
+  url "https://github.com/dirkvdb/ffmpegthumbnailer/archive/refs/tags/v2.4.1.tar.gz"
+  sha256 "779ff290a2b874fc889b28aa4c89fb5d1dbc9a15ee1d09524ed346bd83a4d920"
   license "GPL-2.0-or-later"
   compatibility_version 1
   head "https://github.com/dirkvdb/ffmpegthumbnailer.git", branch: "master"

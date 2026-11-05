@@ -4,6 +4,7 @@ class Buf < Formula
   url "https://github.com/bufbuild/buf/archive/refs/tags/v1.75.0.tar.gz"
   sha256 "e1b688283938b19ff072789d37f371e9bdfbc866ebb719b20c1f1bdc4a9ca8ff"
   license "Apache-2.0"
+  compatibility_version 1
   head "https://github.com/bufbuild/buf.git", branch: "main"
 
   # There can be a notable gap between when a version is tagged and a
@@ -66,7 +67,7 @@ class Buf < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "94555dbf95aa12385e1410ba5152c2ffa77982f14b2c01ffea4f7fe4a3b2740c"
+    sha256 cellar: :any_skip_relocation, tahoe: "eaa4ace97c823a245f8ae1350c8cccdecd9f4a45da9440493867985949615b3b"
   end
 
 end

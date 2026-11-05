@@ -5,6 +5,7 @@ class OpensslAT4 < Formula
   mirror "http://fresh-center.net/linux/misc/openssl-4.1.0.tar.gz"
   sha256 "50c17baf54cb008f6ce42d50deb4b28050a1aad711636cabd4b241c7e90cc2fd"
   license "Apache-2.0"
+  compatibility_version 1
 
   livecheck do
     url "https://openssl-library.org/source/"
@@ -117,7 +118,7 @@ class OpensslAT4 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "ff8a79a313031b0536a5aaf09c5b8cbd1dfddf5121013d8eccf4d4eb36c36435"
+    sha256 tahoe: "a06cec5db4b0f10d2adbba8ce7eb7052f5464cc8dddd8e8a63dd9964881bd567"
   end
 
 end

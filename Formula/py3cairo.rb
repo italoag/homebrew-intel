@@ -15,6 +15,8 @@ class Py3cairo < Formula
   depends_on "italoag/intel/python@3.15" => [:build, :test]
   depends_on "italoag/intel/cairo"
 
+  deny_network_access!
+
   def pythons
     deps.map(&:to_formula)
         .select { |f| f.name.match?(/^python@\d\.\d+$/) }
@@ -45,7 +47,7 @@ class Py3cairo < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "1bb68086932e1a2466095c82d55917df08fc6584ddf4aad81423ed05479b375b"
+    sha256 cellar: :any, tahoe: "143736bf558d978cb3eb039e59ad8fd42f28dcf0ff349c8bb658111f9326da19"
   end
 
 end

@@ -4,6 +4,7 @@ class Libuninameslist < Formula
   url "https://github.com/fontforge/libuninameslist/releases/download/20260918/libuninameslist-dist-20260918.tar.gz"
   sha256 "deb2ec02640c232a4bc333c2cd301ee6b286914eeeb0ccc31ccafe326aed0029"
   license "BSD-3-Clause"
+  compatibility_version 1
 
   livecheck do
     url :stable
@@ -44,7 +45,7 @@ class Libuninameslist < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "bda74e2fb0bac13f1de3f2fb65540a3a59560b25f33dee4a92ffb870be8e1c0e"
+    sha256 cellar: :any, tahoe: "d1cd8dbc26583fca3660ce41679dac6d3a524c149f635619ae4cbcd11768f2bc"
   end
 
 end

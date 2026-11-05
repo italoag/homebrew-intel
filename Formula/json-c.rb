@@ -4,6 +4,7 @@ class JsonC < Formula
   url "https://s3.amazonaws.com/json-c_releases/releases/json-c-0.19.tar.gz"
   sha256 "37ad0249902e301bd9052bf712e511fcc6acff4ecaad4b5900aad9ce564e26de"
   license "MIT"
+  compatibility_version 1
   head "https://github.com/json-c/json-c.git", branch: "master"
 
   livecheck do
@@ -43,7 +44,7 @@ class JsonC < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "a08066db9b39d4022e698b1fe1723d4627a02fb6917b1c9925b3bbb45a86bd83"
+    sha256 cellar: :any, tahoe: "d8ad52bd73a96fd46cedf02f1216bee3bf7f4eb60098e4a09afe791769fbafca"
   end
 
 end

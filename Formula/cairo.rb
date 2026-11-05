@@ -4,6 +4,7 @@ class Cairo < Formula
   url "https://cairographics.org/releases/cairo-1.18.6.tar.xz"
   sha256 "1c767308174337a74694da0f3ec069c271452163a1ef4540964c50c301f157d4"
   license any_of: ["LGPL-2.1-only", "MPL-1.1"]
+  compatibility_version 1
   head "https://gitlab.freedesktop.org/cairo/cairo.git", branch: "master"
 
   livecheck do
@@ -73,7 +74,7 @@ class Cairo < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "6f10476be3651a1bf41d38c0f715a83df9417db540452dcf9a7363d9ba999092"
+    sha256 cellar: :any, tahoe: "a3ad04fe65ec2770e7a45a9dd1d395738e6ca11cb74781c9a665331a5cb6a271"
   end
 
 end

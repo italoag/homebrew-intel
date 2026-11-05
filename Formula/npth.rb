@@ -5,6 +5,7 @@ class Npth < Formula
   mirror "https://www.mirrorservice.org/sites/ftp.gnupg.org/gcrypt/npth/npth-1.8.tar.bz2"
   sha256 "8bd24b4f23a3065d6e5b26e98aba9ce783ea4fd781069c1b35d149694e90ca3e"
   license "LGPL-2.1-or-later"
+  compatibility_version 1
 
   livecheck do
     url "https://gnupg.org/ftp/gcrypt/npth/"
@@ -22,6 +23,8 @@ class Npth < Formula
     sha256 cellar: :any_skip_relocation, arm64_linux:       "ae6de43d79405ea955e4f8ea018bd0660da87bb0a40c39a1f9b7759915316006"
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "dfe2b3f4f5fb1b8e05b3ddbc5dddbf44d3b03b95ca9712ff4fc33cbd045368b4"
   end
+
+  deny_network_access!
 
   def install
     system "./configure", "--disable-silent-rules", *std_configure_args

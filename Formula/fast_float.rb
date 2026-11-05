@@ -1,9 +1,10 @@
 class FastFloat < Formula
   desc "Fast and exact implementation of the C++ from_chars functions for number types"
   homepage "https://fastfloat.github.io/fast_float/"
-  url "https://github.com/fastfloat/fast_float/archive/refs/tags/v8.3.2.tar.gz"
-  sha256 "71bb9e865b888df01351558db5a39586d13ea97ada162156b3a07784d8c1b26b"
+  url "https://github.com/fastfloat/fast_float/archive/refs/tags/v8.3.3.tar.gz"
+  sha256 "4dd695f051893c8218faf2ed9871fa4a4990aa6aee2d3190ed7bfa2e83092245"
   license "Apache-2.0"
+  compatibility_version 1
   head "https://github.com/fastfloat/fast_float.git", branch: "main"
 
   bottle do
