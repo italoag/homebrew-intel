@@ -298,11 +298,24 @@ end
 
     def test_heavy_deps_are_recognized_and_prioritized(self):
         self.assertTrue(p.heavy('llvm@21'))
-        self.assertFalse(p.heavy('jq'))
+        self.assertFalse(p.heavy('gonzo'))
+        self.assertFalse(p.heavy('rustscan'))
         graph = {'llvm': [], 'jq': [], 'rust': ['llvm']}
         shards = p.prioritize([['jq', 'llvm', 'rust']], graph,
                               {'llvm', 'rust'})
-        self.assertEqual(shards[0], ['rust', 'llvm', 'jq'])
+        # Pesados primeiro, com llvm (dep do rust) antes do rust.
+        self.assertEqual(shards[0], ['llvm', 'rust', 'jq'])
+
+    def test_partition_clusters_transitive_heavy_dependents(self):
+        # fish depende do llvm via libssh2; a afinidade por dep direta não vê
+        # isso — os ancestrais pesados transitivos mantêm a cadeia no shard.
+        graph = {'fish': ['libssh2'], 'libssh2': ['llvm'], 'llvm': [],
+                 'jq': []}
+        order = p.topo(['fish', 'jq'], graph)
+        self.assertEqual(p.heavy_ancestors(order, graph)['fish'], {'llvm'})
+        shards = p.partition(order, graph, {'llvm', 'rust'}, 2)
+        llvm_shard = next(i for i, s in enumerate(shards) if 'llvm' in s)
+        self.assertIn('fish', shards[llvm_shard])
 
     def test_partition_covers_members_and_clusters_deps(self):
         order = ['m4', 'autoconf', 'wget', 'jq']

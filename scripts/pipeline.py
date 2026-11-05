@@ -51,23 +51,56 @@ class Deferred(Exception):
 
 
 def heavy(name):
-    return any(pattern in name for pattern, _ in HEAVY)
+    # Exato ou versionado (llvm, llvm@21): substring marcaria falsos pesados
+    # como gonzo (go), rustscan (rust), gobject-introspection e
+    # ffmpegthumbnailer, inflando pesos e atrasando a fila.
+    return any(name == pattern or name.startswith(pattern + '@')
+               for pattern, _ in HEAVY)
 
 
 def member_weight(name, graph, build_set):
     if name not in build_set:
         return 1  # só despeja um bottle existente
     for pattern, weight in HEAVY:
-        if pattern in name:
+        if name == pattern or name.startswith(pattern + '@'):
             return weight
     return 2 + len(graph[name])
 
 
+def heavy_ancestors(order, graph):
+    # Ancestrais PESADOS transitivos de cada membro: é a análise que permite
+    # clusterizar a cadeia inteira (fish -> libssh2 -> llvm) no shard dono do
+    # llvm. Afinidade por dep direta não enxerga isso e espalha os dependentes.
+    memo = {}
+    def walk(name):
+        if name not in memo:
+            acc = set()
+            for dep in graph[name]:
+                if heavy(dep):
+                    acc.add(dep)
+                acc |= walk(dep)
+            memo[name] = acc
+        return memo[name]
+    return {name: walk(name) for name in order}
+
+
 def prioritize(shards, graph, build_set):
-    # Pesados primeiro em cada shard: o dono do llvm/rust compila cedo (os
-    # dependentes de outros shards podem adotar a publicação na 2ª passada) e
-    # o orçamento de 5h acaba cortando os leves, baratos de adiar.
-    return [sorted(shard, key=lambda n: -member_weight(n, graph, build_set))
+    # Jornada: pesados primeiro (senão o orçamento de 5h cortaria justamente
+    # llvm/rust, que ficariam atrás das deps leves na ordem topológica), e
+    # dentro de cada grupo profundidade crescente — dep construída como membro
+    # sai com bottle antes do dependente, em vez de ser compilada como dep e
+    # recompilada para virar membro. As deps leves de um pesado são despejadas
+    # durante o install dele e reconstruídas barato quando chegam como membro.
+    depth = {}
+    def walk(name):
+        if name not in depth:
+            depth[name] = 1 + max((walk(dep) for dep in graph[name]), default=0)
+        return depth[name]
+    for shard in shards:
+        for name in shard:
+            walk(name)
+    return [sorted(shard, key=lambda n: (not heavy(n), depth[n],
+                                         -member_weight(n, graph, build_set)))
             for shard in shards]
 
 
@@ -556,13 +589,18 @@ def partition(order, graph, build_set, nshards):
     # dominando fora das cadeias caras.
     def weight(name):
         return member_weight(name, graph, build_set)
+    heavy_of = heavy_ancestors(order, graph)
     owner_shard = {}
     shards = [[] for _ in range(nshards)]
     cost = [0] * nshards
     for name in order:
+        # Afinidade considera a dep direta e também os ancestrais pesados
+        # transitivos: sem isso a cadeia fish -> libssh2 -> llvm se espalha e
+        # cada shard acaba compilando (ou adiando) o llvm por conta própria.
+        deps = set(graph[name]) | heavy_of[name]
         best = min(range(nshards), key=lambda i: cost[i] - sum(
             min(weight(dep), 40)
-            for dep in graph[name] if owner_shard.get(dep) == i))
+            for dep in deps if owner_shard.get(dep) == i))
         owner_shard[name] = best
         shards[best].append(name)
         cost[best] += weight(name)
