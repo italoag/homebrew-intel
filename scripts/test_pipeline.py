@@ -296,6 +296,14 @@ end
             self.assertTrue(reusable['datolabs-io/opsy/opsy'])
             self.assertNotIn('gone/tap/never', graph)
 
+    def test_heavy_deps_are_recognized_and_prioritized(self):
+        self.assertTrue(p.heavy('llvm@21'))
+        self.assertFalse(p.heavy('jq'))
+        graph = {'llvm': [], 'jq': [], 'rust': ['llvm']}
+        shards = p.prioritize([['jq', 'llvm', 'rust']], graph,
+                              {'llvm', 'rust'})
+        self.assertEqual(shards[0], ['rust', 'llvm', 'jq'])
+
     def test_partition_covers_members_and_clusters_deps(self):
         order = ['m4', 'autoconf', 'wget', 'jq']
         graph = {'m4': [], 'autoconf': ['m4'], 'wget': [], 'jq': ['oniguruma'],

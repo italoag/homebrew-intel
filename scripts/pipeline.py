@@ -43,6 +43,34 @@ HEAVY = (('llvm', 40), ('lld', 40), ('rust', 45), ('openjdk', 35), ('gcc', 30),
          ('mysql', 15), ('ruby', 15))
 
 
+class Deferred(Exception):
+    # Membro adiado para a segunda passada: dep pesada de outro shard ainda
+    # não publicada; compilar localmente duplicaria horas de runner por shard
+    # (llvm × N). Na segunda passada a dep pode já ter sido publicada.
+    pass
+
+
+def heavy(name):
+    return any(pattern in name for pattern, _ in HEAVY)
+
+
+def member_weight(name, graph, build_set):
+    if name not in build_set:
+        return 1  # só despeja um bottle existente
+    for pattern, weight in HEAVY:
+        if pattern in name:
+            return weight
+    return 2 + len(graph[name])
+
+
+def prioritize(shards, graph, build_set):
+    # Pesados primeiro em cada shard: o dono do llvm/rust compila cedo (os
+    # dependentes de outros shards podem adotar a publicação na 2ª passada) e
+    # o orçamento de 5h acaba cortando os leves, baratos de adiar.
+    return [sorted(shard, key=lambda n: -member_weight(n, graph, build_set))
+            for shard in shards]
+
+
 class ApiError(RuntimeError):
     def __init__(self, code, path, body):
         super().__init__(f'GitHub API {code} em {path}: {body[:500]}')
@@ -527,12 +555,7 @@ def partition(order, graph, build_set, nshards):
     # leves compartilhadas quase não movem, então o balanceamento segue
     # dominando fora das cadeias caras.
     def weight(name):
-        if name not in build_set:
-            return 1  # só despeja um bottle existente
-        for pat, w in HEAVY:
-            if pat in name:
-                return w
-        return 2 + len(graph[name])
+        return member_weight(name, graph, build_set)
     owner_shard = {}
     shards = [[] for _ in range(nshards)]
     cost = [0] * nshards
@@ -686,7 +709,8 @@ def plan():
             build_set.add(name)
         elif not reusable[name] and entry.get('asset') not in assets:
             build_set.add(name)  # fingerprint ok mas asset sumiu do release.
-    shards = partition(order, graph, build_set, SHARDS)
+    shards = prioritize(partition(order, graph, build_set, SHARDS),
+                        graph, build_set)
     # A verificação de escape roda no plan: falha antes de gastar minutos de shard.
     formula_dir = ROOT / 'Formula'
     if formula_dir.exists():
@@ -839,10 +863,11 @@ def brew_install(*args, cmd='install'):
 def wait_for_publish(release, dep_short, timeout=2700, interval=120):
     # Dep pertence a outro shard e está no build_set desta run: o dono vai
     # publicá-la; compilar localmente duplicaria o trabalho (llvm@21 = horas).
-    # Espera a entrada no manifesto e adota o .rb promovido ao aparecer; se o
-    # dono falhar ou atrasar demais, cai para a compilação local habitual.
+    # Espera a entrada no manifesto e adota o .rb promovido ao aparecer. Deps
+    # leves caem para a compilação local após o timeout; pesadas usam
+    # timeout=0 (consulta única) e adiam o membro — o chamador decide.
     deadline = time.monotonic() + timeout
-    while time.monotonic() < deadline:
+    while True:
         assets = release_assets(release['id'])
         asset_map = {asset['name']: asset['browser_download_url']
                      for asset in assets}
@@ -864,9 +889,10 @@ def wait_for_publish(release, dep_short, timeout=2700, interval=120):
                 return True
             print(f'Asset {asset_name} listado mas ainda indisponível; '
                   'aguardando propagação', flush=True)
+        if time.monotonic() >= deadline:
+            return False
         print(f'Aguardando dep de outro shard: {dep_short}', flush=True)
         time.sleep(interval)
-    return False
 
 
 def install_missing_deps(full, tap, order_index, release=None,
@@ -889,7 +915,14 @@ def install_missing_deps(full, tap, order_index, release=None,
             continue
         if (release and dep_short in build_set_shorts
                 and dep_owner.get(dep_short, my_shard) != my_shard):
-            wait_for_publish(release, dep_short)
+            if heavy(dep_short):
+                # Esperar 45min e compilar llvm/rust localmente duplicaria
+                # horas de runner em cada shard: consulta única e, sem
+                # publicação, adia o membro para a segunda passada.
+                if not wait_for_publish(release, dep_short, timeout=0):
+                    raise Deferred(dep_short)
+            else:
+                wait_for_publish(release, dep_short)
         try:
             brew_install('--ignore-dependencies', tap + '/' + dep_short)
         except subprocess.CalledProcessError:
@@ -952,22 +985,22 @@ def build_shard(idx):
     out_dir.mkdir(exist_ok=True)
     frag_path = out_dir / f'manifest-{idx}.json'
     root_url = f'https://github.com/{repo()}/releases/download/{TAG}'
-    for name in members:
-        if file_owner[short_name(name)] != name:
-            continue
+    deferred = []
+
+    def attempt(name):
         short = short_name(name)
         full = tap + '/' + short
         if (done.get(short) or {}).get('fp') == fps[name]:
             print(f'[{idx}] {short}: já publicado; pulando', flush=True)
-            continue
-        if time.monotonic() - started > BUILD_BUDGET_SECONDS:
-            print(f'[{idx}] Orçamento de {BUILD_BUDGET_SECONDS // 3600}h '
-                  'esgotado; restantes ficam para a próxima run', flush=True)
-            break
+            return
         try:
             process_member(name, idx, tap, full, short, build_set, reusable,
                            release, fragment, order_index, root_url, fps,
                            dep_owner)
+        except Deferred as dep:
+            deferred.append(name)
+            print(f'[{idx}] {short}: adiado — dep pesada de outro shard '
+                  f'ainda pendente: {dep}', flush=True)
         except Exception as err:
             # Falha isola o membro: ele fica pendente e o shard segue — todo o
             # trabalho publicado sobrevive e o re-run refaz só os falhos.
@@ -980,6 +1013,22 @@ def build_shard(idx):
             print(f'[{idx}] {short}: ok', flush=True)
         frag_path.write_text(json.dumps(fragment, indent=2))
         upload_asset(release['id'], frag_path, f'manifest-{idx}.json')
+
+    for name in members:
+        if file_owner[short_name(name)] != name:
+            continue
+        if time.monotonic() - started > BUILD_BUDGET_SECONDS:
+            print(f'[{idx}] Orçamento de {BUILD_BUDGET_SECONDS // 3600}h '
+                  'esgotado; restantes ficam para a próxima run', flush=True)
+            break
+        attempt(name)
+    # Segunda passada: o dono pode ter publicado a dep pesada durante a run.
+    for name in list(deferred):
+        if time.monotonic() - started > BUILD_BUDGET_SECONDS:
+            break
+        if file_owner[short_name(name)] != name:
+            continue
+        attempt(name)
     if failed:
         raise RuntimeError(
             f'Shard {idx}: membros falharam e seguem pendentes: '
