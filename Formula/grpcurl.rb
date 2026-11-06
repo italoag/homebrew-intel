@@ -41,7 +41,7 @@ class Grpcurl < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "78faac0b94b11d38382de2d5e40778ddd44a682277474facb9ca0aeb8b2d81e0"
+    sha256 cellar: :any_skip_relocation, tahoe: "ea409c45f3b5ed128caac67e303d2f40e4910aae2d3945c1818533254ee6a489"
   end
 
 end

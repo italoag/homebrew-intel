@@ -68,7 +68,7 @@ class Libomp < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "9e39a744a933f68d293389a90a0f2ba368323c0d96b575a5cc06d4e36ff30fee"
+    sha256 cellar: :any, tahoe: "a59fd52263ab41e95bc6ddab57d7fbe86c3b3b31b44cf66772650de7ba526fb5"
   end
 
 end

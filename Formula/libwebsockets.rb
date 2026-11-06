@@ -57,7 +57,7 @@ class Libwebsockets < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "e818244f33f01aed444d6dc54906141ff257547864dc795b170526b541a38aec"
+    sha256 tahoe: "48bb15a1c24eab284766d5b6e418e6833567197786c5c69318256d172378a045"
   end
 
 end

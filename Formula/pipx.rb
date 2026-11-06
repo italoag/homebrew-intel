@@ -9,8 +9,7 @@ class Pipx < Formula
   head "https://github.com/pypa/pipx.git", branch: "main"
 
   bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "81f8cdabf5f34f6020abfd64546cd3e8edc579bf3ccd70f3cab004d86596d82d"
+    sha256 cellar: :any_skip_relocation, all: "c13d1ec309a82cf73fd7492961eb961e64b8fd1350fe5df185dd935ff463dcbb"
   end
 
   depends_on "italoag/intel/python@3.15"

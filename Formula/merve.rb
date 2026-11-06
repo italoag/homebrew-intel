@@ -52,7 +52,7 @@ class Merve < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "b4580cc03436a498c4ddc5db8e67bc6cf74a3de1880e088490ac7ee3e2ddc3af"
+    sha256 cellar: :any, tahoe: "85e8e6457ff435f84b248c41a012452ed91281e7288e3ac2192433727d8bab4d"
   end
 
 end

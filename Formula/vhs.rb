@@ -39,7 +39,7 @@ class Vhs < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "cbd0ec36796d16d436f935d551f5c37167d3b5e1e18700ac602c8c1df7216762"
+    sha256 cellar: :any_skip_relocation, tahoe: "2cfff1cf330f32280229e72e79114f86c8efcd64ac9eb84696b0a0ed6fcbd919"
   end
 
 end

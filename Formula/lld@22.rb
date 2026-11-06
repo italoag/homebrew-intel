@@ -5,6 +5,7 @@ class LldAT22 < Formula
   sha256 "922f1817a0df7b1489272d18134ee0087a8b068828f87ac63b9861b1a9965888"
   # The LLVM Project is under the Apache License v2.0 with LLVM Exceptions
   license "Apache-2.0" => { with: "LLVM-exception" }
+  compatibility_version 1
 
   livecheck do
     formula "llvm@22"
@@ -22,9 +23,9 @@ class LldAT22 < Formula
 
   keg_only :versioned_formula
 
-  depends_on "cmake" => :build
-  depends_on "llvm@22"
-  depends_on "zstd"
+  depends_on "italoag/intel/cmake" => :build
+  depends_on "italoag/intel/llvm@22"
+  depends_on "italoag/intel/zstd"
 
   on_linux do
     depends_on "zlib-ng-compat"

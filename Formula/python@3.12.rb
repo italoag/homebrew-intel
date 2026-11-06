@@ -528,7 +528,7 @@ class PythonAT312 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "3176b5beed86fbc7b2d2a3ae524179aec2af15317d437a9daa58eec31cf29f7d"
+    sha256 tahoe: "e59de0a225aa30322571ceec73ce90ed1aba2392f58b8ca1bb8b265f59eb1cdc"
   end
 
 end
