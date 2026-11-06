@@ -45,7 +45,7 @@ class Libusbmuxd < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "d7a94b7bb0fb0a5ae1314cfbe08a05cab8bff883cff0a0199d7790571c24528f"
+    sha256 cellar: :any, tahoe: "8c7da530ada84cf477a609fbd77dbe2fa360afb53c5b9152228d130da10a337e"
   end
 
 end

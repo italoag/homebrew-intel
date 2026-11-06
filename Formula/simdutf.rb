@@ -43,7 +43,7 @@ class Simdutf < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "7be21dbdeb23bb8570e9572be01cfd01aedefd439ef9ad6286e453ffa1c2c344"
+    sha256 cellar: :any, tahoe: "5973ce092e447c439da93cf9cc93d13a62dda6a4b64dcb66d9ca17fa26cbd918"
   end
 
 end

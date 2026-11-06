@@ -67,7 +67,7 @@ class Gpgme < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "15d058d78e91c0921ac2cbb9765fbf20b23cd52e3280fb813088ef81991a9fc6"
+    sha256 cellar: :any, tahoe: "a8a907968d884e9631047c4404948477fc734e7497f3740ac3638450832708f6"
   end
 
 end

@@ -4,6 +4,7 @@ class ProtocGenGoGrpc < Formula
   url "https://github.com/grpc/grpc-go/archive/refs/tags/cmd/protoc-gen-go-grpc/v1.6.2.tar.gz"
   sha256 "a5f284c76292c8f4460aa57d0dfe81ee44f4670082a575f43324523ec6ef15e7"
   license "Apache-2.0"
+  compatibility_version 1
 
   livecheck do
     url :stable
@@ -20,8 +21,8 @@ class ProtocGenGoGrpc < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "3766731846ba260cfb5936178814889fcf50644a714645cfa0bad8cabb4b0512"
   end
 
-  depends_on "go" => :build
-  depends_on "protobuf" => :no_linkage
+  depends_on "italoag/intel/go" => :build
+  depends_on "italoag/intel/protobuf" => :no_linkage
 
   deny_network_access!
 

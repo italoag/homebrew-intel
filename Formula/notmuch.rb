@@ -6,7 +6,7 @@ class Notmuch < Formula
   url "https://notmuchmail.org/releases/notmuch-0.40.tar.xz"
   sha256 "4b4314bbf1c2029fdf793637e6c7bb15c1b1730d22be9aa04803c98c5bbc446f"
   license "GPL-3.0-or-later"
-  revision 1
+  revision 2
   compatibility_version 1
   head "https://git.notmuchmail.org/git/notmuch", using: :git, branch: "master"
 
@@ -15,33 +15,24 @@ class Notmuch < Formula
     regex(/href=.*?notmuch[._-]v?(\d+(?:\.\d+)+)\.t/i)
   end
 
-  bottle do
-    sha256 cellar: :any,                 arm64_golden_gate: "300565e4bc03b02cc706c3bd96dc9465a3c30b2fea430eab0be85cf8cdcd8ca1"
-    sha256 cellar: :any,                 arm64_tahoe:       "eae24f49c3b10abfde979af48095a1a57930ed5bdcbc6812ccc54a19bad10860"
-    sha256 cellar: :any,                 arm64_sequoia:     "421174ec9e5af1051572972811fa7062bd3d6e680d5881c8a11e4f538b42505f"
-    sha256 cellar: :any,                 arm64_sonoma:      "15d1e06cdc2fee25afe4812f6482d3775cf4302c5a3f66b60935322cbf9fbf1c"
-    sha256 cellar: :any,                 sonoma:            "2b990b337a8c0ed0e2e086703ae947ee5b1fbfcb3131404855faf319032c0693"
-    sha256 cellar: :any_skip_relocation, arm64_linux:       "1c55b7b11e0bbe8128902da95371f0ddf2c4f25b248f54aaca9ddbdb1c12b74f"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:      "e9f8bd8f09dc8ccf7665e5adaba42916d2023ddc4c3420d4d5472ef1c1a784d6"
-  end
 
-  depends_on "doxygen" => :build
-  depends_on "emacs" => :build
-  depends_on "gnupg" => :build
-  depends_on "libgpg-error" => :build
-  depends_on "pkgconf" => :build
-  depends_on "sphinx-doc" => :build
+  depends_on "italoag/intel/doxygen" => :build
+  depends_on "italoag/intel/emacs" => :build
+  depends_on "italoag/intel/gnupg" => :build
+  depends_on "italoag/intel/libgpg-error" => :build
+  depends_on "italoag/intel/pkgconf" => :build
+  depends_on "italoag/intel/sphinx-doc" => :build
 
-  depends_on "cffi"
-  depends_on "glib"
-  depends_on "gmime"
-  depends_on "python@3.14"
-  depends_on "sfsexp"
-  depends_on "talloc"
-  depends_on "xapian"
+  depends_on "italoag/intel/cffi"
+  depends_on "italoag/intel/glib"
+  depends_on "italoag/intel/gmime"
+  depends_on "italoag/intel/python@3.15"
+  depends_on "italoag/intel/sfsexp"
+  depends_on "italoag/intel/talloc"
+  depends_on "italoag/intel/xapian"
 
   on_macos do
-    depends_on "gettext"
+    depends_on "italoag/intel/gettext"
   end
 
   on_linux do
@@ -91,4 +82,9 @@ class Notmuch < Formula
     system bin/"notmuch-git", "-C", testpath/"git", "init"
     assert_path_exists testpath/"git"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "266857a905a4d1c92e1f3c41520aeddd478f5ccba85749c4d5f2a2849bbc15af"
+  end
+
 end

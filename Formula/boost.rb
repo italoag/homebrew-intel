@@ -132,7 +132,7 @@ class Boost < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "7136c59026b2774b688a36c3fa880ec888883d5013acaef72385b23dde727884"
+    sha256 cellar: :any, tahoe: "912bf1acf5705c5371ae00b86a924bebe557b59120779825b6703fb7db111e59"
   end
 
 end

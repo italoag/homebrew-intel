@@ -132,7 +132,7 @@ class SphinxDoc < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "af5d0527d814854c36f83b8d2585822faf42944bebefd7d7b7a609bdba04c3e7"
+    sha256 cellar: :any_skip_relocation, tahoe: "87901b06b5f55ee25cd278037e665014db29ec70a0ee80775e36a36112aec6ea"
   end
 
 end

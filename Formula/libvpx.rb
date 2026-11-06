@@ -49,7 +49,7 @@ class Libvpx < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "0ab1b7d814114d4e81f907cbef82ab183135d4e80f101cb79a3e76727cd7465b"
+    sha256 cellar: :any, tahoe: "ed0ca40f89c1d617865c7ba416cc1564326a4ed898b5cd02915e08591874581f"
   end
 
 end

@@ -118,7 +118,7 @@ class OpensslAT4 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "a06cec5db4b0f10d2adbba8ce7eb7052f5464cc8dddd8e8a63dd9964881bd567"
+    sha256 tahoe: "ebce3fea8da85b11d0025f28f5029422af443b8dd3c7c7ed2a5bfbe48dde08ec"
   end
 
 end

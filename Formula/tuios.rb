@@ -26,5 +26,9 @@ class Tuios < Formula
 
     assert_match "git_hub_dark", shell_output("#{bin}/tuios --list-themes")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "49657f1119fef72545f8f6ad6f4ee8cb51d7f8b836bbbb4f3303a6c11ae592df"
+  end
 
 end

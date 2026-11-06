@@ -102,7 +102,7 @@ class Httpie < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "09432488972879e8faadc12ad79b7ed39543c7df3ca5be6d20c24e87eaf7edc2"
+    sha256 cellar: :any_skip_relocation, tahoe: "25dd729b293aa6dedfdc8c367f6687064d742b9f882b4b2990c96a78cfffb8c7"
   end
 
 end

@@ -63,7 +63,7 @@ class Unbound < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "4515da0957e7de3ae76f0f96ba332673c3d1f287c58a62de6590ad9fd5ee80ee"
+    sha256 tahoe: "749549a80441e0f784fad293b9aac8cea1692cfab4c9eb8f8b6b53cdfbc3fabf"
   end
 
 end

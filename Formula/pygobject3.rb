@@ -61,7 +61,7 @@ class Pygobject3 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "00c42f88f9259363b795a7212a8a2709b655303d649d4abd9a1c4e435a2de3e3"
+    sha256 cellar: :any, tahoe: "ac0daaa4c202511921fd1cf91ad16aa76d09d94209e0e0374645861ed1124042"
   end
 
 end

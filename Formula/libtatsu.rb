@@ -1,10 +1,9 @@
 class Libtatsu < Formula
   desc "Library handling the communication with Apple's Tatsu Signing Server (TSS)"
   homepage "https://libimobiledevice.org/"
-  url "https://github.com/libimobiledevice/libtatsu/releases/download/1.0.5/libtatsu-1.0.5.tar.bz2"
-  sha256 "536fa228b14f156258e801a7f4d25a3a9dd91bb936bf6344e23171403c57e440"
+  url "https://github.com/libimobiledevice/libtatsu/releases/download/1.1.0/libtatsu-1.1.0.tar.bz2"
+  sha256 "96c8abd97552a4a0c487c701aba9a65d590c338dd331058ffb38304290b696c7"
   license "LGPL-2.1-or-later"
-  revision 1
   compatibility_version 1
   head "https://github.com/libimobiledevice/libtatsu.git", branch: "master"
 
@@ -37,7 +36,7 @@ class Libtatsu < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "92a33c3cb4f8ae2c482a60c0af764c1a9ef85d138dc0d226d22efec5606a6a14"
+    sha256 cellar: :any, tahoe: "3efbc72580912f00fd6fe07f1d57deac7c84b3eabe674fe46aafa79e517e76d3"
   end
 
 end

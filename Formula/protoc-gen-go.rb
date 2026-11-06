@@ -4,6 +4,7 @@ class ProtocGenGo < Formula
   url "https://github.com/protocolbuffers/protobuf-go/archive/refs/tags/v1.36.12.tar.gz"
   sha256 "23a247d69c52872ecbfd6bcbee3216793b2672fa5a7b99497777bf9c3563756f"
   license "BSD-3-Clause"
+  compatibility_version 1
   head "https://github.com/protocolbuffers/protobuf-go.git", branch: "master"
 
   bottle do
@@ -16,8 +17,8 @@ class ProtocGenGo < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "9da9a84d24bd16f9122e25769a65e4fa6b6c7e415d618b65af5923fda9c2453a"
   end
 
-  depends_on "go" => :build
-  depends_on "protobuf" => :no_linkage
+  depends_on "italoag/intel/go" => :build
+  depends_on "italoag/intel/protobuf" => :no_linkage
 
   deny_network_access!
 

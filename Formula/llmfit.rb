@@ -33,7 +33,7 @@ class Llmfit < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "1662496413f63bfa2531fb3ab8def62a015119f1bf27f54040642b2b677b1f77"
+    sha256 cellar: :any_skip_relocation, tahoe: "490b206a8ac0761aefebdc9a4e3cd5f87b60f85e3222185832b24dec1127a27e"
   end
 
 end
