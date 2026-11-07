@@ -133,13 +133,17 @@ class Libssh2 < Formula
     resolves "OSV-2022-24", "OSV-2024-847"
   end
 
+  deny_network_access!
+
+  def openssl = deps.map { |d| d.name.split("/").last }.find { |d| d.match?(/^openssl(@\d+(\.\d+)*)?$/) }
+
   def install
     args = %W[
       --disable-silent-rules
       --disable-examples-build
       --with-openssl
       --with-libz
-      --with-libssl-prefix=#{formula_opt_prefix("openssl@4")}
+      --with-libssl-prefix=#{formula_opt_prefix(openssl)}
     ]
 
     system "./buildconf" if build.head?
@@ -163,7 +167,7 @@ class Libssh2 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "c7ca6d82d1489162813b24eeb1a821564c0f60151455341bfa83cf372bd4c0b2"
+    sha256 cellar: :any, tahoe: "a6ca78a1c44313a51c0e5ebe73c045491809ef4034d02a5e058fe1e48762fe83"
   end
 
 end

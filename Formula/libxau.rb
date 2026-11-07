@@ -22,6 +22,8 @@ class Libxau < Formula
   depends_on "italoag/intel/util-macros" => :build
   depends_on "italoag/intel/xorgproto"
 
+  deny_network_access!
+
   def install
     args = %W[
       --sysconfdir=#{etc}

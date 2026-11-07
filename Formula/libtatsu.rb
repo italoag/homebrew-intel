@@ -16,6 +16,8 @@ class Libtatsu < Formula
 
   uses_from_macos "curl"
 
+  deny_network_access!
+
   def install
     configure = build.head? ? "./autogen.sh" : "./configure"
     system configure, "--disable-silent-rules", *std_configure_args
@@ -36,7 +38,7 @@ class Libtatsu < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "3efbc72580912f00fd6fe07f1d57deac7c84b3eabe674fe46aafa79e517e76d3"
+    sha256 cellar: :any, tahoe: "13bbfd40d64f5b637ac4151975e001e0f51d8586fb8c7eae5ff6cdf890459f59"
   end
 
 end

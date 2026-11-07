@@ -24,6 +24,8 @@ class Libthai < Formula
   depends_on "italoag/intel/pkgconf" => [:build, :test]
   depends_on "italoag/intel/libdatrie"
 
+  deny_network_access!
+
   def install
     system "./configure", "--disable-silent-rules",
                           "--disable-doxygen-doc",

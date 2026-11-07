@@ -23,6 +23,8 @@ class Libxdmcp < Formula
   depends_on "italoag/intel/pkgconf" => :build
   depends_on "italoag/intel/xorgproto"
 
+  deny_network_access!
+
   def install
     args = %W[
       --sysconfdir=#{etc}

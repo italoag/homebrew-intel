@@ -21,6 +21,8 @@ class Libuninameslist < Formula
     depends_on "italoag/intel/libtool" => :build
   end
 
+  deny_network_access!
+
   def install
     if build.head?
       system "autoreconf", "--force", "--install", "--verbose"
@@ -45,7 +47,7 @@ class Libuninameslist < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "d1cd8dbc26583fca3660ce41679dac6d3a524c149f635619ae4cbcd11768f2bc"
+    sha256 cellar: :any, tahoe: "c112d1ccb72bc619326ef7ebf6c1a35da401ba64788fb3912fe75bb7a8d69ad2"
   end
 
 end

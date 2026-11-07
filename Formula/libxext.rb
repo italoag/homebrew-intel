@@ -20,6 +20,8 @@ class Libxext < Formula
   depends_on "italoag/intel/libx11"
   depends_on "italoag/intel/xorgproto"
 
+  deny_network_access!
+
   def install
     args = %W[
       --sysconfdir=#{etc}

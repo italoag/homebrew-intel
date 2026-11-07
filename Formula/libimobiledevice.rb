@@ -45,7 +45,7 @@ class Libimobiledevice < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "1528bae8f7cf7fbcff92d8e68e3e0f31e1142463edec79d938b299370e0e89ac"
+    sha256 cellar: :any, tahoe: "11fd1a25a01ab7a35d8ba22d3840394860b7f5912c2bf15716a337f4b2ef8d41"
   end
 
 end

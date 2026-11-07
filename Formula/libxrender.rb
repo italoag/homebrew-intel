@@ -11,6 +11,8 @@ class Libxrender < Formula
   depends_on "italoag/intel/libx11"
   depends_on "italoag/intel/xorgproto"
 
+  deny_network_access!
+
   def install
     args = %W[
       --sysconfdir=#{etc}
@@ -34,11 +36,10 @@ class Libxrender < Formula
       }
     C
     system ENV.cc, "test.c"
-    assert_equal 0, $CHILD_STATUS.exitstatus
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "29824e2145496ec6fe3f5dcf14b6ecff69101015053a85869b42773f546c0ef4"
+    sha256 cellar: :any, tahoe: "41095aee0f5c64b2fe38ae7e3d6bab68a44f082501a59b4736185441b3e28215"
   end
 
 end

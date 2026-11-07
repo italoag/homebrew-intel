@@ -1,8 +1,8 @@
 class Libplist < Formula
   desc "Library for Apple Binary- and XML-Property Lists"
   homepage "https://libimobiledevice.org/"
-  url "https://github.com/libimobiledevice/libplist/releases/download/2.8.0/libplist-2.8.0.tar.bz2"
-  sha256 "b1f59f7634c58b2481325a23ff4e3bf51574a42d868cbe466d2b39b04550752a"
+  url "https://github.com/libimobiledevice/libplist/releases/download/2.8.1/libplist-2.8.1.tar.bz2"
+  sha256 "2a1792e5820e1657c173735fde75baeebd6dd967d2ac47be1e3891ddc64ebefa"
   license "LGPL-2.1-or-later"
   compatibility_version 2
   head "https://github.com/libimobiledevice/libplist.git", branch: "master"
@@ -49,7 +49,7 @@ class Libplist < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "63e93756c6674eed36f4c31bdf2cb738a0a1b9aac429ee32ce6059bcff6667e9"
+    sha256 cellar: :any, tahoe: "8f7c3fc8cd3231f045552fa704193f84613267677d722f482905c848d19a67c5"
   end
 
 end
