@@ -296,6 +296,21 @@ end
             self.assertTrue(reusable['datolabs-io/opsy/opsy'])
             self.assertNotIn('gone/tap/never', graph)
 
+    def test_local_patch_block_injected_once(self):
+        # Correções nossas (Patches/<short>/*.diff) entram no tap gerado sem
+        # duplicar quando a fórmula já referencia o arquivo.
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'Patches' / 'folly').mkdir(parents=True)
+            (root / 'Patches' / 'folly' / 'fix.diff').write_text('diff')
+            source = 'class Folly < Formula\n  url "x"\nend\n'
+            with patch.object(p, 'ROOT', root):
+                once = p.add_local_patches({'folly': source})['folly']
+                twice = p.add_local_patches({'folly': once})['folly']
+            self.assertIn('Patches/folly/fix.diff', once)
+            self.assertEqual(once.count('patch do'), 1)
+            self.assertEqual(twice.count('patch do'), 1)
+
     def test_heavy_deps_are_recognized_and_prioritized(self):
         self.assertTrue(p.heavy('llvm@21'))
         self.assertFalse(p.heavy('gonzo'))

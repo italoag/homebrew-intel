@@ -47,9 +47,17 @@ jobs:
     timeout-minutes: 360
     steps:
       - uses: actions/checkout@v7
+      - name: Install Metal toolchain when missing
+        # O Xcode 26 separou o toolchain Metal num componente à parte; o
+        # configure do openjdk exige 'metal' no PATH ou via xcrun.
+        run: |
+          if ! xcrun --find metal >/dev/null 2>&1; then
+            sudo xcodebuild -downloadComponent MetalToolchain
+          fi
       - name: Build and publish shard ${{ matrix.shard }} members
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          HOMEBREW_TEST_TIMEOUT_SECS: "900"
         run: /usr/bin/python3 scripts/pipeline.py build ${{ matrix.shard }}
   publish:
     needs: [plan, build]

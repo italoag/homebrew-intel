@@ -555,6 +555,27 @@ def write_aux_files(aliases, renames):
         renames_path.unlink()
 
 
+def add_local_patches(normalized):
+    # Patches/<short>/*.diff que a fórmula não referencia entram como patch
+    # block no tap gerado: correções nossas para quebras do SDK 26 (ex.: folly
+    # compilando com -mno-sse2) sem editar o upstream.
+    for name, source in normalized.items():
+        patch_dir = ROOT / 'Patches' / short_name(name)
+        if not patch_dir.is_dir():
+            continue
+        for patch_file in sorted(patch_dir.glob('*.diff')):
+            rel = patch_file.relative_to(ROOT).as_posix()
+            if f'"{rel}"' in source:
+                continue
+            head, sep, tail = source.rpartition('\nend\n')
+            if not sep:
+                continue
+            source = (head + f'\n  patch do\n    file "{rel}"\n  end\n'
+                      + 'end\n' + tail)
+        normalized[name] = source
+    return normalized
+
+
 def collect_patches(order, normalized, file_owner):
     # patch do file "Patches/..." end referencia arquivos da raiz do tap de
     # origem (ex.: python@3.14 -> Patches/python/3.13-sysconfig.diff). brew cat
@@ -571,6 +592,9 @@ def collect_patches(order, normalized, file_owner):
                 tap_dirs[origin] = Path(
                     run('brew', '--repository', origin, capture=True).strip())
             src = tap_dirs[origin] / rel
+            if not src.is_file():
+                # Patch nosso (Patches/ do repo): a origem não o tem.
+                src = ROOT / rel
             if not src.is_file():
                 raise RuntimeError(f'Patch referenciado ausente em {origin}: {rel}')
             patches[rel] = src.read_text()
@@ -689,8 +713,9 @@ def plan():
     # Ignora alterações exclusivamente nos bottles upstream. lookup redireciona
     # deps declaradas por alias/nome antigo (depends_on "pkg-config" -> pkgconf)
     # para o membro canônico, ou resolveriam no alias do core.
-    normalized = {name: transform(src, tap, set(graph), reusable[name], lookup)
-                  for name, src in sources.items()}
+    normalized = add_local_patches(
+        {name: transform(src, tap, set(graph), reusable[name], lookup)
+         for name, src in sources.items()})
     write_aux_files(alias_map, renames)
     patches, patch_shas = collect_patches(order, normalized, file_owner)
     for rel, content in patches.items():
@@ -876,9 +901,17 @@ def keg_installed(short):
                           stderr=subprocess.DEVNULL).returncode == 0
 
 
+# Testes que executam benchmark ou penduram no sandbox do runner: a validação
+# fica por conta do brew linkage. highway compila e roda benchmark.cc;
+# zerobrew ('zb --version') estoura o timeout do brew test.
+NO_TEST = {'highway', 'zerobrew'}
+
+
 def has_test_block(short):
     # Fórmulas de taps terceiros podem não definir 'test do'; brew test falha
     # com "defines no test" e o membro ficaria pendente para sempre.
+    if short in NO_TEST:
+        return False
     source = (ROOT / 'Formula' / (short + '.rb')).read_text()
     return re.search(r'^\s*test do\b', source, re.M) is not None
 
