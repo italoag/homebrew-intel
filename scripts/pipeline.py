@@ -453,6 +453,10 @@ def build_graph(roots, external_taps):
             raise RuntimeError('Use nome canônico em vez de alias: ' + name)
         graph[name] = [canonical(dep, external_taps) for dep in deps(full_ref)]
         sources[name] = run('brew', 'cat', '--formula', full_ref, capture=True)
+        # arm64-only upstream (openjdk 27 largou Intel): o install recusa no
+        # runner x86_64; o info JSON nem expõe o requisito, só a fonte.
+        if re.search(r'depends_on\s+arch:\s*:arm64', sources[name]):
+            aux.setdefault('arch_skipped', []).append(name)
         files = ((info.get('bottle') or {}).get('stable') or {}).get('files') or {}
         # Bottle Intel reutilizável: qualquer tag macOS x86_64 que o brew despeja.
         reusable[name] = any('arm64' not in tag and 'aarch64' not in tag
@@ -672,18 +676,20 @@ def plan():
     # Desabilitada upstream: brew recusa o install, então congelamos a versão
     # já publicada (o tap existe para preservar bottles que o upstream largou);
     # sem publicação anterior não há o que preservar e o membro sai do plano.
-    for name in sorted(set(aux.get('disabled') or [])):
-        local_rb = ROOT / 'Formula' / (short_name(name) + '.rb')
-        if local_rb.exists():
-            print(f'Fórmula desabilitada upstream; mantendo a publicada: {name}',
-                  flush=True)
-            aux['frozen'].append(name)
-            sources[name] = local_rb.read_text()
-            reusable[name] = True
-        else:
-            print(f'Fórmula desabilitada upstream; fora do plano: {name}',
-                  flush=True)
-            skipped.add(name)
+    for reason, names in (('desabilitada', aux.get('disabled')),
+                          ('só arm64', aux.get('arch_skipped'))):
+        for name in sorted(set(names or [])):
+            local_rb = ROOT / 'Formula' / (short_name(name) + '.rb')
+            if local_rb.exists():
+                print(f'Fórmula {reason} upstream; mantendo a publicada: {name}',
+                      flush=True)
+                aux['frozen'].append(name)
+                sources[name] = local_rb.read_text()
+                reusable[name] = True
+            else:
+                print(f'Fórmula {reason} upstream; fora do plano: {name}',
+                      flush=True)
+                skipped.add(name)
     if skipped:
         roots = [r for r in roots if r not in skipped]
         graph = {n: [d for d in ds if d not in skipped]
@@ -710,6 +716,14 @@ def plan():
                 raise RuntimeError(
                     f'Rename {old} reivindicado por {previous} e {short}')
             lookup[old] = name
+    # Fórmula arm64-only fora do plano: dependentes usam a variante Intel mais
+    # recente (openjdk -> openjdk@25); sem isso gradle/ghidra nunca instalam.
+    for name in sorted(set(aux.get('arch_skipped') or []) & skipped):
+        base = short_name(name)
+        siblings = sorted(n for n in graph if short_name(n).startswith(base + '@'))
+        if siblings:
+            lookup[base] = short_name(siblings[-1])
+            print(f'Dependentes de {base} usam {lookup[base]} (Intel)', flush=True)
     # Ignora alterações exclusivamente nos bottles upstream. lookup redireciona
     # deps declaradas por alias/nome antigo (depends_on "pkg-config" -> pkgconf)
     # para o membro canônico, ou resolveriam no alias do core.

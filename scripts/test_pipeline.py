@@ -296,6 +296,19 @@ end
             self.assertTrue(reusable['datolabs-io/opsy/opsy'])
             self.assertNotIn('gone/tap/never', graph)
 
+    def test_arm64_only_formula_detected_from_source(self):
+        # openjdk 27 declara depends_on arch: :arm64 e o info JSON não expõe o
+        # requisito; a detecção pela fonte tira a fórmula do plano Intel.
+        with patch.object(p, 'formula_info',
+                          return_value={'full_name': 'openjdk', 'bottle': {},
+                                        'aliases': [], 'oldnames': []}), \
+             patch.object(p, 'deps', return_value=[]), \
+             patch.object(p, 'run', return_value=(
+                 'class Openjdk < Formula\n  on_macos do\n'
+                 '    depends_on arch: :arm64\n  end\nend\n')):
+            graph, sources, reusable, aux = p.build_graph(['openjdk'], set())
+        self.assertEqual(aux['arch_skipped'], ['openjdk'])
+
     def test_local_patch_block_injected_once(self):
         # Correções nossas (Patches/<short>/*.diff) entram no tap gerado sem
         # duplicar quando a fórmula já referencia o arquivo.
