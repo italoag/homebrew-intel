@@ -76,7 +76,7 @@ class Nmap < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "94a326f310e3855b80f790962f15eaa6ec4f4992e1085bdb46005ff409fc1590"
+    sha256 tahoe: "34166f6140e07d620d838dc0cacb3d203525b15eaa51c37eaf600725d1f4214b"
   end
 
 end

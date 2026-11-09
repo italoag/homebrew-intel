@@ -1,10 +1,10 @@
 class Automake < Formula
   desc "Tool for generating GNU Standards-compliant Makefiles"
   homepage "https://www.gnu.org/software/automake/"
-  url "https://ftpmirror.gnu.org/automake/automake-1.19.tar.xz"
-  mirror "https://ftp.gnu.org/gnu/automake/automake-1.19.tar.xz"
-  sha256 "e3e2c2e3abf37898138db5b6c1d1dc35c9160c5978be7947d2c741705251d445"
-  license "GPL-2.0-or-later"
+  url "https://ftpmirror.gnu.org/automake/automake-1.20.tar.xz"
+  mirror "https://ftp.gnu.org/gnu/automake/automake-1.20.tar.xz"
+  sha256 "f6f34dad4cbe395715762b0710f7c511e39bd5cf777e6b95818ccbecf7714248"
+  license "GPL-3.0-or-later"
   compatibility_version 1
 
 
@@ -60,7 +60,7 @@ class Automake < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "7ffc94adfe35c87b4fa96da2552038b29f5dd179b75d85e526827369dc3bb492"
+    sha256 cellar: :any_skip_relocation, tahoe: "8948d91046077bca2ff3bf1bad909a87953d3dc2dd01a613ec8d9154184a5b4c"
   end
 
 end

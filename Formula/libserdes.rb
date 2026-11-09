@@ -14,6 +14,12 @@ class Libserdes < Formula
 
   uses_from_macos "curl"
 
+  on_macos do
+    depends_on "italoag/intel/librdkafka"
+  end
+
+  deny_network_access!
+
   def install
     system "./configure", "--prefix=#{prefix}"
     system "make"
@@ -44,7 +50,7 @@ class Libserdes < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "2f1c6aba60fe7a3cefa43f446e9e58f91dd5a36fa9f93dc242bf85abd43a6430"
+    sha256 cellar: :any, tahoe: "6bc518487d2ef3b3278ffda4f1bb6bbb3f5626ab88156af4449d195f39eb1155"
   end
 
 end

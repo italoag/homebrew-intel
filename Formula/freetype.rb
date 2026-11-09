@@ -26,6 +26,9 @@ class Freetype < Formula
   deny_network_access!
 
   def install
+    # Avoid enabling macOS 15.4+ hvf feature for bottle compatibility
+    ENV["ac_cv_header_hvf_Scaler_h"] = "no" if OS.mac? && MacOS.version <= :sequoia
+
     # This file will be installed to bindir, so we want to avoid embedding the
     # absolute path to the pkg-config shim.
     inreplace "builds/unix/freetype-config.in", "%PKG_CONFIG%", "pkg-config"
@@ -47,7 +50,7 @@ class Freetype < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "75c8e8c41bbfdedf9615116d8902a1a6c1a9e0ee98a284e159340cc383a7aa3e"
+    sha256 cellar: :any, tahoe: "4850d297e18009d798137a1a2d594a67ed0895497e95e9bc4ebbc28c0f699e73"
   end
 
 end

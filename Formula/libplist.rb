@@ -49,7 +49,7 @@ class Libplist < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "8f7c3fc8cd3231f045552fa704193f84613267677d722f482905c848d19a67c5"
+    sha256 cellar: :any, tahoe: "9a145650a0fd97608ed837ed6f8b8ba0248e9d9dc2ccc590dd19f515b421eaf5"
   end
 
 end

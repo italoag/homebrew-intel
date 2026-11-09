@@ -91,7 +91,7 @@ class Fontforge < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "5e1fd50f960b96f3d2453aee53f7b7bb016caef4fc5cc1734a116d804bed0314"
+    sha256 tahoe: "24b072f37ab5f9149e15e958c0d3f0706c106d224cc32942d7e831c653f16d98"
   end
 
 end
