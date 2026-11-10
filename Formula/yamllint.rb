@@ -45,7 +45,7 @@ class Yamllint < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "5353efbdefbb090cf3fa1c277ad3820d34334930edd67ddcad48a46724a1698f"
+    sha256 cellar: :any, tahoe: "22924e3f62aa34f5fdc12c40ee14cfc902a14ccdbb480c8825192ffec914a773"
   end
 
 end

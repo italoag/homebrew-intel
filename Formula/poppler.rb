@@ -95,7 +95,7 @@ class Poppler < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "bd12d1cbc968ab684f41e6faa73115d011aa03b781ba34ab8572724a09334d4c"
+    sha256 tahoe: "3cd45caadbf3f88efed50b2a2352c752b0d661f1798dac362660a6d4b26f0c8a"
   end
 
 end

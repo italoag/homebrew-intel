@@ -77,4 +77,7 @@ class Libtool < Formula
 
     system bin/"glibtoolize", "--ltdl"
   end
+  patch do
+    file "Patches/libtool/configure-big_sur.diff"
+  end
 end

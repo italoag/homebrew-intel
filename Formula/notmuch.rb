@@ -84,7 +84,7 @@ class Notmuch < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "f0f9fd63989aa44c4a2a5cee89fc09d886b5bb9d174f9304f7b16b5fb30085e9"
+    sha256 cellar: :any, tahoe: "da9362fa08e7ee7e89171f655df327aa4f8b151332c628e22699d1333ffc888d"
   end
 
 end

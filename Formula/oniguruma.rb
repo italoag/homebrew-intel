@@ -27,6 +27,8 @@ class Oniguruma < Formula
   depends_on "italoag/intel/automake" => :build
   depends_on "italoag/intel/libtool" => :build
 
+  deny_network_access!
+
   def install
     system "autoreconf", "--force", "--install", "--verbose"
     system "./configure", "--disable-dependency-tracking", "--prefix=#{prefix}"

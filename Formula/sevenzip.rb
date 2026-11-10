@@ -98,7 +98,7 @@ class Sevenzip < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "320c279cf08931876902df5c91d1201ec7b445c3a4895745f496f33bb253b791"
+    sha256 cellar: :any, tahoe: "39aac08d0e1513995c84229d17e9422333e2fb329f94cc185e7ba1be79b1c42e"
   end
 
 end

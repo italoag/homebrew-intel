@@ -85,7 +85,7 @@ class Tesseract < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "2cf1b4d8d09cc1682a726e6ceddd317b16ae3ef6eb7033375f8f51806e367314"
+    sha256 cellar: :any, tahoe: "6dbcfbb7b8957d110266d393fc0de25ef1dbecbcdfaa5c7bca5ed28d2a26ca24"
   end
 
 end

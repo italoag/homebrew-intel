@@ -17,7 +17,7 @@ class Highway < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:      "3ba94692faedb5e8fb7655dbf3175d3e224746c52444141c028edba76275c157"
   end
 
-  depends_on "cmake" => :build
+  depends_on "italoag/intel/cmake" => :build
 
   # These used to be bundled with `jpeg-xl`.
   link_overwrite "include/hwy/*", "lib/pkgconfig/libhwy*"
