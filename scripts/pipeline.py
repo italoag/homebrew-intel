@@ -737,7 +737,10 @@ def plan():
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_text(content)
     release = release_for_tag(create=True)
-    manifest = load_manifest(release)
+    # Principal + fragmentos: os fragmentos são o checkpoint de cada shard e
+    # valem mesmo quando um publish falha em consolidar — só o manifesto
+    # principal deixaria membros publicados como pendentes e os rebuildaria.
+    manifest = combined_manifest(release)
     fps = member_fps(order, graph, sources, file_owner, patch_shas)
     # Membro congelado (origem sumiu): fp do manifesto preserva o bottle já
     # publicado; recalcular sobre o .rb local invalidaria e tentaria rebuild.
