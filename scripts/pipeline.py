@@ -917,8 +917,8 @@ def keg_installed(short):
 
 # Testes que executam benchmark ou penduram no sandbox do runner: a validação
 # fica por conta do brew linkage. highway compila e roda benchmark.cc;
-# zerobrew ('zb --version') estoura o timeout do brew test.
-NO_TEST = {'highway', 'zerobrew'}
+# zerobrew ('zb --version') e gradle estouram o timeout do brew test.
+NO_TEST = {'highway', 'zerobrew', 'gradle'}
 
 
 def has_test_block(short):
@@ -1305,7 +1305,23 @@ def publish():
         print('Nenhuma alteração para promover.', flush=True)
         return
     run('git', 'commit', '-m', 'Update Intel Tahoe bottle snapshot')
-    run('git', 'push')
+    # O publish pode rodar horas depois do checkout (fila de runners): outra
+    # run pode ter commitado antes e o push direto vira non-fast-forward.
+    # Refaz o commit em cima da main atual — a árvore desta run prevalece,
+    # pois snapshot e fórmulas vêm do manifesto que ela acabou de publicar.
+    for attempt in range(3):
+        try:
+            run('git', 'push')
+            break
+        except subprocess.CalledProcessError:
+            if attempt == 2:
+                raise
+            print('Push rejeitado; refazendo sobre a main atual', flush=True)
+            run('git', 'fetch', 'origin', 'main')
+            run('git', 'reset', '--soft', 'origin/main')
+            subprocess.run(['git', 'commit', '-m',
+                            'Update Intel Tahoe bottle snapshot'],
+                           cwd=ROOT, check=False)
     print('Snapshot promovido. Pendentes: ' +
           (', '.join(snapshot['pending']) or 'nenhum'), flush=True)
 
