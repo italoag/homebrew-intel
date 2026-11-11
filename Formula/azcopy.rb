@@ -32,7 +32,7 @@ class Azcopy < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "733f82e441cfc7e6d718271a43f2fa6e766b2a5f3f10250acfde8526d2048cc8"
+    sha256 cellar: :any_skip_relocation, tahoe: "89b3e32c052d1d7c534d78b754d5ad9b81f9c158744543a29161469f897d3fa6"
   end
 
 end

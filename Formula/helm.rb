@@ -40,7 +40,7 @@ class Helm < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "af6e30096b249750bca4c6d71314e4df7dedb2b07ff9503bb96dd1e627a5f819"
+    sha256 cellar: :any_skip_relocation, tahoe: "a434969f867492080c00f2f6013fc98898042b37c4f72de741bf5d231a7399ad"
   end
 
 end

@@ -84,5 +84,9 @@ class Fizz < Formula
     system "cmake", "--build", "build"
     assert_match "TLS", shell_output("./build/test")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "62b98a2552b8405daf54378c85eff68e38e7d65100e256e573d966a7d93adc10"
+  end
 
 end

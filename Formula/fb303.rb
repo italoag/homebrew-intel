@@ -67,5 +67,9 @@ class Fb303 < Formula
     system "cmake", "--build", "."
     assert_equal "BaseService", shell_output("./test").strip
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "22e6c8b3d704b0ec3b4a3f9bd916b5fb43b5d6ef976346f11623d25bd9fc31a4"
+  end
 
 end

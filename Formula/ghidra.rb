@@ -48,7 +48,7 @@ class Ghidra < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "0c5788359b496b66a9d33639b64706ca6e3cf9e14b6fd9e6a9055ae9e6477909"
+    sha256 cellar: :any_skip_relocation, tahoe: "cdda92fc67c5fff8397f0ab5ab30a764948c087b0763b9d948ac7d0f3c9d8149"
   end
 
 end

@@ -81,5 +81,9 @@ class Mvfst < Formula
   ensure
     Process.kill "TERM", server_pid
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "67c91acacbb2718429f2efd4c730cd4e3d5e8428c30a298f91b74b6a1858c714"
+  end
 
 end

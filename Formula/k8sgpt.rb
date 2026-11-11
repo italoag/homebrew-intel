@@ -29,7 +29,7 @@ class K8sgpt < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "0eba0d2b89f9a1209a3aded26a06502baf0cf19c757aad827cff04fdc6fe882e"
+    sha256 cellar: :any_skip_relocation, tahoe: "47e1d56ed661a1df321c45f455d896ed5305b3df2fc091eb1c81510ec5fbb709"
   end
 
 end

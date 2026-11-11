@@ -67,7 +67,7 @@ class Buf < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "eaa4ace97c823a245f8ae1350c8cccdecd9f4a45da9440493867985949615b3b"
+    sha256 cellar: :any_skip_relocation, tahoe: "12d8da642720766dda976eadf358e61bdc8c0642c5e096b34b04147f1d1ebf13"
   end
 
 end

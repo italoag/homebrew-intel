@@ -84,7 +84,7 @@ class Wangle < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "4e19dec38e41d4e600a4e0ec4fe51106f82728eb05f9cf1015be21a04a66048a"
+    sha256 cellar: :any, tahoe: "7c76c21d010bb4682bfb48cfbf6274d4a0ebb2fda24e87bc52d57dac4c801a29"
   end
 
 end
