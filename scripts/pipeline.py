@@ -1132,6 +1132,40 @@ def build_shard(idx):
             + ', '.join(failed))
 
 
+def bottle_and_upload(full, short, name, idx, fragment, fps, release, root_url):
+    # Gera o bottle da instalação atual, valida o checksum e publica bottle +
+    # Formula-*.rb + entrada no fragmento (checkpoint imediato).
+    out = WORK / f'pkg-{idx}' / short
+    out.mkdir(parents=True, exist_ok=True)
+    run('brew', 'bottle', '--json', '--no-rebuild',
+        '--root-url=' + root_url, full, cwd=out)
+    metadata = list(out.glob('*.bottle.json'))
+    if len(metadata) != 1:
+        raise RuntimeError('Metadados de bottle inesperados: ' + name)
+    run('brew', 'bottle', '--merge', '--write', '--no-commit', metadata[0])
+    files = formula_info(full)['bottle']['stable']['files']
+    bottle = files.get('tahoe') or files.get('all')
+    if bottle is None:
+        raise RuntimeError('Bottle Intel Tahoe ausente: ' + name)
+    archives = list(out.glob('*.bottle.tar.gz'))
+    if len(archives) != 1:
+        raise RuntimeError('Arquivo de bottle inesperado: ' + name)
+    archive = archives[0]
+    if hashlib.sha256(archive.read_bytes()).hexdigest() != bottle['sha256']:
+        raise RuntimeError('Checksum inválido: ' + name)
+    # O basename da URL vem codificado (openssl%403-...): decodifica para o
+    # nome real que o GitHub grava e que o brew decodifica ao baixar.
+    filename = urllib.parse.unquote(
+        Path(urllib.parse.urlparse(bottle['url']).path).name)
+    target = archive.with_name(filename)
+    if target != archive:
+        archive.rename(target)
+    uploaded = upload_asset(release['id'], target, filename)
+    fragment[short] = {'fp': fps[name], 'asset': uploaded['name']}
+    upload_asset(release['id'], ROOT / 'Formula' / (short + '.rb'),
+                 f'Formula-{short}.rb')
+
+
 def process_member(name, idx, tap, full, short, build_set, reusable, release,
                    fragment, order_index, root_url, fps, dep_owner):
     if name in build_set and not reusable[name]:
@@ -1156,36 +1190,8 @@ def process_member(name, idx, tap, full, short, build_set, reusable, release,
         if has_test_block(short):
             run('brew', 'test', full)
         run('brew', 'linkage', '--test', full)
-        out = WORK / f'pkg-{idx}' / short
-        out.mkdir(parents=True, exist_ok=True)
-        run('brew', 'bottle', '--json', '--no-rebuild',
-            '--root-url=' + root_url, full, cwd=out)
-        metadata = list(out.glob('*.bottle.json'))
-        if len(metadata) != 1:
-            raise RuntimeError('Metadados de bottle inesperados: ' + name)
-        run('brew', 'bottle', '--merge', '--write', '--no-commit', metadata[0])
-        files = formula_info(full)['bottle']['stable']['files']
-        bottle = files.get('tahoe') or files.get('all')
-        if bottle is None:
-            raise RuntimeError('Bottle Intel Tahoe ausente: ' + name)
-        archives = list(out.glob('*.bottle.tar.gz'))
-        if len(archives) != 1:
-            raise RuntimeError('Arquivo de bottle inesperado: ' + name)
-        archive = archives[0]
-        if hashlib.sha256(archive.read_bytes()).hexdigest() != bottle['sha256']:
-            raise RuntimeError('Checksum inválido: ' + name)
-        # O basename da URL vem codificado (openssl%403-...): decodifica para
-        # o nome real que o GitHub grava e que o brew decodifica ao baixar.
-        filename = urllib.parse.unquote(
-            Path(urllib.parse.urlparse(bottle['url']).path).name)
-        target = archive.with_name(filename)
-        if target != archive:
-            archive.rename(target)
-        # Checkpoint imediato: bottle, metadado da fórmula e manifesto do shard.
-        uploaded = upload_asset(release['id'], target, filename)
-        fragment[short] = {'fp': fps[name], 'asset': uploaded['name']}
-        upload_asset(release['id'], ROOT / 'Formula' / (short + '.rb'),
-                     f'Formula-{short}.rb')
+        bottle_and_upload(full, short, name, idx, fragment, fps, release,
+                          root_url)
     else:
         # Reutilizado ou inalterado: despeja o bottle oficial/publicado e
         # valida que funciona dentro do grafo do tap.
@@ -1193,8 +1199,25 @@ def process_member(name, idx, tap, full, short, build_set, reusable, release,
         install_missing_deps(full, tap, order_index, release, dep_owner, idx,
                              {short_name(n) for n in build_set})
         # --include-test traz as test deps que brew test exige instaladas.
-        brew_install('--force-bottle', '--include-test',
-                     '--ignore-dependencies', full)
+        try:
+            brew_install('--force-bottle', '--include-test',
+                         '--ignore-dependencies', full)
+        except subprocess.CalledProcessError:
+            # Bottle com sha divergente (upstream re-uploadou o asset com a
+            # mesma versão, ou um rebuild nosso substituiu o arquivo): sem o
+            # bloco bottle o brew compila da fonte e publicamos o bottle.
+            rb = ROOT / 'Formula' / (short + '.rb')
+            source = rb.read_text()
+            if keg_installed(short) or 'bottle do' not in source:
+                raise
+            rb.write_text(strip_bottle_block(source))
+            brew_install('--build-bottle', '--include-test', full)
+            if has_test_block(short):
+                run('brew', 'test', full)
+            run('brew', 'linkage', '--test', full)
+            bottle_and_upload(full, short, name, idx, fragment, fps, release,
+                              root_url)
+            return
         verify_poured(full, name)
         if has_test_block(short):
             run('brew', 'test', full)
