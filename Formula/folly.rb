@@ -68,5 +68,9 @@ class Folly < Formula
   patch do
     file "Patches/folly/remove-mno-sse2.diff"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "ceaead9e2c5c539cdbe6f986d55d90d627a5d9abb441f06b6d52b1e294015ee0"
+  end
 
 end

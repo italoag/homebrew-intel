@@ -38,7 +38,7 @@ class Ffmpegthumbnailer < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "c0752c7ac2208cbe0b58c992c0b61c452d44eb904ca9dd23ecf1e9559727470c"
+    sha256 cellar: :any, tahoe: "b7f4f13589cd08fdf5708fd69df10a3feb3afce88127ea94afd5bbdb5e82140b"
   end
 
 end

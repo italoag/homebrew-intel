@@ -74,7 +74,7 @@ class Cairo < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "68f697ef6e2ddba0e73d7a9c3b00c7166272188304e16c716cc145f3f67b8170"
+    sha256 cellar: :any, tahoe: "1bc797e88c90d73f724dbcaf331e6fff8cb233b407b9039c316c2aa46bb2a256"
   end
 
 end

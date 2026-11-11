@@ -37,5 +37,9 @@ class Zerobrew < Formula
   test do
     assert_match version.to_s, shell_output("#{bin}/zb --version")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "fcf6795ccdcd50c0e649abd6abceae1b8c0319e2ffdb0a0ba7befe801a8d4dfb"
+  end
 
 end

@@ -60,7 +60,7 @@ class Automake < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "8b97f3d8802952da37f74a77998070f37fb07acce9607c0bd1654ed9dbbc4daf"
+    sha256 cellar: :any_skip_relocation, tahoe: "7f5a6a62e155cdc42ae86fa7a531a3bad82ab1ffa9892687a2761fc07dd456b9"
   end
 
 end

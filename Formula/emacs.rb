@@ -78,7 +78,7 @@ class Emacs < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "8a93ff04cfa1705b5609795f0634df261b1f6ce30f2f8dee1b5ce8442586c6ec"
+    sha256 tahoe: "e8753ce1470a013af2614ccc738ba432df842d3937c6150a97f776ea66de1c96"
   end
 
 end

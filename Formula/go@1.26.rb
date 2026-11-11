@@ -1,9 +1,9 @@
 class GoAT126 < Formula
   desc "Open source programming language to build simple/reliable/efficient software"
   homepage "https://go.dev/"
-  url "https://go.dev/dl/go1.26.10.src.tar.gz"
-  mirror "https://fossies.org/linux/misc/go1.26.10.src.tar.gz"
-  sha256 "fd63e883ba2f2bfca93c1646b31ebef63e2b1e4d2b317c9789d976a68d81f36f"
+  url "https://go.dev/dl/go1.26.11.src.tar.gz"
+  mirror "https://fossies.org/linux/misc/go1.26.11.src.tar.gz"
+  sha256 "d44101b0ff27ed2a4c75ad46c17b9c74359209e2eb2ca7c9df6cb4fdb68e1969"
   license "BSD-3-Clause"
   compatibility_version 1
 
@@ -89,7 +89,7 @@ class GoAT126 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "a49c6b502993cbe9a47a7e20d465e6dd88178927c0c34a279518ea01a736a943"
+    sha256 cellar: :any_skip_relocation, tahoe: "0f2b0d692b784c3eda9ab5e16ac6440639993f26225616babf2c91a3ecaa444b"
   end
 
 end

@@ -52,7 +52,7 @@ class Librdkafka < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "dd93195616a2feb802ec8ea13c8dd68c4066bcae380c1dafbac0e7fd1a0ce0c0"
+    sha256 cellar: :any, tahoe: "d0925f7f7dd2ffed4da89cc379d6d95e4e4bf5f1403d2463016a48c1416e3df1"
   end
 
 end

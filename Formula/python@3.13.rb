@@ -75,6 +75,8 @@ class PythonAT313 < Formula
     end
   end
 
+  deny_network_access!
+
   def site_packages_cellar = lib_cellar/"site-packages"
 
   # The HOMEBREW_PREFIX location of site-packages.
@@ -513,7 +515,7 @@ class PythonAT313 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "d4d3e81bd9ab63aa816fa19e9b67d85674dd4508639b0a8f2c5bf63dc3d131b1"
+    sha256 tahoe: "27aa9ffdf7fa0fa929e8d409ec72e5fa91ec67698b6ce869db8a0251498a0c2a"
   end
 
 end

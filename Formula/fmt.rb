@@ -41,5 +41,9 @@ class Fmt < Formula
                   "-lfmt"
     assert_equal "The answer is 42", shell_output("./test")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "8473737048e466d93a8da3e15ec0cd323181c258375d5c45e4eac0ccff74a5c4"
+  end
 
 end

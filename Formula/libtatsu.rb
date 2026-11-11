@@ -38,7 +38,7 @@ class Libtatsu < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "9888c6879dd0d05dc6fa905b09dc35ccc5b1e03979cdc0b9f4db81a8531c5d3d"
+    sha256 cellar: :any, tahoe: "635f6a9e2112c0358ac368e0cbdffbb56657bdb2889087d9942febafb7802ea8"
   end
 
 end

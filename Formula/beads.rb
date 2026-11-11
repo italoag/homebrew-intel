@@ -50,7 +50,7 @@ class Beads < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "0b62862dab7188e9381bf8e0facd3d37252d45ce04e543ba04c6cfdc1258b19b"
+    sha256 cellar: :any, tahoe: "91ef5afe765b0f18c73968ffe205b80b159f914c7f7fe6078201aa1509bd3d2b"
   end
 
 end

@@ -128,7 +128,7 @@ class ZigAT016 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "e1e9bababe9dadb3fffabb6920932b0a1ae8e773342be257c303bd0f57d88c44"
+    sha256 cellar: :any, tahoe: "7cc5509b0829f78863b8afb1a93a8bf3b1fa863a2343bb1e06978eee03cb9a63"
   end
 
 end
