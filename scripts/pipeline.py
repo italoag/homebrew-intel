@@ -132,6 +132,19 @@ def retry(*args, attempts=3, delay=15):
             time.sleep(delay)
 
 
+def brew_update():
+    # Clone do Homebrew pode não ter refs remotas (origin/main ausente): o
+    # update falha e derrubaria plan/shard. Repara com fetch e retenta.
+    try:
+        retry('brew', 'update')
+    except subprocess.CalledProcessError:
+        print('brew update falhou; reparando refs do repositório do brew',
+              flush=True)
+        brew_repo = Path(run('brew', '--repository', capture=True).strip())
+        run('git', 'fetch', 'origin', cwd=brew_repo)
+        retry('brew', 'update')
+
+
 def deps(name):
     # Dependências de teste fazem parte do fechamento para permitir brew test.
     # --formula evita carregar cask homônimo (ex.: reviewdog/tap).
@@ -699,7 +712,7 @@ def plan():
     owner, repository, tap = repo_tap()
     WORK.mkdir(exist_ok=True)
     # Atualiza explicitamente; nas etapas seguintes as versões ficam congeladas.
-    retry('brew', 'update')
+    brew_update()
     retry('brew', 'tap', '--force', 'homebrew/core')
     core = Path(run('brew', '--repository', 'homebrew/core', capture=True).strip())
     core_commit = run('git', 'rev-parse', 'HEAD', cwd=core, capture=True).strip()
@@ -1075,7 +1088,7 @@ def build_shard(idx, local=False):
     budget = None if local else BUILD_BUDGET_SECONDS
     owner, repository, tap = repo_tap()
     WORK.mkdir(exist_ok=True)
-    retry('brew', 'update')
+    brew_update()
     retry('brew', 'tap', '--force', 'homebrew/core')
     release, plan_data = load_plan()
     reusable = plan_data['reusable']
