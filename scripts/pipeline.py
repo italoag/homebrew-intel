@@ -248,7 +248,7 @@ def api(path, data=None, binary=False, method=None):
         req.add_header('Content-Type', 'application/json')
     for attempt in range(3):
         try:
-            with urllib.request.urlopen(req) as res:
+            with urllib.request.urlopen(req, timeout=60) as res:
                 return json.loads(res.read() or b'null')
         except urllib.error.HTTPError as err:
             # Status HTTP é resposta real (404, 422...): propaga como ApiError;
@@ -310,7 +310,7 @@ def download(url, attempts=4):
     req.add_header('Authorization', 'Bearer ' + os.environ['GITHUB_TOKEN'])
     for attempt in range(attempts):
         try:
-            with urllib.request.urlopen(req) as res:
+            with urllib.request.urlopen(req, timeout=60) as res:
                 return res.read()
         except urllib.error.HTTPError as err:
             # 404/403 são respostas reais (asset ausente, sem acesso): falha
