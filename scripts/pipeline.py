@@ -1223,8 +1223,21 @@ def build_shard(idx, local=False):
 def process_member(name, idx, tap, full, short, build_set, reusable, release,
                    fragment, order_index, root_url, fps, dep_owner,
                    local=False):
-    if local and formula_info(full).get('installed'):
-        raise Skipped('já instalado nesta máquina; local não desinstala kegs')
+    if local:
+        if formula_info(full).get('installed'):
+            raise Skipped('já instalado nesta máquina; local não desinstala kegs')
+        # Dep instalada em versão de outro tap, bottle ausente, conflito de
+        # tap: o --build-bottle recusaria no meio do caminho. O dry-run
+        # detecta antes e o membro é pulado com a razão.
+        probe = subprocess.run(
+            ['brew', 'install', '--dry-run', '--build-bottle', '--include-test',
+             full], cwd=ROOT, text=True, stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT)
+        if probe.returncode != 0:
+            lines = [ln for ln in probe.stdout.splitlines() if ln.strip()]
+            reason = next((ln for ln in lines if 'Error' in ln),
+                          lines[-1] if lines else 'brew recusou o install')
+            raise Skipped('brew recusaria: ' + reason.strip()[:160])
     if name in build_set and not reusable[name]:
         # Deps resolvem pelo tap: members com bottle publicado despejam; os
         # que outro shard ainda compila são aguardados/adotados (ou, em último
