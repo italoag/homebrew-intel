@@ -281,6 +281,7 @@ alexsjones/llmfit/llmfit
 bgreenwell/lstr/lstr
 charmbracelet/tap/mods
 anomalyco/tap/opencode
+datolabs-io/opsy/opsy
 reviewdog/tap/reviewdog
 lusingander/tap/serie
 ethereum-optimism/tap/supersim

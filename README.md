@@ -84,28 +84,6 @@ pode recusar instalar uma fórmula de mesmo nome de outro tap; nesse caso a
 migração requer desinstalação/reinstalação planejada. O template não remove
 automaticamente pacotes ou dados do seu Mac.
 
-## Build em máquina própria
-
-Uma máquina Intel com macOS 26 e Homebrew em `/usr/local` pode construir e
-publicar no mesmo release, acelerando os pendentes (o plan combina o
-fragmento `manifest-local.json` com os dos shards do CI):
-
-```bash
-cd homebrew-intel
-PIPELINE_ALLOW_LOCAL=1 GITHUB_TOKEN=<token com escopo repo> \
-  python3 scripts/pipeline.py local
-```
-
-- Assume o `build_set` inteiro na ordem da jornada (pesados primeiro,
-  profundidade topológica depois) e pula o que já foi publicado.
-- **Não desinstala os kegs da máquina** (o CI faz isso por ser VM descartável);
-  as deps que faltarem são instaladas pelo próprio build.
-- Publica bottle, `Formula-*.rb` e o fragmento a cada membro — o CI e a
-  próxima run retomam do ponto em que parou.
-- Sem limite de orçamento de 5h (não há timeout de job).
-- Apple Silicon só serve via Homebrew x86_64 sob Rosetta 2 (`uname -m` precisa
-  responder `x86_64`); um Mac Intel nativo é o cenário suportado.
-
 ## Como funciona
 
 O workflow tem três jobs: **plan** → **build** (matrix de 4 shards) → **publish**.

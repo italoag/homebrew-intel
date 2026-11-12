@@ -89,7 +89,7 @@ class GoAT126 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "647c35fc56a5cbf004bfc2fa770ae1ad4c949ef7c8e8f11de36e7d95b9eaa829"
+    sha256 cellar: :any_skip_relocation, tahoe: "75a50abd1f36ff3b0f8b31a55f3325924eba0eca7647e37357a3db5917328e99"
   end
 
 end

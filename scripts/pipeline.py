@@ -12,7 +12,6 @@ Subcomandos:
 Bottles e manifestos moram no release tahoe-bottles; qualquer trabalho já
 publicado sobrevive a timeout/falha, e a run seguinte refaz só o que falta.
 """
-import functools
 import hashlib
 import http.client
 import json
@@ -30,9 +29,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 WORK = ROOT / '.work'
 TAG = 'tahoe-bottles'  # release rolante: assets persistem entre runs (retomada)
-# Raiz do tap gerado: o CI usa o próprio checkout; o modo local usa uma cópia
-# em .work para não sujar o working tree do usuário.
-TAP_ROOT = ROOT
 # Casa com os 5 runners macos-26-intel simultâneos da conta: um shard a mais
 # ficaria na fila até um terminar e o run só fecharia com os outros ociosos.
 SHARDS = 5
@@ -45,12 +41,6 @@ HEAVY = (('llvm', 40), ('lld', 40), ('rust', 45), ('openjdk', 35), ('gcc', 30),
          ('qt', 30), ('node', 30), ('ffmpeg', 25), ('go', 25), ('gtk', 20),
          ('boost', 20), ('emacs', 20), ('python@', 15), ('postgresql', 15),
          ('mysql', 15), ('ruby', 15))
-
-
-class Skipped(Exception):
-    # Modo local: membro já instalado na máquina; o build não pode desinstalar
-    # kegs do usuário (conflito de tap ou rebuild exigiriam removê-los).
-    pass
 
 
 class Deferred(Exception):
@@ -126,33 +116,6 @@ def run(*args, cwd=None, capture=False):
         return subprocess.run(list(map(str, args)), cwd=cwd or ROOT, check=True,
                               text=True, stdout=subprocess.PIPE).stdout
     subprocess.run(list(map(str, args)), cwd=cwd or ROOT, check=True)
-
-
-def retry(*args, attempts=3, delay=15):
-    # Setup depende de rede (clone de taps, update): um DNS/transporte
-    # transitório não pode derrubar o plan ou o shard inteiro.
-    for attempt in range(attempts):
-        try:
-            return run(*args)
-        except subprocess.CalledProcessError:
-            if attempt == attempts - 1:
-                raise
-            print(f'Falha transitória (tentativa {attempt + 1}/{attempts}); '
-                  'retentando', flush=True)
-            time.sleep(delay)
-
-
-def brew_update():
-    # Clone do Homebrew pode não ter refs remotas (origin/main ausente): o
-    # update falha e derrubaria plan/shard. Repara com fetch e retenta.
-    try:
-        retry('brew', 'update')
-    except subprocess.CalledProcessError:
-        print('brew update falhou; reparando refs do repositório do brew',
-              flush=True)
-        brew_repo = Path(run('brew', '--repository', capture=True).strip())
-        run('git', 'fetch', 'origin', cwd=brew_repo)
-        retry('brew', 'update')
 
 
 def deps(name):
@@ -258,7 +221,7 @@ def api(path, data=None, binary=False, method=None):
         req.add_header('Content-Type', 'application/json')
     for attempt in range(3):
         try:
-            with urllib.request.urlopen(req, timeout=60) as res:
+            with urllib.request.urlopen(req) as res:
                 return json.loads(res.read() or b'null')
         except urllib.error.HTTPError as err:
             # Status HTTP é resposta real (404, 422...): propaga como ApiError;
@@ -273,21 +236,8 @@ def api(path, data=None, binary=False, method=None):
             time.sleep(5 * (attempt + 1))
 
 
-@functools.lru_cache(maxsize=1)
 def repo():
-    explicit = os.environ.get('GITHUB_REPOSITORY')
-    if explicit:
-        return explicit.lower()
-    # Fora do CI (modo local): deriva do remoto git do checkout.
-    remotes = run('git', 'remote', capture=True).split()
-    for name in ('origin', 'default', *remotes):
-        if name not in remotes:
-            continue
-        url = run('git', 'remote', 'get-url', name, capture=True).strip()
-        match = re.search(r'github\.com[:/]+([^/]+)/([^/]+?)(?:\.git)?$', url)
-        if match:
-            return f'{match.group(1)}/{match.group(2)}'.lower()
-    raise RuntimeError('GITHUB_REPOSITORY ausente e remoto git não reconhecido.')
+    return os.environ['GITHUB_REPOSITORY'].lower()
 
 
 def release_for_tag(create=False):
@@ -321,7 +271,7 @@ def download(url, attempts=4):
     req.add_header('Authorization', 'Bearer ' + os.environ['GITHUB_TOKEN'])
     for attempt in range(attempts):
         try:
-            with urllib.request.urlopen(req, timeout=60) as res:
+            with urllib.request.urlopen(req) as res:
                 return res.read()
         except urllib.error.HTTPError as err:
             # 404/403 são respostas reais (asset ausente, sem acesso): falha
@@ -390,7 +340,7 @@ def combined_manifest(release, assets=None, ttl=600):
         return dict(cached)
     manifest = dict(load_manifest(release))
     for asset in assets:
-        if re.fullmatch(r'manifest-(?:\d+|local)\.json', asset['name']):
+        if re.fullmatch(r'manifest-\d+\.json', asset['name']):
             fetched = fetch_if_present(asset['browser_download_url'])
             if fetched:
                 manifest.update(json.loads(fetched))
@@ -406,10 +356,7 @@ def strip_bottle_block(source):
 
 
 def checks():
-    # O modo local (PIPELINE_ALLOW_LOCAL=1) constrói numa máquina própria e
-    # publica no mesmo release; não desinstala kegs da máquina.
-    if (os.environ.get('GITHUB_ACTIONS') != 'true'
-            and os.environ.get('PIPELINE_ALLOW_LOCAL') != '1'):
+    if os.environ.get('GITHUB_ACTIONS') != 'true':
         raise RuntimeError('Este programa remove pacotes do runner; execução local bloqueada.')
     if run('uname', '-m', capture=True).strip() != 'x86_64':
         raise RuntimeError('Arquitetura diferente de x86_64.')
@@ -453,19 +400,10 @@ def tap_source_taps(external_taps):
                 tap_name, _, remote = entry.partition(' ')
                 taps_map[tap_name] = remote.strip()
     for external in sorted(external_taps):
-        try:
-            retry('brew', 'tap', external,
-                  *([taps_map[external]] if taps_map.get(external) else []))
-        except subprocess.CalledProcessError:
-            # Tap indisponível (rede): as fórmulas dele caem no fallback de
-            # origem indisponível (frozen/skip) em vez de derrubar o plan.
-            print(f'Tap indisponível; seguindo sem ele: {external}', flush=True)
-            continue
+        run('brew', 'tap', external,
+            *([taps_map[external]] if taps_map.get(external) else []))
         # Sem confiança o brew recusa carregar as fórmulas do tap de origem.
-        try:
-            retry('brew', 'trust', external)
-        except subprocess.CalledProcessError:
-            print(f'Trust falhou para {external}; seguindo', flush=True)
+        run('brew', 'trust', external)
 
 
 def link_own_tap(owner, repository, tap):
@@ -477,7 +415,7 @@ def link_own_tap(owner, repository, tap):
             tap_path.unlink()
         else:
             shutil.rmtree(tap_path)
-    tap_path.symlink_to(TAP_ROOT, target_is_directory=True)
+    tap_path.symlink_to(ROOT, target_is_directory=True)
     # Brew recusa carregar fórmulas de taps não confiáveis ao resolver dependências.
     run('brew', 'trust', tap)
 
@@ -491,7 +429,7 @@ def build_graph(roots, external_taps):
         if name in graph:
             continue
         full_ref = name if '/' in name else 'homebrew/core/' + name
-        local_rb = TAP_ROOT / 'Formula' / (short_name(name) + '.rb')
+        local_rb = ROOT / 'Formula' / (short_name(name) + '.rb')
         try:
             info = formula_info(full_ref)
         except subprocess.CalledProcessError:
@@ -604,7 +542,7 @@ def graft_bottle_block(normalized, promoted):
 def write_aux_files(aliases, renames):
     # Alias vira symlink Aliases/<alias> -> ../Formula/<alvo>.rb (formato do
     # homebrew-core); renames vira formula_renames.json na raiz do tap.
-    aliases_dir = TAP_ROOT / 'Aliases'
+    aliases_dir = ROOT / 'Aliases'
     for stale in aliases_dir.iterdir() if aliases_dir.is_dir() else []:
         if stale.name not in aliases:
             stale.unlink()
@@ -660,7 +598,7 @@ def collect_patches(order, normalized, file_owner):
             src = tap_dirs[origin] / rel
             if not src.is_file():
                 # Patch nosso (Patches/ do repo): a origem não o tem.
-                src = TAP_ROOT / rel
+                src = ROOT / rel
             if not src.is_file():
                 raise RuntimeError(f'Patch referenciado ausente em {origin}: {rel}')
             patches[rel] = src.read_text()
@@ -723,8 +661,8 @@ def plan():
     owner, repository, tap = repo_tap()
     WORK.mkdir(exist_ok=True)
     # Atualiza explicitamente; nas etapas seguintes as versões ficam congeladas.
-    brew_update()
-    retry('brew', 'tap', '--force', 'homebrew/core')
+    run('brew', 'update')
+    run('brew', 'tap', '--force', 'homebrew/core')
     core = Path(run('brew', '--repository', 'homebrew/core', capture=True).strip())
     core_commit = run('git', 'rev-parse', 'HEAD', cwd=core, capture=True).strip()
     licenses = [p for p in (core / 'LICENSE.txt', core / 'LICENSE') if p.is_file()]
@@ -741,7 +679,7 @@ def plan():
     for reason, names in (('desabilitada', aux.get('disabled')),
                           ('só arm64', aux.get('arch_skipped'))):
         for name in sorted(set(names or [])):
-            local_rb = TAP_ROOT / 'Formula' / (short_name(name) + '.rb')
+            local_rb = ROOT / 'Formula' / (short_name(name) + '.rb')
             if local_rb.exists():
                 print(f'Fórmula {reason} upstream; mantendo a publicada: {name}',
                       flush=True)
@@ -795,7 +733,7 @@ def plan():
     write_aux_files(alias_map, renames)
     patches, patch_shas = collect_patches(order, normalized, file_owner)
     for rel, content in patches.items():
-        dest = TAP_ROOT / rel
+        dest = ROOT / rel
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_text(content)
     release = release_for_tag(create=True)
@@ -819,7 +757,7 @@ def plan():
         legacy_fps = member_fps(order, graph, legacy_norm, file_owner)
         tables = [('manifest.json', manifest)]
         for asset in release_assets(release['id']):
-            if re.fullmatch(r'manifest-(?:\d+|local)\.json', asset['name']):
+            if re.fullmatch(r'manifest-\d+\.json', asset['name']):
                 fetched = fetch_if_present(asset['browser_download_url'])
                 if fetched:
                     tables.append((asset['name'], json.loads(fetched)))
@@ -854,7 +792,7 @@ def plan():
     shards = prioritize(partition(order, graph, build_set, SHARDS),
                         graph, build_set)
     # A verificação de escape roda no plan: falha antes de gastar minutos de shard.
-    formula_dir = TAP_ROOT / 'Formula'
+    formula_dir = ROOT / 'Formula'
     if formula_dir.exists():
         shutil.rmtree(formula_dir)
     formula_dir.mkdir()
@@ -904,7 +842,7 @@ def load_plan():
 
 
 def write_formula_dir(plan_data):
-    formula_dir = TAP_ROOT / 'Formula'
+    formula_dir = ROOT / 'Formula'
     formula_dir.mkdir(exist_ok=True)
     keep = {short_name(name) for name in plan_data['order']
             if plan_data['file_owner'][short_name(name)] == name}
@@ -913,7 +851,7 @@ def write_formula_dir(plan_data):
             stale.unlink()
     # Patch files e aliases vivem no plan (o checkout do shard é novo).
     for rel, content in (plan_data.get('patches') or {}).items():
-        dest = TAP_ROOT / rel
+        dest = ROOT / rel
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_text(content)
     write_aux_files(plan_data.get('aliases') or {}, plan_data.get('renames') or {})
@@ -980,15 +918,6 @@ def keg_installed(short):
                           stderr=subprocess.DEVNULL).returncode == 0
 
 
-def stable_version_installed(full):
-    # Keg de versão antiga não pode mascarar falha de build: o retry de link
-    # só vale quando a versão da fórmula está de fato instalada.
-    info = formula_info(full)
-    stable = (info.get('versions') or {}).get('stable')
-    return any(item.get('version') == stable
-               for item in (info.get('installed') or []))
-
-
 # Testes que executam benchmark ou penduram no sandbox do runner: a validação
 # fica por conta do brew linkage. highway compila e roda benchmark.cc;
 # zerobrew ('zb --version') e gradle estouram o timeout do brew test.
@@ -1000,7 +929,7 @@ def has_test_block(short):
     # com "defines no test" e o membro ficaria pendente para sempre.
     if short in NO_TEST:
         return False
-    source = (TAP_ROOT / 'Formula' / (short + '.rb')).read_text()
+    source = (ROOT / 'Formula' / (short + '.rb')).read_text()
     return re.search(r'^\s*test do\b', source, re.M) is not None
 
 
@@ -1014,7 +943,7 @@ def brew_install(*args, cmd='install'):
         run('brew', cmd, *args)
     except subprocess.CalledProcessError:
         short = args[-1].split('/')[-1]
-        if not keg_installed(short) or not stable_version_installed(args[-1]):
+        if not keg_installed(short):
             raise
         run('brew', 'link', '--overwrite', short)
 
@@ -1040,7 +969,7 @@ def wait_for_publish(release, dep_short, timeout=2700, interval=120):
                 return True
             fetched = fetch_if_present(asset_map[asset_name])
             if fetched is not None:
-                target = TAP_ROOT / 'Formula' / (dep_short + '.rb')
+                target = ROOT / 'Formula' / (dep_short + '.rb')
                 target.write_text(repair_bottle_urls(
                     fetched.decode(), asset_map))
                 print(f'Dep publicada por outro shard; adotada: {dep_short}',
@@ -1092,7 +1021,7 @@ def install_missing_deps(full, tap, order_index, release=None,
             # A retomada compila da fonte, então roda SEM --ignore-dependencies:
             # o flag zeraria HOMEBREW_DEPENDENCIES no filho de build e o
             # superenv ficaria sem os opt_bin/pkgconfig das deps.
-            dep_rb = TAP_ROOT / 'Formula' / (dep_short + '.rb')
+            dep_rb = ROOT / 'Formula' / (dep_short + '.rb')
             if keg_installed(dep_short) or not dep_rb.is_file():
                 raise
             if 'bottle do' in dep_rb.read_text():
@@ -1102,40 +1031,19 @@ def install_missing_deps(full, tap, order_index, release=None,
         installed = set(run('brew', 'list', '--formula', capture=True).split())
 
 
-def build_shard(idx, local=False):
+def build_shard(idx):
     checks()
     started = time.monotonic()
-    budget = None if local else BUILD_BUDGET_SECONDS
     owner, repository, tap = repo_tap()
     WORK.mkdir(exist_ok=True)
-    brew_update()
-    retry('brew', 'tap', '--force', 'homebrew/core')
+    run('brew', 'update')
+    run('brew', 'tap', '--force', 'homebrew/core')
     release, plan_data = load_plan()
-    if local:
-        # Cópia do tap em .work: o build escreve Formula/Patches/Aliases nela e
-        # o checkout do usuário fica limpo (pull seguinte não conflita).
-        global TAP_ROOT
-        TAP_ROOT = WORK / 'tap-local'
-        if TAP_ROOT.exists():
-            shutil.rmtree(TAP_ROOT)
-        TAP_ROOT.mkdir(parents=True)
-        for item in ('Formula', 'Patches', 'Aliases'):
-            if (ROOT / item).is_dir():
-                shutil.copytree(ROOT / item, TAP_ROOT / item, symlinks=True)
-        for item in ('formula_renames.json', 'LICENSE.homebrew-core.txt'):
-            if (ROOT / item).exists():
-                shutil.copy2(ROOT / item, TAP_ROOT / item)
     reusable = plan_data['reusable']
     fps = plan_data['fps']
     file_owner = plan_data['file_owner']
     build_set = set(plan_data['build_set'])
-    if local:
-        # Máquina própria: assume o build_set inteiro na ordem da jornada,
-        # publicando no fragmento 'local' — o plan combina todos os fragmentos.
-        members = prioritize([[n for n in plan_data['order'] if n in build_set]],
-                             plan_data['graph'], build_set)[0]
-    else:
-        members = plan_data['shards'][idx]
+    members = plan_data['shards'][idx]
     order_index = {short_name(n): i for i, n in enumerate(plan_data['order'])}
     dep_owner = {short_name(n): i for i, shard in enumerate(plan_data['shards'])
                  for n in shard}
@@ -1149,24 +1057,21 @@ def build_shard(idx, local=False):
     # (órfão de publish anterior ou dep que outro shard ainda não publicou):
     # sem o bloco bottle o brew compila a dep da fonte em vez de falhar no 404.
     our_bottles = f'releases/download/{TAG}'
-    for dep_rb in (TAP_ROOT / 'Formula').glob('*.rb'):
+    for dep_rb in (ROOT / 'Formula').glob('*.rb'):
         source = dep_rb.read_text()
         if (our_bottles in source and 'bottle do' in source
                 and (done.get(dep_rb.stem) or {}).get('asset') not in asset_names):
             dep_rb.write_text(strip_bottle_block(source))
     link_own_tap(owner, repository, tap)
-    if not local:
-        # Apenas VM descartável: evita satisfazer dependências com kegs de
-        # outro tap. Na máquina do usuário isso destruiria o ambiente.
-        installed = run('brew', 'list', '--formula', capture=True).split()
-        if installed:
-            run('brew', 'uninstall', '--force', '--ignore-dependencies', *installed)
+    # Apenas VM descartável: evita satisfazer dependências com kegs de outro tap.
+    installed = run('brew', 'list', '--formula', capture=True).split()
+    if installed:
+        run('brew', 'uninstall', '--force', '--ignore-dependencies', *installed)
     fragment = {}
     failed = []
-    frag_name = 'manifest-local.json' if local else f'manifest-{idx}.json'
     out_dir = WORK / f'out-{idx}'
     out_dir.mkdir(exist_ok=True)
-    frag_path = out_dir / frag_name
+    frag_path = out_dir / f'manifest-{idx}.json'
     root_url = f'https://github.com/{repo()}/releases/download/{TAG}'
     deferred = []
 
@@ -1179,9 +1084,7 @@ def build_shard(idx, local=False):
         try:
             process_member(name, idx, tap, full, short, build_set, reusable,
                            release, fragment, order_index, root_url, fps,
-                           dep_owner, local)
-        except Skipped as why:
-            print(f'[{idx}] {short}: pulado — {why}', flush=True)
+                           dep_owner)
         except Deferred as dep:
             deferred.append(name)
             print(f'[{idx}] {short}: adiado — dep pesada de outro shard '
@@ -1197,19 +1100,19 @@ def build_shard(idx, local=False):
         else:
             print(f'[{idx}] {short}: ok', flush=True)
         frag_path.write_text(json.dumps(fragment, indent=2))
-        upload_asset(release['id'], frag_path, frag_name)
+        upload_asset(release['id'], frag_path, f'manifest-{idx}.json')
 
     for name in members:
         if file_owner[short_name(name)] != name:
             continue
-        if budget and time.monotonic() - started > budget:
+        if time.monotonic() - started > BUILD_BUDGET_SECONDS:
             print(f'[{idx}] Orçamento de {BUILD_BUDGET_SECONDS // 3600}h '
                   'esgotado; restantes ficam para a próxima run', flush=True)
             break
         attempt(name)
     # Segunda passada: o dono pode ter publicado a dep pesada durante a run.
     for name in list(deferred):
-        if budget and time.monotonic() - started > budget:
+        if time.monotonic() - started > BUILD_BUDGET_SECONDS:
             break
         if file_owner[short_name(name)] != name:
             continue
@@ -1221,28 +1124,12 @@ def build_shard(idx, local=False):
 
 
 def process_member(name, idx, tap, full, short, build_set, reusable, release,
-                   fragment, order_index, root_url, fps, dep_owner,
-                   local=False):
-    if local:
-        if formula_info(full).get('installed'):
-            raise Skipped('já instalado nesta máquina; local não desinstala kegs')
-        # Dep instalada em versão de outro tap, bottle ausente, conflito de
-        # tap: o --build-bottle recusaria no meio do caminho. O dry-run
-        # detecta antes e o membro é pulado com a razão.
-        probe = subprocess.run(
-            ['brew', 'install', '--dry-run', '--build-bottle', '--include-test',
-             full], cwd=ROOT, text=True, stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT)
-        if probe.returncode != 0:
-            lines = [ln for ln in probe.stdout.splitlines() if ln.strip()]
-            reason = next((ln for ln in lines if 'Error' in ln),
-                          lines[-1] if lines else 'brew recusou o install')
-            raise Skipped('brew recusaria: ' + reason.strip()[:160])
+                   fragment, order_index, root_url, fps, dep_owner):
     if name in build_set and not reusable[name]:
         # Deps resolvem pelo tap: members com bottle publicado despejam; os
         # que outro shard ainda compila são aguardados/adotados (ou, em último
         # caso, construídos localmente — só o shard dono publica).
-        adopt_bottles(release, full, TAP_ROOT / 'Formula')
+        adopt_bottles(release, full, ROOT / 'Formula')
         install_missing_deps(full, tap, order_index, release, dep_owner, idx,
                              {short_name(n) for n in build_set})
         tab = formula_info(full).get('installed') or []
@@ -1288,12 +1175,12 @@ def process_member(name, idx, tap, full, short, build_set, reusable, release,
         # Checkpoint imediato: bottle, metadado da fórmula e manifesto do shard.
         uploaded = upload_asset(release['id'], target, filename)
         fragment[short] = {'fp': fps[name], 'asset': uploaded['name']}
-        upload_asset(release['id'], TAP_ROOT / 'Formula' / (short + '.rb'),
+        upload_asset(release['id'], ROOT / 'Formula' / (short + '.rb'),
                      f'Formula-{short}.rb')
     else:
         # Reutilizado ou inalterado: despeja o bottle oficial/publicado e
         # valida que funciona dentro do grafo do tap.
-        adopt_bottles(release, full, TAP_ROOT / 'Formula')
+        adopt_bottles(release, full, ROOT / 'Formula')
         install_missing_deps(full, tap, order_index, release, dep_owner, idx,
                              {short_name(n) for n in build_set})
         # --include-test traz as test deps que brew test exige instaladas.
@@ -1304,7 +1191,7 @@ def process_member(name, idx, tap, full, short, build_set, reusable, release,
             run('brew', 'test', full)
         run('brew', 'linkage', '--test', full)
         if reusable[name]:
-            upload_asset(release['id'], TAP_ROOT / 'Formula' / (short + '.rb'),
+            upload_asset(release['id'], ROOT / 'Formula' / (short + '.rb'),
                          f'Formula-{short}.rb')
             fragment[short] = {'fp': fps[name], 'reused': True}
 
@@ -1313,7 +1200,7 @@ def publish():
     checks()
     WORK.mkdir(exist_ok=True)
     owner, repository, tap = repo_tap()
-    retry('brew', 'tap', '--force', 'homebrew/core')
+    run('brew', 'tap', '--force', 'homebrew/core')
     core = Path(run('brew', '--repository', 'homebrew/core', capture=True).strip())
     licenses = [p for p in (core / 'LICENSE.txt', core / 'LICENSE') if p.is_file()]
     if licenses:
@@ -1333,7 +1220,7 @@ def publish():
                      if file_owner[short_name(name)] == name}
     # Membros removidos do catálogo perdem entrada no manifesto e os assets.
     manifest = {k: v for k, v in manifest.items() if k in member_shorts}
-    formula_dir = TAP_ROOT / 'Formula'
+    formula_dir = ROOT / 'Formula'
     formula_dir.mkdir(exist_ok=True)
     for stale_file in formula_dir.glob('*.rb'):
         if stale_file.stem not in member_shorts:
@@ -1378,13 +1265,12 @@ def publish():
         if stale.is_file() and str(stale.relative_to(ROOT)) not in keep_patches:
             stale.unlink()
     for rel, content in (plan_data.get('patches') or {}).items():
-        dest = TAP_ROOT / rel
+        dest = ROOT / rel
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_text(content)
     write_aux_files(plan_data.get('aliases') or {}, plan_data.get('renames') or {})
     keep = {'plan.json', 'manifest.json'}
     keep.update(f'manifest-{i}.json' for i in range(SHARDS))
-    keep.add('manifest-local.json')
     keep.update(f'Formula-{s}.rb' for s in member_shorts)
     keep.update(entry['asset'] for entry in manifest.values() if entry.get('asset'))
     # Bottle de membro atual nunca é órfão: o Formula-*.rb promovido pode
@@ -1449,8 +1335,6 @@ def main():
         plan()
     elif command == 'build':
         build_shard(int(sys.argv[2]))
-    elif command == 'local':
-        build_shard(0, local=True)
     elif command == 'publish':
         publish()
     else:
