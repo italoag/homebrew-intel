@@ -1121,7 +1121,7 @@ def build_shard(idx, local=False):
         TAP_ROOT.mkdir(parents=True)
         for item in ('Formula', 'Patches', 'Aliases'):
             if (ROOT / item).is_dir():
-                shutil.copytree(ROOT / item, TAP_ROOT / item)
+                shutil.copytree(ROOT / item, TAP_ROOT / item, symlinks=True)
         for item in ('formula_renames.json', 'LICENSE.homebrew-core.txt'):
             if (ROOT / item).exists():
                 shutil.copy2(ROOT / item, TAP_ROOT / item)
