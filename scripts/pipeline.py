@@ -251,7 +251,19 @@ def api(path, data=None, binary=False, method=None):
 
 
 def repo():
-    return os.environ['GITHUB_REPOSITORY'].lower()
+    explicit = os.environ.get('GITHUB_REPOSITORY')
+    if explicit:
+        return explicit.lower()
+    # Fora do CI (modo local): deriva do remoto git do checkout.
+    remotes = run('git', 'remote', capture=True).split()
+    for name in ('origin', 'default', *remotes):
+        if name not in remotes:
+            continue
+        url = run('git', 'remote', 'get-url', name, capture=True).strip()
+        match = re.search(r'github\.com[:/]+([^/]+)/([^/]+?)(?:\.git)?$', url)
+        if match:
+            return f'{match.group(1)}/{match.group(2)}'.lower()
+    raise RuntimeError('GITHUB_REPOSITORY ausente e remoto git não reconhecido.')
 
 
 def release_for_tag(create=False):
