@@ -30,6 +30,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 WORK = ROOT / '.work'
 TAG = 'tahoe-bottles'  # release rolante: assets persistem entre runs (retomada)
+# Raiz do tap gerado: o CI usa o próprio checkout; o modo local usa uma cópia
+# em .work para não sujar o working tree do usuário.
+TAP_ROOT = ROOT
 # Casa com os 5 runners macos-26-intel simultâneos da conta: um shard a mais
 # ficaria na fila até um terminar e o run só fecharia com os outros ociosos.
 SHARDS = 5
@@ -474,7 +477,7 @@ def link_own_tap(owner, repository, tap):
             tap_path.unlink()
         else:
             shutil.rmtree(tap_path)
-    tap_path.symlink_to(ROOT, target_is_directory=True)
+    tap_path.symlink_to(TAP_ROOT, target_is_directory=True)
     # Brew recusa carregar fórmulas de taps não confiáveis ao resolver dependências.
     run('brew', 'trust', tap)
 
@@ -488,7 +491,7 @@ def build_graph(roots, external_taps):
         if name in graph:
             continue
         full_ref = name if '/' in name else 'homebrew/core/' + name
-        local_rb = ROOT / 'Formula' / (short_name(name) + '.rb')
+        local_rb = TAP_ROOT / 'Formula' / (short_name(name) + '.rb')
         try:
             info = formula_info(full_ref)
         except subprocess.CalledProcessError:
@@ -601,7 +604,7 @@ def graft_bottle_block(normalized, promoted):
 def write_aux_files(aliases, renames):
     # Alias vira symlink Aliases/<alias> -> ../Formula/<alvo>.rb (formato do
     # homebrew-core); renames vira formula_renames.json na raiz do tap.
-    aliases_dir = ROOT / 'Aliases'
+    aliases_dir = TAP_ROOT / 'Aliases'
     for stale in aliases_dir.iterdir() if aliases_dir.is_dir() else []:
         if stale.name not in aliases:
             stale.unlink()
@@ -657,7 +660,7 @@ def collect_patches(order, normalized, file_owner):
             src = tap_dirs[origin] / rel
             if not src.is_file():
                 # Patch nosso (Patches/ do repo): a origem não o tem.
-                src = ROOT / rel
+                src = TAP_ROOT / rel
             if not src.is_file():
                 raise RuntimeError(f'Patch referenciado ausente em {origin}: {rel}')
             patches[rel] = src.read_text()
@@ -738,7 +741,7 @@ def plan():
     for reason, names in (('desabilitada', aux.get('disabled')),
                           ('só arm64', aux.get('arch_skipped'))):
         for name in sorted(set(names or [])):
-            local_rb = ROOT / 'Formula' / (short_name(name) + '.rb')
+            local_rb = TAP_ROOT / 'Formula' / (short_name(name) + '.rb')
             if local_rb.exists():
                 print(f'Fórmula {reason} upstream; mantendo a publicada: {name}',
                       flush=True)
@@ -792,7 +795,7 @@ def plan():
     write_aux_files(alias_map, renames)
     patches, patch_shas = collect_patches(order, normalized, file_owner)
     for rel, content in patches.items():
-        dest = ROOT / rel
+        dest = TAP_ROOT / rel
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_text(content)
     release = release_for_tag(create=True)
@@ -851,7 +854,7 @@ def plan():
     shards = prioritize(partition(order, graph, build_set, SHARDS),
                         graph, build_set)
     # A verificação de escape roda no plan: falha antes de gastar minutos de shard.
-    formula_dir = ROOT / 'Formula'
+    formula_dir = TAP_ROOT / 'Formula'
     if formula_dir.exists():
         shutil.rmtree(formula_dir)
     formula_dir.mkdir()
@@ -901,7 +904,7 @@ def load_plan():
 
 
 def write_formula_dir(plan_data):
-    formula_dir = ROOT / 'Formula'
+    formula_dir = TAP_ROOT / 'Formula'
     formula_dir.mkdir(exist_ok=True)
     keep = {short_name(name) for name in plan_data['order']
             if plan_data['file_owner'][short_name(name)] == name}
@@ -910,7 +913,7 @@ def write_formula_dir(plan_data):
             stale.unlink()
     # Patch files e aliases vivem no plan (o checkout do shard é novo).
     for rel, content in (plan_data.get('patches') or {}).items():
-        dest = ROOT / rel
+        dest = TAP_ROOT / rel
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_text(content)
     write_aux_files(plan_data.get('aliases') or {}, plan_data.get('renames') or {})
@@ -997,7 +1000,7 @@ def has_test_block(short):
     # com "defines no test" e o membro ficaria pendente para sempre.
     if short in NO_TEST:
         return False
-    source = (ROOT / 'Formula' / (short + '.rb')).read_text()
+    source = (TAP_ROOT / 'Formula' / (short + '.rb')).read_text()
     return re.search(r'^\s*test do\b', source, re.M) is not None
 
 
@@ -1037,7 +1040,7 @@ def wait_for_publish(release, dep_short, timeout=2700, interval=120):
                 return True
             fetched = fetch_if_present(asset_map[asset_name])
             if fetched is not None:
-                target = ROOT / 'Formula' / (dep_short + '.rb')
+                target = TAP_ROOT / 'Formula' / (dep_short + '.rb')
                 target.write_text(repair_bottle_urls(
                     fetched.decode(), asset_map))
                 print(f'Dep publicada por outro shard; adotada: {dep_short}',
@@ -1089,7 +1092,7 @@ def install_missing_deps(full, tap, order_index, release=None,
             # A retomada compila da fonte, então roda SEM --ignore-dependencies:
             # o flag zeraria HOMEBREW_DEPENDENCIES no filho de build e o
             # superenv ficaria sem os opt_bin/pkgconfig das deps.
-            dep_rb = ROOT / 'Formula' / (dep_short + '.rb')
+            dep_rb = TAP_ROOT / 'Formula' / (dep_short + '.rb')
             if keg_installed(dep_short) or not dep_rb.is_file():
                 raise
             if 'bottle do' in dep_rb.read_text():
@@ -1108,6 +1111,20 @@ def build_shard(idx, local=False):
     brew_update()
     retry('brew', 'tap', '--force', 'homebrew/core')
     release, plan_data = load_plan()
+    if local:
+        # Cópia do tap em .work: o build escreve Formula/Patches/Aliases nela e
+        # o checkout do usuário fica limpo (pull seguinte não conflita).
+        global TAP_ROOT
+        TAP_ROOT = WORK / 'tap-local'
+        if TAP_ROOT.exists():
+            shutil.rmtree(TAP_ROOT)
+        TAP_ROOT.mkdir(parents=True)
+        for item in ('Formula', 'Patches', 'Aliases'):
+            if (ROOT / item).is_dir():
+                shutil.copytree(ROOT / item, TAP_ROOT / item)
+        for item in ('formula_renames.json', 'LICENSE.homebrew-core.txt'):
+            if (ROOT / item).exists():
+                shutil.copy2(ROOT / item, TAP_ROOT / item)
     reusable = plan_data['reusable']
     fps = plan_data['fps']
     file_owner = plan_data['file_owner']
@@ -1132,7 +1149,7 @@ def build_shard(idx, local=False):
     # (órfão de publish anterior ou dep que outro shard ainda não publicou):
     # sem o bloco bottle o brew compila a dep da fonte em vez de falhar no 404.
     our_bottles = f'releases/download/{TAG}'
-    for dep_rb in (ROOT / 'Formula').glob('*.rb'):
+    for dep_rb in (TAP_ROOT / 'Formula').glob('*.rb'):
         source = dep_rb.read_text()
         if (our_bottles in source and 'bottle do' in source
                 and (done.get(dep_rb.stem) or {}).get('asset') not in asset_names):
@@ -1212,7 +1229,7 @@ def process_member(name, idx, tap, full, short, build_set, reusable, release,
         # Deps resolvem pelo tap: members com bottle publicado despejam; os
         # que outro shard ainda compila são aguardados/adotados (ou, em último
         # caso, construídos localmente — só o shard dono publica).
-        adopt_bottles(release, full, ROOT / 'Formula')
+        adopt_bottles(release, full, TAP_ROOT / 'Formula')
         install_missing_deps(full, tap, order_index, release, dep_owner, idx,
                              {short_name(n) for n in build_set})
         tab = formula_info(full).get('installed') or []
@@ -1258,12 +1275,12 @@ def process_member(name, idx, tap, full, short, build_set, reusable, release,
         # Checkpoint imediato: bottle, metadado da fórmula e manifesto do shard.
         uploaded = upload_asset(release['id'], target, filename)
         fragment[short] = {'fp': fps[name], 'asset': uploaded['name']}
-        upload_asset(release['id'], ROOT / 'Formula' / (short + '.rb'),
+        upload_asset(release['id'], TAP_ROOT / 'Formula' / (short + '.rb'),
                      f'Formula-{short}.rb')
     else:
         # Reutilizado ou inalterado: despeja o bottle oficial/publicado e
         # valida que funciona dentro do grafo do tap.
-        adopt_bottles(release, full, ROOT / 'Formula')
+        adopt_bottles(release, full, TAP_ROOT / 'Formula')
         install_missing_deps(full, tap, order_index, release, dep_owner, idx,
                              {short_name(n) for n in build_set})
         # --include-test traz as test deps que brew test exige instaladas.
@@ -1274,7 +1291,7 @@ def process_member(name, idx, tap, full, short, build_set, reusable, release,
             run('brew', 'test', full)
         run('brew', 'linkage', '--test', full)
         if reusable[name]:
-            upload_asset(release['id'], ROOT / 'Formula' / (short + '.rb'),
+            upload_asset(release['id'], TAP_ROOT / 'Formula' / (short + '.rb'),
                          f'Formula-{short}.rb')
             fragment[short] = {'fp': fps[name], 'reused': True}
 
@@ -1303,7 +1320,7 @@ def publish():
                      if file_owner[short_name(name)] == name}
     # Membros removidos do catálogo perdem entrada no manifesto e os assets.
     manifest = {k: v for k, v in manifest.items() if k in member_shorts}
-    formula_dir = ROOT / 'Formula'
+    formula_dir = TAP_ROOT / 'Formula'
     formula_dir.mkdir(exist_ok=True)
     for stale_file in formula_dir.glob('*.rb'):
         if stale_file.stem not in member_shorts:
@@ -1348,7 +1365,7 @@ def publish():
         if stale.is_file() and str(stale.relative_to(ROOT)) not in keep_patches:
             stale.unlink()
     for rel, content in (plan_data.get('patches') or {}).items():
-        dest = ROOT / rel
+        dest = TAP_ROOT / rel
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_text(content)
     write_aux_files(plan_data.get('aliases') or {}, plan_data.get('renames') or {})
