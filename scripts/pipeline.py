@@ -118,6 +118,20 @@ def run(*args, cwd=None, capture=False):
     subprocess.run(list(map(str, args)), cwd=cwd or ROOT, check=True)
 
 
+def retry(*args, attempts=3, delay=15):
+    # Setup depende de rede (clone de taps, update): um DNS/transporte
+    # transitório não pode derrubar o plan ou o shard inteiro.
+    for attempt in range(attempts):
+        try:
+            return run(*args)
+        except subprocess.CalledProcessError:
+            if attempt == attempts - 1:
+                raise
+            print(f'Falha transitória (tentativa {attempt + 1}/{attempts}); '
+                  'retentando', flush=True)
+            time.sleep(delay)
+
+
 def deps(name):
     # Dependências de teste fazem parte do fechamento para permitir brew test.
     # --formula evita carregar cask homônimo (ex.: reviewdog/tap).
@@ -400,10 +414,19 @@ def tap_source_taps(external_taps):
                 tap_name, _, remote = entry.partition(' ')
                 taps_map[tap_name] = remote.strip()
     for external in sorted(external_taps):
-        run('brew', 'tap', external,
-            *([taps_map[external]] if taps_map.get(external) else []))
+        try:
+            retry('brew', 'tap', external,
+                  *([taps_map[external]] if taps_map.get(external) else []))
+        except subprocess.CalledProcessError:
+            # Tap indisponível (rede): as fórmulas dele caem no fallback de
+            # origem indisponível (frozen/skip) em vez de derrubar o plan.
+            print(f'Tap indisponível; seguindo sem ele: {external}', flush=True)
+            continue
         # Sem confiança o brew recusa carregar as fórmulas do tap de origem.
-        run('brew', 'trust', external)
+        try:
+            retry('brew', 'trust', external)
+        except subprocess.CalledProcessError:
+            print(f'Trust falhou para {external}; seguindo', flush=True)
 
 
 def link_own_tap(owner, repository, tap):
@@ -661,8 +684,8 @@ def plan():
     owner, repository, tap = repo_tap()
     WORK.mkdir(exist_ok=True)
     # Atualiza explicitamente; nas etapas seguintes as versões ficam congeladas.
-    run('brew', 'update')
-    run('brew', 'tap', '--force', 'homebrew/core')
+    retry('brew', 'update')
+    retry('brew', 'tap', '--force', 'homebrew/core')
     core = Path(run('brew', '--repository', 'homebrew/core', capture=True).strip())
     core_commit = run('git', 'rev-parse', 'HEAD', cwd=core, capture=True).strip()
     licenses = [p for p in (core / 'LICENSE.txt', core / 'LICENSE') if p.is_file()]
@@ -1036,8 +1059,8 @@ def build_shard(idx):
     started = time.monotonic()
     owner, repository, tap = repo_tap()
     WORK.mkdir(exist_ok=True)
-    run('brew', 'update')
-    run('brew', 'tap', '--force', 'homebrew/core')
+    retry('brew', 'update')
+    retry('brew', 'tap', '--force', 'homebrew/core')
     release, plan_data = load_plan()
     reusable = plan_data['reusable']
     fps = plan_data['fps']
@@ -1200,7 +1223,7 @@ def publish():
     checks()
     WORK.mkdir(exist_ok=True)
     owner, repository, tap = repo_tap()
-    run('brew', 'tap', '--force', 'homebrew/core')
+    retry('brew', 'tap', '--force', 'homebrew/core')
     core = Path(run('brew', '--repository', 'homebrew/core', capture=True).strip())
     licenses = [p for p in (core / 'LICENSE.txt', core / 'LICENSE') if p.is_file()]
     if licenses:
