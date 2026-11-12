@@ -12,6 +12,7 @@ Subcomandos:
 Bottles e manifestos moram no release tahoe-bottles; qualquer trabalho já
 publicado sobrevive a timeout/falha, e a run seguinte refaz só o que falta.
 """
+import functools
 import hashlib
 import http.client
 import json
@@ -41,6 +42,12 @@ HEAVY = (('llvm', 40), ('lld', 40), ('rust', 45), ('openjdk', 35), ('gcc', 30),
          ('qt', 30), ('node', 30), ('ffmpeg', 25), ('go', 25), ('gtk', 20),
          ('boost', 20), ('emacs', 20), ('python@', 15), ('postgresql', 15),
          ('mysql', 15), ('ruby', 15))
+
+
+class Skipped(Exception):
+    # Modo local: membro já instalado na máquina; o build não pode desinstalar
+    # kegs do usuário (conflito de tap ou rebuild exigiriam removê-los).
+    pass
 
 
 class Deferred(Exception):
@@ -263,6 +270,7 @@ def api(path, data=None, binary=False, method=None):
             time.sleep(5 * (attempt + 1))
 
 
+@functools.lru_cache(maxsize=1)
 def repo():
     explicit = os.environ.get('GITHUB_REPOSITORY')
     if explicit:
@@ -969,6 +977,15 @@ def keg_installed(short):
                           stderr=subprocess.DEVNULL).returncode == 0
 
 
+def stable_version_installed(full):
+    # Keg de versão antiga não pode mascarar falha de build: o retry de link
+    # só vale quando a versão da fórmula está de fato instalada.
+    info = formula_info(full)
+    stable = (info.get('versions') or {}).get('stable')
+    return any(item.get('version') == stable
+               for item in (info.get('installed') or []))
+
+
 # Testes que executam benchmark ou penduram no sandbox do runner: a validação
 # fica por conta do brew linkage. highway compila e roda benchmark.cc;
 # zerobrew ('zb --version') e gradle estouram o timeout do brew test.
@@ -994,7 +1011,7 @@ def brew_install(*args, cmd='install'):
         run('brew', cmd, *args)
     except subprocess.CalledProcessError:
         short = args[-1].split('/')[-1]
-        if not keg_installed(short):
+        if not keg_installed(short) or not stable_version_installed(args[-1]):
             raise
         run('brew', 'link', '--overwrite', short)
 
@@ -1145,7 +1162,9 @@ def build_shard(idx, local=False):
         try:
             process_member(name, idx, tap, full, short, build_set, reusable,
                            release, fragment, order_index, root_url, fps,
-                           dep_owner)
+                           dep_owner, local)
+        except Skipped as why:
+            print(f'[{idx}] {short}: pulado — {why}', flush=True)
         except Deferred as dep:
             deferred.append(name)
             print(f'[{idx}] {short}: adiado — dep pesada de outro shard '
@@ -1185,7 +1204,10 @@ def build_shard(idx, local=False):
 
 
 def process_member(name, idx, tap, full, short, build_set, reusable, release,
-                   fragment, order_index, root_url, fps, dep_owner):
+                   fragment, order_index, root_url, fps, dep_owner,
+                   local=False):
+    if local and formula_info(full).get('installed'):
+        raise Skipped('já instalado nesta máquina; local não desinstala kegs')
     if name in build_set and not reusable[name]:
         # Deps resolvem pelo tap: members com bottle publicado despejam; os
         # que outro shard ainda compila são aguardados/adotados (ou, em último
