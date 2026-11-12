@@ -354,7 +354,7 @@ def combined_manifest(release, assets=None, ttl=600):
         return dict(cached)
     manifest = dict(load_manifest(release))
     for asset in assets:
-        if re.fullmatch(r'manifest-\d+\.json', asset['name']):
+        if re.fullmatch(r'manifest-(?:\d+|local)\.json', asset['name']):
             fetched = fetch_if_present(asset['browser_download_url'])
             if fetched:
                 manifest.update(json.loads(fetched))
@@ -370,7 +370,10 @@ def strip_bottle_block(source):
 
 
 def checks():
-    if os.environ.get('GITHUB_ACTIONS') != 'true':
+    # O modo local (PIPELINE_ALLOW_LOCAL=1) constrói numa máquina própria e
+    # publica no mesmo release; não desinstala kegs da máquina.
+    if (os.environ.get('GITHUB_ACTIONS') != 'true'
+            and os.environ.get('PIPELINE_ALLOW_LOCAL') != '1'):
         raise RuntimeError('Este programa remove pacotes do runner; execução local bloqueada.')
     if run('uname', '-m', capture=True).strip() != 'x86_64':
         raise RuntimeError('Arquitetura diferente de x86_64.')
@@ -780,7 +783,7 @@ def plan():
         legacy_fps = member_fps(order, graph, legacy_norm, file_owner)
         tables = [('manifest.json', manifest)]
         for asset in release_assets(release['id']):
-            if re.fullmatch(r'manifest-\d+\.json', asset['name']):
+            if re.fullmatch(r'manifest-(?:\d+|local)\.json', asset['name']):
                 fetched = fetch_if_present(asset['browser_download_url'])
                 if fetched:
                     tables.append((asset['name'], json.loads(fetched)))
@@ -1054,9 +1057,10 @@ def install_missing_deps(full, tap, order_index, release=None,
         installed = set(run('brew', 'list', '--formula', capture=True).split())
 
 
-def build_shard(idx):
+def build_shard(idx, local=False):
     checks()
     started = time.monotonic()
+    budget = None if local else BUILD_BUDGET_SECONDS
     owner, repository, tap = repo_tap()
     WORK.mkdir(exist_ok=True)
     retry('brew', 'update')
@@ -1066,7 +1070,13 @@ def build_shard(idx):
     fps = plan_data['fps']
     file_owner = plan_data['file_owner']
     build_set = set(plan_data['build_set'])
-    members = plan_data['shards'][idx]
+    if local:
+        # Máquina própria: assume o build_set inteiro na ordem da jornada,
+        # publicando no fragmento 'local' — o plan combina todos os fragmentos.
+        members = prioritize([[n for n in plan_data['order'] if n in build_set]],
+                             plan_data['graph'], build_set)[0]
+    else:
+        members = plan_data['shards'][idx]
     order_index = {short_name(n): i for i, n in enumerate(plan_data['order'])}
     dep_owner = {short_name(n): i for i, shard in enumerate(plan_data['shards'])
                  for n in shard}
@@ -1086,15 +1096,18 @@ def build_shard(idx):
                 and (done.get(dep_rb.stem) or {}).get('asset') not in asset_names):
             dep_rb.write_text(strip_bottle_block(source))
     link_own_tap(owner, repository, tap)
-    # Apenas VM descartável: evita satisfazer dependências com kegs de outro tap.
-    installed = run('brew', 'list', '--formula', capture=True).split()
-    if installed:
-        run('brew', 'uninstall', '--force', '--ignore-dependencies', *installed)
+    if not local:
+        # Apenas VM descartável: evita satisfazer dependências com kegs de
+        # outro tap. Na máquina do usuário isso destruiria o ambiente.
+        installed = run('brew', 'list', '--formula', capture=True).split()
+        if installed:
+            run('brew', 'uninstall', '--force', '--ignore-dependencies', *installed)
     fragment = {}
     failed = []
+    frag_name = 'manifest-local.json' if local else f'manifest-{idx}.json'
     out_dir = WORK / f'out-{idx}'
     out_dir.mkdir(exist_ok=True)
-    frag_path = out_dir / f'manifest-{idx}.json'
+    frag_path = out_dir / frag_name
     root_url = f'https://github.com/{repo()}/releases/download/{TAG}'
     deferred = []
 
@@ -1123,19 +1136,19 @@ def build_shard(idx):
         else:
             print(f'[{idx}] {short}: ok', flush=True)
         frag_path.write_text(json.dumps(fragment, indent=2))
-        upload_asset(release['id'], frag_path, f'manifest-{idx}.json')
+        upload_asset(release['id'], frag_path, frag_name)
 
     for name in members:
         if file_owner[short_name(name)] != name:
             continue
-        if time.monotonic() - started > BUILD_BUDGET_SECONDS:
+        if budget and time.monotonic() - started > budget:
             print(f'[{idx}] Orçamento de {BUILD_BUDGET_SECONDS // 3600}h '
                   'esgotado; restantes ficam para a próxima run', flush=True)
             break
         attempt(name)
     # Segunda passada: o dono pode ter publicado a dep pesada durante a run.
     for name in list(deferred):
-        if time.monotonic() - started > BUILD_BUDGET_SECONDS:
+        if budget and time.monotonic() - started > budget:
             break
         if file_owner[short_name(name)] != name:
             continue
@@ -1294,6 +1307,7 @@ def publish():
     write_aux_files(plan_data.get('aliases') or {}, plan_data.get('renames') or {})
     keep = {'plan.json', 'manifest.json'}
     keep.update(f'manifest-{i}.json' for i in range(SHARDS))
+    keep.add('manifest-local.json')
     keep.update(f'Formula-{s}.rb' for s in member_shorts)
     keep.update(entry['asset'] for entry in manifest.values() if entry.get('asset'))
     # Bottle de membro atual nunca é órfão: o Formula-*.rb promovido pode
@@ -1358,6 +1372,8 @@ def main():
         plan()
     elif command == 'build':
         build_shard(int(sys.argv[2]))
+    elif command == 'local':
+        build_shard(0, local=True)
     elif command == 'publish':
         publish()
     else:
