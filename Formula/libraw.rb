@@ -60,7 +60,7 @@ class Libraw < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "216d9246616bec3017d098e1ab2b5e504aaa0aed9b1edb6f8c7957663b6dbec1"
+    sha256 cellar: :any, tahoe: "54bfb8cc722b4b91e4a7fe12dd59702c41d2fd1fe0c930f3a8b5217ad15d5b4e"
   end
 
 end
