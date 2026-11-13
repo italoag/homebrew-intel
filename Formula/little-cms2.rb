@@ -38,7 +38,7 @@ class LittleCms2 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "c4e179620655fb8a9aff785e18ce9a47b7dc0d5a9e2a091182876fedbbd6404a"
+    sha256 cellar: :any, tahoe: "6671541225bc6eb42c1d959350909eebdda27134928590638b18a1b7764f4458"
   end
 
 end

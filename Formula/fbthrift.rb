@@ -102,7 +102,7 @@ class Fbthrift < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "b9ebca0cf6614e6e5ed2e4ba011311fbfb2dce381ffb76a3d738647be080cdc4"
+    sha256 cellar: :any, tahoe: "5d0c4ba7231da5f96a6c684fe328be7e7582922cda9c6db54cb29cac29702c76"
   end
 
 end

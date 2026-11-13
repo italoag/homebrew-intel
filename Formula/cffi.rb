@@ -56,7 +56,7 @@ class Cffi < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "6cb1dbf8d77d4d5b25c38f239f3410c4276fe95be10efb8fd96652ff2a6f1876"
+    sha256 cellar: :any_skip_relocation, tahoe: "4b1d8b17111c53202c1f7b54445b2aed99c3d0e22ee6ad684c4501d679620516"
   end
 
 end

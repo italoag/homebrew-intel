@@ -90,7 +90,7 @@ class Imagemagick < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "c6741fa9cdcfa92a01e28dc8bb911fbbd2977e301da764e0f15db1ac7f8a0abb"
+    sha256 tahoe: "e00f1dd5c0437eb4d68184b079f6f9ef9e69cce5b10d56cc13e533ec2dc8dabe"
   end
 
 end

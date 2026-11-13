@@ -166,7 +166,7 @@ class OpenjdkAT21 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "811278267cc1b690f3a9f2d62df25c2a9cf7cc8548a32282a72178ab40dffb14"
+    sha256 cellar: :any, tahoe: "58acff43a4c85ccc552d7d1280c30e695d906e9e203eee7c76857498eba0d396"
   end
 
 end

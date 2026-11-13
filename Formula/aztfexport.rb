@@ -32,7 +32,7 @@ class Aztfexport < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "cd1de952818de0fb10c5e1f5946fd9a2e69dd675249fb251238602e0d043402e"
+    sha256 cellar: :any_skip_relocation, tahoe: "439727a15070b53b1ab64d77dcbf10e0129b9ce783a312f57a7bde98af5c7eef"
   end
 
 end

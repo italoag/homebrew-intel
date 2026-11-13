@@ -29,7 +29,7 @@ class Upx < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "3e3698b6738f42482d504e878a064abff554d0301c01112628e4a5a44110e93e"
+    sha256 cellar: :any_skip_relocation, tahoe: "34d4c547a5b6203cfcbd3119d50c1482aa0516aeef82e2b82b8016da70c801ce"
   end
 
 end

@@ -49,7 +49,7 @@ class Lz4 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "aa702e63498a20f33b68be01f589bb844ba67ccaae2458acc9502c2d1b93c22d"
+    sha256 cellar: :any, tahoe: "418f07e330c4f0e0af83f6cb7b859b9703b5f5a7a161f20a70357b958766d8f2"
   end
 
 end

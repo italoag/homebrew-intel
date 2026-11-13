@@ -233,7 +233,7 @@ class Lcov < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "2091c44196d266d034009a4a76120d1e6ad09ca20bf658c3a763d23b74ee7bbf"
+    sha256 cellar: :any_skip_relocation, tahoe: "e96d7c91fb7ee5a43d0b1e488d2a224fe7ea64b0c3b78008ec8638816fcccc36"
   end
 
 end

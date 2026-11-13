@@ -70,7 +70,7 @@ class Folly < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "ceaead9e2c5c539cdbe6f986d55d90d627a5d9abb441f06b6d52b1e294015ee0"
+    sha256 cellar: :any, tahoe: "bc96288166e7f56d7362a13aab58caa6c5678d48a787debea19051ecc4c5d5af"
   end
 
 end

@@ -43,7 +43,7 @@ class Fmt < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "8473737048e466d93a8da3e15ec0cd323181c258375d5c45e4eac0ccff74a5c4"
+    sha256 cellar: :any, tahoe: "d934d864c4bc48f7cdaefa0cbe1361dcba3e2ee51f106dde134bbfe6b5fe0975"
   end
 
 end

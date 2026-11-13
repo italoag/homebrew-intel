@@ -43,7 +43,7 @@ class Webp < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "979bbfb98151fb8342ff5f75315b80730b3387256d1030b11c627ae98fef3633"
+    sha256 cellar: :any, tahoe: "c0250c8784452f300864a287f007459d49d3a7fb5e95efa60fc86551c6203863"
   end
 
 end

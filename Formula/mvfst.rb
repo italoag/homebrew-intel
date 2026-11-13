@@ -83,7 +83,7 @@ class Mvfst < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "67c91acacbb2718429f2efd4c730cd4e3d5e8428c30a298f91b74b6a1858c714"
+    sha256 cellar: :any, tahoe: "ef191550b010b722c170a58fa769300d0e99a2a1dc838733941a277389478511"
   end
 
 end
