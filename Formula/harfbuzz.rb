@@ -61,7 +61,7 @@ class Harfbuzz < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "135457c3f163b274f67fbc8f917f126e1dfa909329d1fdd1ff66979f4459c7b2"
+    sha256 cellar: :any, tahoe: "506e3100aecea6fde170a3ee86a2cb34478c72a35a9d9a82df6f14a8a85fc274"
   end
 
 end

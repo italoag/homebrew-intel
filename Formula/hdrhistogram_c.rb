@@ -46,7 +46,7 @@ class HdrhistogramC < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "afe259f4f08e8ac0463446f5cbd14fc2284b356fa75e3d68b25d9be6b989fdde"
+    sha256 cellar: :any, tahoe: "3d2ef746c3481816d50da0b3b7fee3e702d33af3badd85d4331f72726d0aa29e"
   end
 
 end

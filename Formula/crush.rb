@@ -72,7 +72,7 @@ class Crush < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "b044e839a9f881850fdd2b86dd1b0cefd47e812a208a378c45a96ec0f8d7cdda"
+    sha256 cellar: :any_skip_relocation, tahoe: "ac94f612af623f3499b224a4888ab97e61376fa6935a8e639222692b841fcb4f"
   end
 
 end

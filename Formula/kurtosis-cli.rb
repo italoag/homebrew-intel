@@ -5,13 +5,13 @@
 class KurtosisCli < Formula
   desc "CLI for managing Kurtosis environments."
   homepage "https://www.kurtosistech.com"
-  version "1.22.2"
+  version "1.23.0"
   license "Apache-2.0"
 
   on_macos do
     on_intel do
-      url "https://github.com/kurtosis-tech/kurtosis-cli-release-artifacts/releases/download/1.22.2/kurtosis-cli_1.22.2_darwin_amd64.tar.gz"
-      sha256 "495d560fcb950bd923c4be6d60a1a51a968d47ddf079a373bc270aaed10d771f"
+      url "https://github.com/kurtosis-tech/kurtosis-cli-release-artifacts/releases/download/1.23.0/kurtosis-cli_1.23.0_darwin_amd64.tar.gz"
+      sha256 "6918502f101c9f5b73c6f73cb48de0753cee6de6ffa9e83a2c1474b64f358896"
 
       def install
         bin.install "kurtosis"
@@ -21,8 +21,8 @@ class KurtosisCli < Formula
       end
     end
     on_arm do
-      url "https://github.com/kurtosis-tech/kurtosis-cli-release-artifacts/releases/download/1.22.2/kurtosis-cli_1.22.2_darwin_arm64.tar.gz"
-      sha256 "9a649cb21a4af932c012753f7b34242f015d956e58443c18b74411789d4379c8"
+      url "https://github.com/kurtosis-tech/kurtosis-cli-release-artifacts/releases/download/1.23.0/kurtosis-cli_1.23.0_darwin_arm64.tar.gz"
+      sha256 "fcb2f372e391049beef7b3593a3efb1d25c918eb7464a077c723c12b97f2d49b"
 
       def install
         bin.install "kurtosis"
@@ -36,8 +36,8 @@ class KurtosisCli < Formula
   on_linux do
     on_intel do
       if Hardware::CPU.is_64_bit?
-        url "https://github.com/kurtosis-tech/kurtosis-cli-release-artifacts/releases/download/1.22.2/kurtosis-cli_1.22.2_linux_amd64.tar.gz"
-        sha256 "789be2d263e3ba731b8bc99e7bf2162f58efa8d085e481f2aecfcccbe1b46734"
+        url "https://github.com/kurtosis-tech/kurtosis-cli-release-artifacts/releases/download/1.23.0/kurtosis-cli_1.23.0_linux_amd64.tar.gz"
+        sha256 "985bffafb6c76e6a6ed12c37a6b2d52b12fe0ccea659f93be4af1e9852b9bd4c"
 
         def install
           bin.install "kurtosis"
@@ -49,8 +49,8 @@ class KurtosisCli < Formula
     end
     on_arm do
       if Hardware::CPU.is_64_bit?
-        url "https://github.com/kurtosis-tech/kurtosis-cli-release-artifacts/releases/download/1.22.2/kurtosis-cli_1.22.2_linux_arm64.tar.gz"
-        sha256 "e97683699d581cc034145c86bc8db0752092c33b127f09c29903d1a86c4c58a1"
+        url "https://github.com/kurtosis-tech/kurtosis-cli-release-artifacts/releases/download/1.23.0/kurtosis-cli_1.23.0_linux_arm64.tar.gz"
+        sha256 "1a1c5eb356eadece5b6a8da9eec1a23bd1cb7f8fdb230d22e89c28b977b798fc"
 
         def install
           bin.install "kurtosis"
@@ -69,7 +69,7 @@ class KurtosisCli < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "77fd411e4bd998682074e7607bc2eea913d9f50ece7f2f61b1de90ef9ebdd7ca"
+    sha256 cellar: :any_skip_relocation, tahoe: "2f8d8924bb93e18c016e5dd40edd24e14bb148f36d40f56c31fa75081ee003be"
   end
 
 end

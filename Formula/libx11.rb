@@ -76,7 +76,7 @@ class Libx11 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "48cbde38349dde8b879210897a2766faefce1c71d1a62aa07619e3eee6be9ff7"
+    sha256 tahoe: "731e8236e34a058bc37a23f52cc5570e1c0608da452568ce004799d1b9833664"
   end
 
 end

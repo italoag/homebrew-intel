@@ -77,7 +77,7 @@ class Xxhash < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "fe3ea612bb7753e62d3b23cfe86108acd1f6438cc89983c96f980dd292f8fa36"
+    sha256 cellar: :any, tahoe: "05de66b4a6f2e733b789e75d3dff9247ad8196ae849d96ce9844786286c0da99"
   end
 
 end

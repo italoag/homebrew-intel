@@ -39,7 +39,7 @@ class Libxrender < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "88194c8f8b7c9d929cf6a3b539f0449d85e66c96113852112b0529652d9bbe1b"
+    sha256 cellar: :any, tahoe: "44ab473ab4b84e9e3539d33b6c0d1a76ad5312727b5bcb11cb96446f49a17b52"
   end
 
 end

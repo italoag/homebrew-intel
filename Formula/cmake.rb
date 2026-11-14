@@ -74,7 +74,7 @@ class Cmake < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "19389d246071c2b70b467a41408320307d9b928abadf539cba62684ad98a3473"
+    sha256 cellar: :any_skip_relocation, tahoe: "f3f709a9f680ce2e160432d8928d60631e61a6980bdde3fac888e05d74c51417"
   end
 
 end

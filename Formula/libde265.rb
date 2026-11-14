@@ -58,7 +58,7 @@ class Libde265 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "06b16d1f000ae82551350c071aa1fd98a768ea8dd3d56b498bfbdf1cb59d4b1b"
+    sha256 cellar: :any, tahoe: "52de06f03eb01a77cf4c8f8537fadfcf307c4b073ee672843d2b2503d406a5d4"
   end
 
 end

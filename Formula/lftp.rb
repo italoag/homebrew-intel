@@ -54,7 +54,7 @@ class Lftp < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "5897289434f4e4e89e0ba5eed8eeb49c05fdb697439a5964cdb047e114ca6da7"
+    sha256 tahoe: "10b94bb607477ac1eac31a080e79763e675172b8bf7b82649e12ca2a28937f34"
   end
 
 end
