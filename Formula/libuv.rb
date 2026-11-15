@@ -63,7 +63,7 @@ class Libuv < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "6dab0e524c5f38ddcb3890a8812658bf1b70bca5f9c490d50ee6d436556a08e0"
+    sha256 cellar: :any, tahoe: "1a89debe47fcf01140862e512f1da473b9edbb5e0c24fb7a84a8f20fbca06a66"
   end
 
 end

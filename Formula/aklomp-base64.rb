@@ -27,7 +27,7 @@ class AklompBase64 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "b8f974e85e988d9f47e716f8e1eef2d9de3124780f3e9512e3d7d326580fd997"
+    sha256 cellar: :any, tahoe: "45cc3f797ea860a5765090ad8b42f48dfd9bf3b9116a7c122c7fdcdf7fa3937f"
   end
 
 end

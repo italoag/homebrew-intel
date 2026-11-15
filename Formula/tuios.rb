@@ -1,8 +1,8 @@
 class Tuios < Formula
   desc "Terminal UI OS (Terminal Multiplexer)"
   homepage "https://tuios.dev/"
-  url "https://github.com/Gaurav-Gosain/tuios/archive/refs/tags/v0.12.1.tar.gz"
-  sha256 "11803b70c1853c8d328cf24f75ba49e0459c8589d2deb6279c52160865b69228"
+  url "https://github.com/Gaurav-Gosain/tuios/archive/refs/tags/v0.13.1.tar.gz"
+  sha256 "9f34163e076611002ff09780014d227d8b80efb0ad95dcd7bfa0e2c188971010"
   license "MIT"
   head "https://github.com/Gaurav-Gosain/tuios.git", branch: "main"
 
@@ -28,7 +28,7 @@ class Tuios < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "e6aa0e4b44164dbc3692e195438fe6567341fec06821332ee0cf131f27f2d4b3"
+    sha256 cellar: :any_skip_relocation, tahoe: "31021d308c862ee784b31f5a91ad3db0632f3a7683223ca0c04f4e711d9e0916"
   end
 
 end

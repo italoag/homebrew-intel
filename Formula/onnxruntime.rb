@@ -1,10 +1,10 @@
 class Onnxruntime < Formula
   desc "Cross-platform, high performance scoring engine for ML models"
   homepage "https://github.com/microsoft/onnxruntime"
-  url "https://github.com/microsoft/onnxruntime/archive/refs/tags/v1.31.1.tar.gz"
-  sha256 "92ffbf8b97872fd1e73c9eebdf3319d9a3b24919ae438d27db903b72ee08939e"
+  url "https://github.com/microsoft/onnxruntime/archive/refs/tags/v1.32.0.tar.gz"
+  sha256 "8bb6dde72d89509b8c014a440bf113505d86af99e8f143da3de1a3feb8132561"
   license "MIT"
-  compatibility_version 11
+  compatibility_version 12
 
   livecheck do
     url :stable
@@ -78,14 +78,6 @@ class Onnxruntime < Formula
       url "https://raw.githubusercontent.com/microsoft/onnxruntime/refs/tags/v#{LATEST_VERSION}/cmake/deps.txt"
       regex(%r{^psimd;.*/(\h+)\.zip}i)
     end
-  end
-
-  # Fix compatibility with newer ONNX types, upstream PR ref, https://github.com/microsoft/onnxruntime/pull/33259
-  patch do
-    url "https://github.com/microsoft/onnxruntime/commit/9be45798c9a3d17bdf6c29e623a9823cfee98547.patch?full_index=1"
-    sha256 "23aa70e50ae04fd67e563a5f81a9d387e7b068e0256f5fb1632b3744cc3b67ab"
-    type :unofficial
-    resolves "https://github.com/microsoft/onnxruntime/pull/33259"
   end
 
   deny_network_access!
@@ -202,7 +194,7 @@ class Onnxruntime < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "54bbe2a230c8ef988b7d8c50980c8e97f4d1071cab07c6a6d7048989830436e5"
+    sha256 cellar: :any, tahoe: "619880b927d169eba7649a19b746c022b8f344b53e798a5d0aeb31c86da4807d"
   end
 
 end

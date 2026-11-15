@@ -174,7 +174,8 @@ class PythonAT314 < Formula
       args << "--enable-framework=#{frameworks}"
       args << "--with-dtrace"
       args << "--with-dbmliborder=ndbm"
-      args << "--with-tail-call-interp"
+      # Tail calling needs LLVM 19, which Apple Clang is based on since 17.
+      args << "--with-tail-call-interp" if DevelopmentTools.clang_build_version >= 1700
 
       # Avoid linking to libgcc https://mail.python.org/pipermail/python-dev/2012-February/116205.html
       args << "MACOSX_DEPLOYMENT_TARGET=#{MacOS.version}"
@@ -560,7 +561,7 @@ class PythonAT314 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "d23c65f913e7538d5dfe5ec25905fdbdaae7c85f10d3d2e03610848b9a4e481f"
+    sha256 tahoe: "79f453fe6d238862452e92b823353c235d81bf502370af399cd7ab7fcf28e974"
   end
 
 end

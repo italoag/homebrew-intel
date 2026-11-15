@@ -1,8 +1,8 @@
 class Libffi < Formula
   desc "Portable Foreign Function Interface library"
   homepage "https://sourceware.org/libffi/"
-  url "https://github.com/libffi/libffi/releases/download/v3.8.0/libffi-3.8.0.tar.gz"
-  sha256 "7da3e2d9a171eb0a038f592ecad3ff2bb2550f3496d87b3b29ad0cf4430c0db4"
+  url "https://github.com/libffi/libffi/releases/download/v3.8.1/libffi-3.8.1.tar.gz"
+  sha256 "81e879c094cc5ec3186c48510c6385ac6b3e866192e8bc71a35245703757ee40"
   license "MIT"
   compatibility_version 1
 
@@ -11,15 +11,6 @@ class Libffi < Formula
     strategy :github_latest
   end
 
-  bottle do
-    sha256 cellar: :any, arm64_golden_gate: "4062a32e9c0d009c1302f7a9024a395f87c36130539e0274cf40cdaaf841f610"
-    sha256 cellar: :any, arm64_tahoe:       "a36f51cb6041fb1c5e70a6300a05a58dfc3b3503e621f83198731f1eaed63f2f"
-    sha256 cellar: :any, arm64_sequoia:     "ba141e26c8d3b55fa4534317c474b34d649355d93299e35aa33a6eebf60117f8"
-    sha256 cellar: :any, arm64_sonoma:      "a489eb46a45019e29156e0d9595dd986e6a39b6eb8d3b42130b30bc350734151"
-    sha256 cellar: :any, sonoma:            "0673ee23d31fd844c4da1fecc4d2de4e62c2da97f9253667eb7bdc0f7f0dc55e"
-    sha256 cellar: :any, arm64_linux:       "6ebba0706e38a192ea9c3bb4d814f2ab412387835e2eae2a16569928d47c4885"
-    sha256 cellar: :any, x86_64_linux:      "250d5150db65018e524595cae9de93f8d72ebe8a078bfde968eae51bdc1787fc"
-  end
 
   head do
     url "https://github.com/libffi/libffi.git", branch: "master"
@@ -91,4 +82,9 @@ class Libffi < Formula
     system ENV.cc, "-o", "closure", "closure.c", *(flags + ENV.cflags.to_s.split)
     system "./closure"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "b73139eed37be5c6a8d83cd9f820190abaa0f6b6364d4f2840258448594bbee9"
+  end
+
 end
