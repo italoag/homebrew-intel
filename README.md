@@ -96,8 +96,9 @@ PIPELINE_ALLOW_LOCAL=1 GITHUB_TOKEN=<token com escopo repo> \
   python3 scripts/pipeline.py local
 ```
 
-- Assume o `build_set` inteiro na ordem da jornada (pesados primeiro,
-  profundidade topológica depois) e pula o que já foi publicado.
+- Assume o `build_set` inteiro na ordem topológica (pesados primeiro entre os
+  disponíveis), pula o que já foi publicado e adota bottles que o CI publicar
+  durante a execução.
 - **Não desinstala os kegs da máquina** (o CI faz isso por ser VM descartável);
   as deps que faltarem são instaladas pelo próprio build.
 - Publica bottle, `Formula-*.rb` e o fragmento a cada membro — o CI e a
@@ -108,7 +109,7 @@ PIPELINE_ALLOW_LOCAL=1 GITHUB_TOKEN=<token com escopo repo> \
 
 ## Como funciona
 
-O workflow tem três jobs: **plan** → **build** (matrix de 4 shards) → **publish**.
+O workflow tem três jobs: **plan** → **build** (matrix de 5 shards) → **publish**.
 
 1. `plan` resolve recursivamente dependências diretas de runtime, build e testes
    em homebrew/core e nas taps de `taps.txt`. Detecta ciclos, remove
@@ -119,10 +120,12 @@ O workflow tem três jobs: **plan** → **build** (matrix de 4 shards) → **pub
    Intel, a fórmula é compilada.
 3. Cada membro recebe um fingerprint (fonte transformada + fingerprint das
    deps). Mudança em uma dep invalida os dependentes em cascata — só o que
-   mudou entra no build_set, particionado em 4 shards com afinidade de deps.
-4. Cada shard `build` instala deps despejando bottles já publicados (do release
-   ou adotados de shards irmãos) e compila o que falta localmente. Ao concluir
-   cada membro, publica na hora o `.bottle.tar.gz`, o `Formula-<nome>.rb` e seu
+   mudou entra no build_set, particionado em 5 shards com afinidade de deps.
+4. **Uma fórmula é compilada por um único shard.** Dentro do shard a ordem é
+   topológica (dep vira bottle antes do dependente); deps que pertencem a
+   outro shard nunca são compiladas localmente: o shard adota o bottle quando
+   o dono publica ou adia o membro para a segunda passada. Ao concluir cada
+   membro, publica na hora o `.bottle.tar.gz`, o `Formula-<nome>.rb` e seu
    fragmento de manifesto no release rolante `tahoe-bottles` — o checkpoint
    faz qualquer trabalho concluído sobreviver a timeout ou falha do shard.
 5. Reexecutar um job falho ou disparar nova run continua de onde parou:
@@ -144,10 +147,11 @@ O workflow tem três jobs: **plan** → **build** (matrix de 4 shards) → **pub
   helpers externos, requisitos exclusivos de ARM ou APIs específicas de
   homebrew/core podem exigir adaptação manual. Não há promessa de que toda
   fórmula continuará compilando em Intel. Falha não promove o snapshot.
-- O primeiro build ainda é grande: shards dividem o trabalho em 4 runners e
-  deps compartilhadas podem ser compiladas em mais de um shard (duplicação
-  segura; só o dono publica). Uma fórmula que sozinha exceda 360 minutos
-  (ex.: LLVM em hardware lento) continua sendo o limite duro do job.
+- O primeiro build ainda é grande: shards dividem o trabalho em 5 runners e cada
+  fórmula é compilada por **um** shard — os demais adotam o bottle publicado ou
+  adiam o membro, então uma dep cara não é recompilada em paralelo. Uma fórmula
+  que sozinha exceda 360 minutos (ex.: LLVM em hardware lento) continua sendo o
+  limite duro do job.
 - O release `tahoe-bottles` é rolante e acumula assets entre runs — é o
   mecanismo de retomada. Não apague o release nem assets referenciados no
   manifesto; o publish remove sozinho o que ficou órfão.
