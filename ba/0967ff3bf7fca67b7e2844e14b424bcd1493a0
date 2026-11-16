@@ -1,0 +1,23 @@
+scripts/pipeline.py
+  s_a6c2d66b4b0258::t_8350e03282dc93 1104-1106,1109-1111
+scripts/test_pipeline.py
+  s_a6c2d66b4b0258::t_2a18f5303219ce 495-508
+.github/workflows/bottles.yml
+  s_a6c2d66b4b0258::t_44aec617c36f27 57-64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ba0967ff3bf7fca67b7e2844e14b424bcd1493a0",
+  "prompts": {},
+  "sessions": {
+    "s_a6c2d66b4b0258": {
+      "agent_id": {
+        "tool": "windsurf",
+        "id": "malleable-nigella",
+        "model": "unknown"
+      },
+      "human_author": "Italo A. G. <182202+italoag@users.noreply.github.com>"
+    }
+  }
+}
