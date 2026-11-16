@@ -504,10 +504,15 @@ def bottle_assets(source, short):
 
 
 def bottle_block_missing(source, short, asset_names):
-    # O .rb aponta para um bottle que não existe no release? Bloco sem url
-    # deriva a URL da versão atual: graft de um bloco antigo sobre fonte nova
-    # (z3 5.4.0 -> 5.4.1) gera 404 e cada shard cai para compilar a fórmula —
-    # justamente a duplicação que o dono único deveria evitar.
+    # O .rb aponta para um bottle NOSSO que não existe no release? Bloco sem
+    # url deriva a URL da versão atual: graft de um bloco antigo sobre fonte
+    # nova (z3 5.4.0 -> 5.4.1) gera 404 e cada shard cai para compilar a
+    # fórmula — justamente a duplicação que o dono único deveria evitar.
+    # Bottle de terceiro (fórmula reutilizada, ghcr.io) não é nosso asset e
+    # por definição não estaria em asset_names: não há o que validar.
+    block = re.search(r'(?ms)^  bottle do\n(.*?)^  end\n', source)
+    if not block or f'releases/download/{TAG}' not in block.group(1):
+        return False
     assets = bottle_assets(source, short)
     return bool(assets) and not (assets & set(asset_names))
 
@@ -1275,11 +1280,10 @@ def build_shard(idx, local=False):
     # (órfão de publish anterior ou dep que outro shard ainda não publicou):
     # sem o bloco bottle o brew compila da fonte em vez de falhar no 404 — e
     # um 404 faz cada shard compilar a mesma fórmula por conta própria.
-    our_bottles = f'releases/download/{TAG}'
     for dep_rb in (TAP_ROOT / 'Formula').glob('*.rb'):
         source = dep_rb.read_text()
-        if (our_bottles in source and 'bottle do' in source
-                and bottle_block_missing(source, dep_rb.stem, asset_names)):
+        if 'bottle do' in source and bottle_block_missing(source, dep_rb.stem,
+                                                          asset_names):
             dep_rb.write_text(strip_bottle_block(source))
     link_own_tap(owner, repository, tap)
     if not local:
@@ -1487,8 +1491,7 @@ def publish():
             # versão da fórmula e a URL derivada mudou)? Publicar o .rb assim
             # quebraria todo install com 404 e cada shard compilaria da fonte:
             # remove o bloco e o cliente compila até o rebuild completar.
-            if (f'releases/download/{TAG}' in grafted and 'bottle do' in grafted
-                    and bottle_block_missing(grafted, short, assets)):
+            if bottle_block_missing(grafted, short, assets):
                 grafted = strip_bottle_block(grafted)
             if grafted != source:
                 # Propaga o formato novo (deps qualificadas) mantendo o bottle

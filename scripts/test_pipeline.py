@@ -283,7 +283,7 @@ end
                     raise p.subprocess.CalledProcessError(1, 'brew')
                 return {'full_name': 'jq', 'bottle': {}, 'aliases': [], 'oldnames': []}
 
-            with patch.object(p, 'ROOT', root), \
+            with patch.object(p, 'ROOT', root), patch.object(p, 'TAP_ROOT', root), \
                  patch.object(p, 'formula_info', side_effect=info), \
                  patch.object(p, 'deps', return_value=[]), \
                  patch.object(p, 'run', return_value='class Jq < Formula\nend\n'):
@@ -415,13 +415,22 @@ class BottleReferenceTests(unittest.TestCase):
 
     def test_explicit_bottle_url_is_validated_by_basename(self):
         source = ('class P < Formula\n  url "https://e.org/p-1.0.tar.gz"\n'
-                  '  bottle do\n    url "https://ghcr.io/v2/p-1.0.tahoe.bottle.tar.gz"\n'
+                  '  bottle do\n'
+                  '    root_url "https://github.com/u/homebrew-intel/releases/download/tahoe-bottles"\n'
+                  '    url "https://github.com/u/homebrew-intel/releases/download/tahoe-bottles/p-1.0.tahoe.bottle.tar.gz"\n'
                   '  end\nend\n')
         self.assertEqual(p.bottle_assets(source, 'p'),
                          {'p-1.0.tahoe.bottle.tar.gz'})
         self.assertTrue(p.bottle_block_missing(source, 'p', {'other.tar.gz'}))
         self.assertFalse(p.bottle_block_missing(
             source, 'p', {'p-1.0.tahoe.bottle.tar.gz'}))
+
+    def test_upstream_bottle_is_never_considered_missing(self):
+        # Fórmula reutilizada mantém o bottle do mantenedor (ghcr.io): ele não
+        # é asset do nosso release e validá-lo reprovaria todo pour.
+        source = ('class P < Formula\n  url "https://e.org/p-1.0.tar.gz"\n'
+                  '  bottle do\n    sha256 cellar: :any, tahoe: "abc"\n  end\nend\n')
+        self.assertFalse(p.bottle_block_missing(source, 'p', set()))
 
 
 class SingleOwnerBuildTests(unittest.TestCase):
