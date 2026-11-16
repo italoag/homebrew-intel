@@ -1,0 +1,22 @@
+scripts/bootstrap-build-host.sh
+  s_a6c2d66b4b0258::t_5870599569bdda 1-73
+README.md
+  s_a6c2d66b4b0258::t_b4f938ee3fc733 110-140
+  s_a6c2d66b4b0258::t_f17242ae64d5b1 141
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5557cf875fd2ac3c494019d5dc50c3a3cb99630e",
+  "prompts": {},
+  "sessions": {
+    "s_a6c2d66b4b0258": {
+      "agent_id": {
+        "tool": "windsurf",
+        "id": "malleable-nigella",
+        "model": "unknown"
+      },
+      "human_author": "Italo A. G. <182202+italoag@users.noreply.github.com>"
+    }
+  }
+}
