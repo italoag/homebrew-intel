@@ -107,6 +107,38 @@ PIPELINE_ALLOW_LOCAL=1 GITHUB_TOKEN=<token com escopo repo> \
 - Apple Silicon só serve via Homebrew x86_64 sob Rosetta 2 (`uname -m` precisa
   responder `x86_64`); um Mac Intel nativo é o cenário suportado.
 
+### Máquina limpa (volume APFS separado)
+
+Numa máquina já em uso, um segundo macOS 26 no mesmo disco dá um `/usr/local`
+próprio — sem kegs conflitantes, que é o que impede o `llvm` de compilar — e
+não toca na instalação atual:
+
+1. Faça backup (Time Machine). Os dois sistemas dividem o mesmo espaço livre:
+   reserve **≥ 150 GB** para o build (`llvm` + cache do brew).
+2. Disk Utility → selecione o container do disco interno → **+ Volume** →
+   APFS, nome `Build Tahoe`. Adicionar volume não reparticiona nem apaga nada.
+3. Reinicie com **⌘R** (Recovery) → **Reinstalar macOS Tahoe** → escolha o
+   volume `Build Tahoe`.
+4. No primeiro boot crie o usuário (ex.: `builder`), clone o repositório e
+   rode o bootstrap, que instala CLT e Homebrew em `/usr/local` e valida os
+   pré-requisitos do pipeline:
+
+   ```bash
+   git clone git@github.com:italoag/homebrew-intel.git
+   cd homebrew-intel
+   scripts/bootstrap-build-host.sh
+   GITHUB_TOKEN=<PAT com Contents: read/write> \
+     PIPELINE_ALLOW_LOCAL=1 python3 scripts/pipeline.py local
+   ```
+
+Para alternar entre os sistemas: **⌥** no boot (ou Ajustes → Disco de
+Inicialização).
+
+Não vale a pena para isso uma instância EC2 Mac: a AWS só publica AMI do
+macOS 26 para Apple silicon, e o `mac1.metal` (único Intel) é um Mac mini 2018
+que para no Sequoia — além do mínimo de 24h por Dedicated Host, que impede
+"subir, buildar e encerrar" barato.
+
 ## Como funciona
 
 O workflow tem três jobs: **plan** → **build** (matrix de 5 shards) → **publish**.
