@@ -1,0 +1,51 @@
+scripts/test_pipeline.py
+  s_a6c2d66b4b0258::t_f54d15e75664f7 384-429,431,433-437,439-443,447-450,453-456,461,463-464,466-469,484-497,500-507,510-527
+  s_a6c2d66b4b0258::t_f0afcfba698505 430,432,438,444-446,451-452,457-460,462,465
+  s_a6c2d66b4b0258::t_825c9d3f4b561e 470-483
+  s_a6c2d66b4b0258::t_81a3150f8e0f51 9
+  s_a6c2d66b4b0258::t_70a13dcecdecb9 498-499,508-509
+scripts/pipeline.py
+  s_a6c2d66b4b0258::t_cf2b2c90da57de 1155
+  s_a6c2d66b4b0258::t_ce0c92c436a233 1189-1190,1204-1209
+  s_a6c2d66b4b0258::t_fef1d6d98405f6 1341-1342,1348
+  s_a6c2d66b4b0258::t_0ea8ff065bfebb 126-131,149-151,156-163,166-171
+  s_a6c2d66b4b0258::t_4caf1a4346ef21 1148-1149
+  s_a6c2d66b4b0258::t_bc63fbed1ac49e 1299-1302,1304,1313
+  s_a6c2d66b4b0258::t_0d746594b50f96 1318-1319
+  s_a6c2d66b4b0258::t_1b4b84cb509b11 1374-1376
+  s_a6c2d66b4b0258::t_7c0f0b4457ce78 57-60
+  s_a6c2d66b4b0258::t_987c1c21ebc819 465-514
+  s_a6c2d66b4b0258::t_e40946fea44008 1186,1210-1211
+  s_a6c2d66b4b0258::t_af7372276f341e 1203,1212
+  s_a6c2d66b4b0258::t_f995799a638a57 98-123,148,164-165
+  s_a6c2d66b4b0258::t_1611a90378774b 1136-1141
+  s_a6c2d66b4b0258::t_f13a28bf22bf96 1378-1379,1429
+  s_a6c2d66b4b0258::t_cc5f48ec48a03f 1079-1085
+  s_a6c2d66b4b0258::t_39b4cb0f3f01aa 136,138,140-142
+  s_a6c2d66b4b0258::t_692b90720ec607 133,137,139,143-144,152-155
+  s_a6c2d66b4b0258::t_49f52fc8e0be0d 1142,1145-1147,1165-1178
+  s_a6c2d66b4b0258::t_cdc6aa81669c51 1276-1277,1282
+  s_a6c2d66b4b0258::t_ff82624b138681 1356-1357
+  s_a6c2d66b4b0258::t_a14e71a645e28e 1486-1492
+  s_a6c2d66b4b0258::t_6cceb1d5e3aa48 1430
+README.md
+  s_a6c2d66b4b0258::t_e6beaeb04d0857 99-101
+  s_a6c2d66b4b0258::t_d2bcd14a6c92c7 150-154
+  s_a6c2d66b4b0258::t_f8b62a38913ac8 112,123-128
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0896769e2c1ec2dcb664cca7927fee983cf21d75",
+  "prompts": {},
+  "sessions": {
+    "s_a6c2d66b4b0258": {
+      "agent_id": {
+        "tool": "windsurf",
+        "id": "malleable-nigella",
+        "model": "unknown"
+      },
+      "human_author": "Italo A. G. <182202+italoag@users.noreply.github.com>"
+    }
+  }
+}
