@@ -54,6 +54,14 @@ jobs:
           if ! xcrun --find metal >/dev/null 2>&1; then
             sudo xcodebuild -downloadComponent MetalToolchain
           fi
+      - name: Ensure prefix dirs exist
+        # O postinstall do texinfo faz mkpath em /usr/local/libexec, que não
+        # existe na imagem do runner e não é gravável: o install falha depois
+        # de já ter despejado o bottle, e derruba em cascata emacs, gnutls,
+        # gnupg, gpgmepp e notmuch.
+        run: |
+          sudo mkdir -p /usr/local/libexec /usr/local/share/info
+          sudo chown -R "$(whoami)" /usr/local/libexec /usr/local/share/info
       - name: Build and publish shard ${{ matrix.shard }} members
         env:
           GITHUB_TOKEN: ${{ github.token }}

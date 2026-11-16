@@ -492,6 +492,20 @@ class SingleOwnerBuildTests(unittest.TestCase):
                 self.assertEqual(
                     p.missing_bottles('italoag/intel/x', 'italoag/intel'), ['z3'])
 
+    def test_link_retry_matches_keg_with_revision(self):
+        # texinfo 7.3 com revision 1 instala o keg como "7.3_1": comparar só
+        # com versions.stable nunca casa e o retry de link não acontece.
+        info = {'versions': {'stable': '7.3'}, 'revision': 1,
+                'installed': [{'version': '7.3_1'}]}
+        with patch.object(p, 'formula_info', return_value=info):
+            self.assertTrue(p.stable_version_installed('u/intel/texinfo'))
+        info['installed'] = [{'version': '7.3'}]
+        with patch.object(p, 'formula_info', return_value=info):
+            self.assertTrue(p.stable_version_installed('u/intel/texinfo'))
+        info['installed'] = [{'version': '7.2'}]
+        with patch.object(p, 'formula_info', return_value=info):
+            self.assertFalse(p.stable_version_installed('u/intel/texinfo'))
+
     def test_wait_is_bounded_by_the_shard_deadline(self):
         # A segunda passada espera o dono publicar, mas nunca além do
         # orçamento do shard (o job morre em 6h).

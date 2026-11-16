@@ -1101,10 +1101,14 @@ def keg_installed(short):
 
 def stable_version_installed(full):
     # Keg de versão antiga não pode mascarar falha de build: o retry de link
-    # só vale quando a versão da fórmula está de fato instalada.
+    # só vale quando a versão da fórmula está de fato instalada. O keg grava
+    # versão e revisão juntas (texinfo 7.3 com revision 1 -> "7.3_1"), então
+    # comparar só com versions.stable nunca casa e o retry não acontece.
     info = formula_info(full)
     stable = (info.get('versions') or {}).get('stable')
-    return any(item.get('version') == stable
+    revision = info.get('revision')
+    expected = f'{stable}_{revision}' if revision else stable
+    return any(item.get('version') in (stable, expected)
                for item in (info.get('installed') or []))
 
 
