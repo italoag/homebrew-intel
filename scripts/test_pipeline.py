@@ -453,7 +453,7 @@ class SingleOwnerBuildTests(unittest.TestCase):
         # z3 está no build_set e ainda não foi publicado: nenhum shard pode
         # compilá-lo por conta própria (era o que duplicava o build em dois).
         outcome, install, wait = self.run_install(published=False)
-        self.assertEqual(outcome, ('deferred', 'z3'))
+        self.assertEqual(outcome, ('deferred', 'z3 ainda não publicada'))
         install.assert_not_called()
         wait.assert_called_once()
 
@@ -475,6 +475,22 @@ class SingleOwnerBuildTests(unittest.TestCase):
         self.assertEqual(outcome, 'ok')
         wait.assert_not_called()
         install.assert_called_once_with('--ignore-dependencies', 'u/intel/z3')
+
+    def test_dependency_without_bottle_defers_instead_of_failing(self):
+        # --build-bottle recusa o install quando a dep não tem bottle (o caso
+        # llhttp/z3/llvm): adiar preserva a run em vez de marcá-la como falha.
+        with tempfile.TemporaryDirectory() as tmp:
+            formula_dir = Path(tmp) / 'Formula'
+            formula_dir.mkdir()
+            (formula_dir / 'z3.rb').write_text(
+                'class Z3 < Formula\n  url "x"\nend\n')
+            (formula_dir / 'openssl.rb').write_text(
+                'class Openssl < Formula\n  url "x"\n  bottle do\n  end\nend\n')
+            deps = 'italoag/intel/z3\nitaloag/intel/openssl\nhomebrew/core/jq\n'
+            with patch.object(p, 'TAP_ROOT', Path(tmp)), \
+                 patch.object(p, 'run', return_value=deps):
+                self.assertEqual(
+                    p.missing_bottles('italoag/intel/x', 'italoag/intel'), ['z3'])
 
     def test_wait_is_bounded_by_the_shard_deadline(self):
         # A segunda passada espera o dono publicar, mas nunca além do

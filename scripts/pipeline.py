@@ -1123,6 +1123,23 @@ def has_test_block(short):
     return re.search(r'^\s*test do\b', source, re.M) is not None
 
 
+def missing_bottles(full, tap):
+    # --build-bottle recusa o install quando alguma dep não tem bottle
+    # ("cannot be installed from bottles and must be built from source") —
+    # dep nunca publicada, ou cujo bloco saiu por asset ausente. Falhar aqui
+    # perde a run inteira do membro; adiar deixa a dep sair pelo dono.
+    missing = []
+    for dep in run('brew', 'deps', '--formula', '--full-name', '--include-build',
+                   '--include-test', full, capture=True).split():
+        if not dep.startswith(tap + '/'):
+            continue  # dep do core sempre tem bottle
+        short = dep.split('/')[-1]
+        formula = TAP_ROOT / 'Formula' / (short + '.rb')
+        if formula.is_file() and 'bottle do' not in formula.read_text():
+            missing.append(short)
+    return missing
+
+
 def brew_install(*args, cmd='install'):
     # A imagem do runner já tem binários em /usr/local/bin (aws, azcopy...) que
     # conflitam com brew link: o keg é construído, o install sai com erro só
@@ -1214,7 +1231,7 @@ def install_missing_deps(full, tap, order_index, release=None,
             # enquanto o dono publicava o mesmo bottle.
             if not wait_for_publish(release, dep_short,
                                     timeout=wait_left(wait_deadline)):
-                raise Deferred(dep_short)
+                raise Deferred(f'{dep_short} ainda não publicada')
         try:
             brew_install('--ignore-dependencies', tap + '/' + dep_short)
         except subprocess.CalledProcessError:
@@ -1319,8 +1336,7 @@ def build_shard(idx, local=False):
             print(f'[{idx}] {short}: pulado — {why}', flush=True)
         except Deferred as dep:
             deferred.append(name)
-            print(f'[{idx}] {short}: adiado — dep de outro build ainda '
-                  f'pendente: {dep}', flush=True)
+            print(f'[{idx}] {short}: adiado — {dep}', flush=True)
         except Exception as err:
             # Falha isola o membro: ele fica pendente e o shard segue — todo o
             # trabalho publicado sobrevive e o re-run refaz só os falhos.
@@ -1382,11 +1398,16 @@ def process_member(name, idx, tap, full, short, build_set, reusable, release,
         install_missing_deps(full, tap, order_index, release,
                              {short_name(n) for n in build_set}, wait_deadline)
         tab = formula_info(full).get('installed') or []
-        if tab and not all(item.get('poured_from_bottle') for item in tab):
+        if not local and tab and not all(item.get('poured_from_bottle')
+                                        for item in tab):
             # Já foi compilado como dep de outro membro: refaz com test deps.
             # (reinstall não aceita --ignore-dependencies; uninstall+install
-            # equivale e evita o auto-deadlock da travagem de deps.)
+            # equivale e evita o auto-deadlock da travagem de deps.) No modo
+            # local nada é desinstalado: um keg da máquina nunca é tocado.
             run('brew', 'uninstall', '--force', '--ignore-dependencies', full)
+        missing = missing_bottles(full, tap)
+        if missing:
+            raise Deferred('sem bottle para: ' + ', '.join(sorted(missing)))
         # Sem --ignore-dependencies: o flag chega ao filho de build e zera
         # HOMEBREW_DEPENDENCIES (build.rb retorna antes de expand_deps) — o
         # superenv fica sem os opt_bin/pkgconfig das deps e compilações morrem
