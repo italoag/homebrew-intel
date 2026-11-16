@@ -4,7 +4,7 @@ class AdaUrl < Formula
   url "https://github.com/ada-url/ada/archive/refs/tags/v4.0.0.tar.gz"
   sha256 "6d6c7ef7dd2e329320d34eb2ab29ccdc879ee3935af9dfb894a6640e58dc381d"
   license any_of: ["Apache-2.0", "MIT"]
-  revision 1
+  revision 2
   compatibility_version 2
   head "https://github.com/ada-url/ada.git", branch: "main"
 
@@ -81,7 +81,7 @@ class AdaUrl < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "fe15df3745529e1efa522f217bbe758aa78050d9d3f4f0a46e069f2802e11945"
+    sha256 cellar: :any, tahoe: "1f22fe64864ab61efa2bb343e91e99e55427f8db466d4149d5275fe75f7a74f8"
   end
 
 end

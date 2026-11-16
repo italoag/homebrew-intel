@@ -96,9 +96,8 @@ PIPELINE_ALLOW_LOCAL=1 GITHUB_TOKEN=<token com escopo repo> \
   python3 scripts/pipeline.py local
 ```
 
-- Assume o `build_set` inteiro na ordem topológica (pesados primeiro entre os
-  disponíveis), pula o que já foi publicado e adota bottles que o CI publicar
-  durante a execução.
+- Assume o `build_set` inteiro na ordem da jornada (pesados primeiro,
+  profundidade topológica depois) e pula o que já foi publicado.
 - **Não desinstala os kegs da máquina** (o CI faz isso por ser VM descartável);
   as deps que faltarem são instaladas pelo próprio build.
 - Publica bottle, `Formula-*.rb` e o fragmento a cada membro — o CI e a
@@ -107,41 +106,9 @@ PIPELINE_ALLOW_LOCAL=1 GITHUB_TOKEN=<token com escopo repo> \
 - Apple Silicon só serve via Homebrew x86_64 sob Rosetta 2 (`uname -m` precisa
   responder `x86_64`); um Mac Intel nativo é o cenário suportado.
 
-### Máquina limpa (volume APFS separado)
-
-Numa máquina já em uso, um segundo macOS 26 no mesmo disco dá um `/usr/local`
-próprio — sem kegs conflitantes, que é o que impede o `llvm` de compilar — e
-não toca na instalação atual:
-
-1. Faça backup (Time Machine). Os dois sistemas dividem o mesmo espaço livre:
-   reserve **≥ 150 GB** para o build (`llvm` + cache do brew).
-2. Disk Utility → selecione o container do disco interno → **+ Volume** →
-   APFS, nome `Build Tahoe`. Adicionar volume não reparticiona nem apaga nada.
-3. Reinicie com **⌘R** (Recovery) → **Reinstalar macOS Tahoe** → escolha o
-   volume `Build Tahoe`.
-4. No primeiro boot crie o usuário (ex.: `builder`), clone o repositório e
-   rode o bootstrap, que instala CLT e Homebrew em `/usr/local` e valida os
-   pré-requisitos do pipeline:
-
-   ```bash
-   git clone git@github.com:italoag/homebrew-intel.git
-   cd homebrew-intel
-   scripts/bootstrap-build-host.sh
-   GITHUB_TOKEN=<PAT com Contents: read/write> \
-     PIPELINE_ALLOW_LOCAL=1 python3 scripts/pipeline.py local
-   ```
-
-Para alternar entre os sistemas: **⌥** no boot (ou Ajustes → Disco de
-Inicialização).
-
-Não vale a pena para isso uma instância EC2 Mac: a AWS só publica AMI do
-macOS 26 para Apple silicon, e o `mac1.metal` (único Intel) é um Mac mini 2018
-que para no Sequoia — além do mínimo de 24h por Dedicated Host, que impede
-"subir, buildar e encerrar" barato.
-
 ## Como funciona
 
-O workflow tem três jobs: **plan** → **build** (matrix de 5 shards) → **publish**.
+O workflow tem três jobs: **plan** → **build** (matrix de 4 shards) → **publish**.
 
 1. `plan` resolve recursivamente dependências diretas de runtime, build e testes
    em homebrew/core e nas taps de `taps.txt`. Detecta ciclos, remove
@@ -152,12 +119,10 @@ O workflow tem três jobs: **plan** → **build** (matrix de 5 shards) → **pub
    Intel, a fórmula é compilada.
 3. Cada membro recebe um fingerprint (fonte transformada + fingerprint das
    deps). Mudança em uma dep invalida os dependentes em cascata — só o que
-   mudou entra no build_set, particionado em 5 shards com afinidade de deps.
-4. **Uma fórmula é compilada por um único shard.** Dentro do shard a ordem é
-   topológica (dep vira bottle antes do dependente); deps que pertencem a
-   outro shard nunca são compiladas localmente: o shard adota o bottle quando
-   o dono publica ou adia o membro para a segunda passada. Ao concluir cada
-   membro, publica na hora o `.bottle.tar.gz`, o `Formula-<nome>.rb` e seu
+   mudou entra no build_set, particionado em 4 shards com afinidade de deps.
+4. Cada shard `build` instala deps despejando bottles já publicados (do release
+   ou adotados de shards irmãos) e compila o que falta localmente. Ao concluir
+   cada membro, publica na hora o `.bottle.tar.gz`, o `Formula-<nome>.rb` e seu
    fragmento de manifesto no release rolante `tahoe-bottles` — o checkpoint
    faz qualquer trabalho concluído sobreviver a timeout ou falha do shard.
 5. Reexecutar um job falho ou disparar nova run continua de onde parou:
@@ -179,11 +144,10 @@ O workflow tem três jobs: **plan** → **build** (matrix de 5 shards) → **pub
   helpers externos, requisitos exclusivos de ARM ou APIs específicas de
   homebrew/core podem exigir adaptação manual. Não há promessa de que toda
   fórmula continuará compilando em Intel. Falha não promove o snapshot.
-- O primeiro build ainda é grande: shards dividem o trabalho em 5 runners e cada
-  fórmula é compilada por **um** shard — os demais adotam o bottle publicado ou
-  adiam o membro, então uma dep cara não é recompilada em paralelo. Uma fórmula
-  que sozinha exceda 360 minutos (ex.: LLVM em hardware lento) continua sendo o
-  limite duro do job.
+- O primeiro build ainda é grande: shards dividem o trabalho em 4 runners e
+  deps compartilhadas podem ser compiladas em mais de um shard (duplicação
+  segura; só o dono publica). Uma fórmula que sozinha exceda 360 minutos
+  (ex.: LLVM em hardware lento) continua sendo o limite duro do job.
 - O release `tahoe-bottles` é rolante e acumula assets entre runs — é o
   mecanismo de retomada. Não apague o release nem assets referenciados no
   manifesto; o publish remove sozinho o que ficou órfão.

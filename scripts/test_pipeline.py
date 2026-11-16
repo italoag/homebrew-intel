@@ -6,7 +6,6 @@ import json
 import os
 from pathlib import Path
 import tempfile
-import time
 import unittest
 from unittest.mock import patch
 
@@ -283,7 +282,7 @@ end
                     raise p.subprocess.CalledProcessError(1, 'brew')
                 return {'full_name': 'jq', 'bottle': {}, 'aliases': [], 'oldnames': []}
 
-            with patch.object(p, 'ROOT', root), patch.object(p, 'TAP_ROOT', root), \
+            with patch.object(p, 'ROOT', root), \
                  patch.object(p, 'formula_info', side_effect=info), \
                  patch.object(p, 'deps', return_value=[]), \
                  patch.object(p, 'run', return_value='class Jq < Formula\nend\n'):
@@ -379,175 +378,6 @@ end
                 with self.assertRaisesRegex(SystemExit, 'Bottle do snapshot ausente'):
                     client.main()
                 install.assert_not_called()
-
-
-Z3_SOURCE = '''class Z3 < Formula
-  desc "High-performance theorem prover"
-  url "https://github.com/Z3Prover/z3/archive/refs/tags/z3-5.4.1.tar.gz"
-  sha256 "abc"
-  bottle do
-    root_url "https://github.com/u/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "89a6f824"
-  end
-end
-'''
-
-
-class BottleReferenceTests(unittest.TestCase):
-    def test_formula_version_from_explicit_and_url(self):
-        self.assertEqual(p.formula_version(Z3_SOURCE), '5.4.1')
-        explicit = 'class P < Formula\n  version "2.3"\n  url "https://e.org/p.tgz"\nend\n'
-        self.assertEqual(p.formula_version(explicit), '2.3')
-        self.assertIsNone(p.formula_version('class N < Formula\n  head "x"\nend\n'))
-
-    def test_bottle_block_missing_detects_version_drift(self):
-        # Bloco sem url deriva o nome da versão atual: graft de um bloco antigo
-        # sobre a fonte nova aponta para um asset que não existe (404 do z3).
-        self.assertEqual(p.bottle_assets(Z3_SOURCE, 'z3'),
-                         {'z3-5.4.1.tahoe.bottle.tar.gz',
-                          'z3-5.4.1.all.bottle.tar.gz'})
-        self.assertTrue(p.bottle_block_missing(
-            Z3_SOURCE, 'z3', {'z3-5.4.0.tahoe.bottle.tar.gz'}))
-        self.assertFalse(p.bottle_block_missing(
-            Z3_SOURCE, 'z3', {'z3-5.4.1.tahoe.bottle.tar.gz'}))
-        self.assertFalse(p.bottle_block_missing(
-            'class N < Formula\n  url "https://e.org/n.tgz"\nend\n', 'n', set()))
-
-    def test_explicit_bottle_url_is_validated_by_basename(self):
-        source = ('class P < Formula\n  url "https://e.org/p-1.0.tar.gz"\n'
-                  '  bottle do\n'
-                  '    root_url "https://github.com/u/homebrew-intel/releases/download/tahoe-bottles"\n'
-                  '    url "https://github.com/u/homebrew-intel/releases/download/tahoe-bottles/p-1.0.tahoe.bottle.tar.gz"\n'
-                  '  end\nend\n')
-        self.assertEqual(p.bottle_assets(source, 'p'),
-                         {'p-1.0.tahoe.bottle.tar.gz'})
-        self.assertTrue(p.bottle_block_missing(source, 'p', {'other.tar.gz'}))
-        self.assertFalse(p.bottle_block_missing(
-            source, 'p', {'p-1.0.tahoe.bottle.tar.gz'}))
-
-    def test_upstream_bottle_is_never_considered_missing(self):
-        # Fórmula reutilizada mantém o bottle do mantenedor (ghcr.io): ele não
-        # é asset do nosso release e validá-lo reprovaria todo pour.
-        source = ('class P < Formula\n  url "https://e.org/p-1.0.tar.gz"\n'
-                  '  bottle do\n    sha256 cellar: :any, tahoe: "abc"\n  end\nend\n')
-        self.assertFalse(p.bottle_block_missing(source, 'p', set()))
-
-
-class SingleOwnerBuildTests(unittest.TestCase):
-    """Cada fórmula do build_set é compilada por um único shard."""
-
-    def run_install(self, published, build_set=('z3',), installed=''):
-        def fake_run(*args, **kwargs):
-            return installed if args[1] == 'list' else 'u/intel/z3\n'
-        with patch.object(p, 'run', side_effect=fake_run), \
-             patch.object(p, 'brew_install') as install, \
-             patch.object(p, 'wait_for_publish', return_value=published) as wait:
-            try:
-                p.install_missing_deps('u/intel/target', 'u/intel', {},
-                                       {'id': 1}, set(build_set))
-            except p.Deferred as dep:
-                return ('deferred', str(dep)), install, wait
-        return 'ok', install, wait
-
-    def test_dependency_of_another_shard_is_deferred_not_compiled(self):
-        # z3 está no build_set e ainda não foi publicado: nenhum shard pode
-        # compilá-lo por conta própria (era o que duplicava o build em dois).
-        outcome, install, wait = self.run_install(published=False)
-        self.assertEqual(outcome, ('deferred', 'z3 ainda não publicada'))
-        install.assert_not_called()
-        wait.assert_called_once()
-
-    def test_dependency_is_poured_once_the_owner_published(self):
-        outcome, install, wait = self.run_install(published=True)
-        self.assertEqual(outcome, 'ok')
-        wait.assert_called_once()
-        install.assert_called_once_with('--ignore-dependencies', 'u/intel/z3')
-
-    def test_already_installed_dependency_is_not_touched(self):
-        outcome, install, wait = self.run_install(published=False,
-                                                  installed='z3\n')
-        self.assertEqual(outcome, 'ok')
-        install.assert_not_called()
-        wait.assert_not_called()
-
-    def test_dependency_outside_the_build_set_is_installed(self):
-        outcome, install, wait = self.run_install(published=False, build_set=())
-        self.assertEqual(outcome, 'ok')
-        wait.assert_not_called()
-        install.assert_called_once_with('--ignore-dependencies', 'u/intel/z3')
-
-    def test_dependency_without_bottle_defers_instead_of_failing(self):
-        # --build-bottle recusa o install quando a dep não tem bottle (o caso
-        # llhttp/z3/llvm): adiar preserva a run em vez de marcá-la como falha.
-        with tempfile.TemporaryDirectory() as tmp:
-            formula_dir = Path(tmp) / 'Formula'
-            formula_dir.mkdir()
-            (formula_dir / 'z3.rb').write_text(
-                'class Z3 < Formula\n  url "x"\nend\n')
-            (formula_dir / 'openssl.rb').write_text(
-                'class Openssl < Formula\n  url "x"\n  bottle do\n  end\nend\n')
-            deps = 'italoag/intel/z3\nitaloag/intel/openssl\nhomebrew/core/jq\n'
-            with patch.object(p, 'TAP_ROOT', Path(tmp)), \
-                 patch.object(p, 'run', return_value=deps):
-                self.assertEqual(
-                    p.missing_bottles('italoag/intel/x', 'italoag/intel'), ['z3'])
-
-    def test_wait_is_bounded_by_the_shard_deadline(self):
-        # A segunda passada espera o dono publicar, mas nunca além do
-        # orçamento do shard (o job morre em 6h).
-        def fake_run(*args, **kwargs):
-            return '' if args[1] == 'list' else 'u/intel/z3\n'
-        with patch.object(p, 'run', side_effect=fake_run), \
-             patch.object(p, 'brew_install'), \
-             patch.object(p, 'wait_for_publish', return_value=True) as wait:
-            p.install_missing_deps('u/intel/target', 'u/intel', {}, {'id': 1},
-                                   {'z3'}, time.monotonic() + 600)
-        self.assertGreater(wait.call_args.kwargs['timeout'], 500)
-        self.assertLessEqual(wait.call_args.kwargs['timeout'], 600)
-        self.assertEqual(p.wait_left(None), 0)
-
-    def test_prioritize_never_puts_a_consumer_before_its_dependency(self):
-        # rust é pesado, cmake é leve e dependência dele: ordenar só por peso
-        # colocaria rust antes e o cmake seria compilado como dep e de novo
-        # como membro.
-        graph = {'rust': ['llvm', 'cmake'], 'llvm': [], 'cmake': [], 'jq': []}
-        order = p.prioritize([['jq', 'rust', 'cmake', 'llvm']], graph,
-                             {'rust', 'cmake', 'llvm', 'jq'})[0]
-        self.assertEqual(order[0], 'llvm')
-        self.assertLess(order.index('cmake'), order.index('rust'))
-
-    def test_adopt_skips_formula_pointing_to_absent_bottle(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            formula_dir = Path(tmp)
-            target = formula_dir / 'z3.rb'
-            original = 'class Z3 < Formula\n  url "x"\nend\n'
-            target.write_text(original)
-            release = {'id': 1}
-            assets = {'name': 'Formula-z3.rb', 'browser_download_url': 'u'}
-            with patch.object(p, 'run', return_value='u/intel/z3\n'), \
-                 patch.object(p, 'release_assets', return_value=[assets]), \
-                 patch.object(p, 'combined_manifest',
-                              return_value={'z3': {'asset': 'z3-5.4.0.tahoe.bottle.tar.gz'}}), \
-                 patch.object(p, 'fetch_if_present', return_value=Z3_SOURCE.encode()):
-                p.adopt_bottles(release, 'u/intel/target', formula_dir)
-            # .rb do z3 5.4.1 aponta para um bottle que não existe: não adota.
-            self.assertEqual(target.read_text(), original)
-
-    def test_adopt_keeps_formula_whose_bottle_exists(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            formula_dir = Path(tmp)
-            (formula_dir / 'z3.rb').write_text('class Z3 < Formula\n  url "x"\nend\n')
-            release = {'id': 1}
-            assets = [{'name': 'Formula-z3.rb', 'browser_download_url': 'u'},
-                      {'name': 'z3-5.4.1.tahoe.bottle.tar.gz',
-                       'browser_download_url': 'b'}]
-            with patch.object(p, 'run', return_value='u/intel/z3\n'), \
-                 patch.object(p, 'release_assets', return_value=assets), \
-                 patch.object(p, 'combined_manifest',
-                              return_value={'z3': {'asset': 'z3-5.4.1.tahoe.bottle.tar.gz'}}), \
-                 patch.object(p, 'fetch_if_present', return_value=Z3_SOURCE.encode()):
-                p.adopt_bottles(release, 'u/intel/target', formula_dir)
-            self.assertIn('bottle do', (formula_dir / 'z3.rb').read_text())
 
 
 if __name__ == '__main__':
