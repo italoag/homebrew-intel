@@ -47,9 +47,5 @@ class Icu4cAT78 < Formula
       system bin/"gendict", "--uchars", "hello", "dict"
     end
   end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "a058d0966c30bd5a1c84e1afb81c7ff04dc67dcc93912dd8bce6ecd31ac2043d"
-  end
 
 end

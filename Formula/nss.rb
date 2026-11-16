@@ -77,21 +77,9 @@ class Nss < Formula
     # resolves conflict with openssl, see legacy-homebrew#28258
     rm lib/"libssl.a"
 
-    (bin/"nss-config").write config_file
-    (lib/"pkgconfig/nss.pc").write pc_file
-  end
-
-  test do
-    # See: https://developer.mozilla.org/docs/Mozilla/Projects/NSS/tools/NSS_Tools_certutil
-    (testpath/"passwd").write("It's a secret to everyone.")
-    system bin/"certutil", "-N", "-d", pwd, "-f", "passwd"
-    system bin/"certutil", "-L", "-d", pwd
-  end
-
-  # A very minimal nss-config for configuring firefox etc. with this nss,
-  # see https://bugzil.la/530672 for the progress of upstream inclusion.
-  def config_file
-    <<~SH
+    # A very minimal nss-config for configuring firefox etc. with this nss,
+    # see https://bugzil.la/530672 for the progress of upstream inclusion.
+    (bin/"nss-config").write <<~SH
       #!/bin/sh
       for opt; do :; done
       case "$opt" in
@@ -101,10 +89,7 @@ class Nss < Formula
       esac
       pkg-config "$opt" nss
     SH
-  end
-
-  def pc_file
-    <<~PC
+    (lib/"pkgconfig/nss.pc").write <<~PC
       prefix=#{prefix}
       exec_prefix=${prefix}
       libdir=${exec_prefix}/lib
@@ -118,9 +103,16 @@ class Nss < Formula
       Cflags: -I${includedir}
     PC
   end
+
+  test do
+    # See: https://developer.mozilla.org/docs/Mozilla/Projects/NSS/tools/NSS_Tools_certutil
+    (testpath/"passwd").write("It's a secret to everyone.")
+    system bin/"certutil", "-N", "-d", pwd, "-f", "passwd"
+    system bin/"certutil", "-L", "-d", pwd
+  end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "d7c4eeae1fed68c08ec195bee8816ccaa6f247001d97674bd375747f45f43504"
+    sha256 cellar: :any, tahoe: "94f519f67759f0d4f87dcf623b4f1339ecc927d12010b9c1f70c9c187bab7aae"
   end
 
 end

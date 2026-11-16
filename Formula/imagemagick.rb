@@ -88,9 +88,5 @@ class Imagemagick < Formula
       assert_match feature, features
     end
   end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "e00f1dd5c0437eb4d68184b079f6f9ef9e69cce5b10d56cc13e533ec2dc8dabe"
-  end
 
 end

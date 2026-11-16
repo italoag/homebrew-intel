@@ -54,9 +54,10 @@ class Skipped(Exception):
 
 
 class Deferred(Exception):
-    # Membro adiado para a segunda passada: dep pesada de outro shard ainda
-    # não publicada; compilar localmente duplicaria horas de runner por shard
-    # (llvm × N). Na segunda passada a dep pode já ter sido publicada.
+    # Membro adiado para a segunda passada: alguma dependência do build_set
+    # ainda não foi publicada pelo shard dono. Compilar localmente duplicaria
+    # a fórmula em N shards (llvm ×5, z3 ×2) — a dep sai do dono e a segunda
+    # passada (ou a próxima run) encontra o bottle pronto.
     pass
 
 
@@ -94,24 +95,80 @@ def heavy_ancestors(order, graph):
     return {name: walk(name) for name in order}
 
 
+def cross_shard_dependents(shards, graph, build_set):
+    # Quantos membros de OUTROS shards dependem (transitivamente) deste. A dep
+    # compartilhada sai cedo na fila do shard dono: como só o dono compila,
+    # deixá-la para o fim do orçamento trava os outros shards por uma run
+    # inteira esperando um bottle barato.
+    shard_of = {name: i for i, shard in enumerate(shards) for name in shard}
+    users = {}
+    for name, deps in graph.items():
+        for dep in deps:
+            users.setdefault(dep, set()).add(name)
+    memo = {}
+    def dependents(name):
+        if name not in memo:
+            acc, stack = set(), [name]
+            while stack:
+                for user in users.get(stack.pop(), ()):
+                    if user not in acc:
+                        acc.add(user)
+                        stack.append(user)
+            memo[name] = acc
+        return memo[name]
+    return {name: sum(1 for user in dependents(name)
+                      if user in build_set and shard_of.get(user) != shard_of.get(name))
+            for name in build_set}
+
+
 def prioritize(shards, graph, build_set):
     # Jornada: pesados primeiro (senão o orçamento de 5h cortaria justamente
-    # llvm/rust, que ficariam atrás das deps leves na ordem topológica), e
-    # dentro de cada grupo profundidade crescente — dep construída como membro
-    # sai com bottle antes do dependente, em vez de ser compilada como dep e
-    # recompilada para virar membro. As deps leves de um pesado são despejadas
-    # durante o install dele e reconstruídas barato quando chegam como membro.
+    # llvm/rust, que ficariam atrás das deps leves na ordem topológica), mas
+    # só entre os membros JÁ DISPONÍVEIS (deps internas do shard resolvidas).
+    # Ordenar por (peso, profundidade) sem essa restrição fura a topologia:
+    # rust (pesado) vinha antes de cmake/python@3.15 e a dep era compilada
+    # como dependência e recompilada depois como membro — dois builds da
+    # mesma fórmula no mesmo shard.
     depth = {}
+    ancestors = {}
     def walk(name):
         if name not in depth:
-            depth[name] = 1 + max((walk(dep) for dep in graph[name]), default=0)
-        return depth[name]
+            acc, top = set(), 0
+            for dep in graph[name]:
+                dep_depth, dep_ancestors = walk(dep)
+                acc.add(dep)
+                acc |= dep_ancestors
+                top = max(top, dep_depth)
+            depth[name] = 1 + top
+            ancestors[name] = acc
+        return depth[name], ancestors[name]
     for shard in shards:
         for name in shard:
             walk(name)
-    return [sorted(shard, key=lambda n: (not heavy(n), depth[n],
-                                         -member_weight(n, graph, build_set)))
-            for shard in shards]
+    blocking = cross_shard_dependents(shards, graph, build_set)
+    ordered = []
+    for shard in shards:
+        members = set(shard)
+        # Ancestrais TRANSITIVOS dentro do shard: ruby -> rust -> llvm não tem
+        # aresta direta, mas o llvm precisa sair antes ou o ruby é adiado sem
+        # necessidade na primeira passada.
+        remaining = {name: ancestors[name] & members for name in shard}
+        done = set()
+        order = []
+        while remaining:
+            ready = [name for name, deps in remaining.items() if deps <= done]
+            if not ready:
+                # Ciclo: topo() já falha antes em ciclo real; aqui só evita
+                # perder membros caso um grafo parcial chegue assim.
+                ready = list(remaining)
+            best = min(ready, key=lambda n: (not heavy(n), -blocking.get(n, 0),
+                                             depth[n],
+                                             -member_weight(n, graph, build_set)))
+            order.append(best)
+            done.add(best)
+            remaining.pop(best)
+        ordered.append(order)
+    return ordered
 
 
 class ApiError(RuntimeError):
@@ -403,6 +460,61 @@ def strip_bottle_block(source):
     # usado quando o asset referenciado não existe no release (evita 404).
     stripped = re.sub(r'(?ms)^  bottle do\n.*?^  end\n', '', source)
     return stripped if 'bottle do' not in stripped else source
+
+
+# Tag de plataforma nos nomes de bottle; o pipeline só publica Intel Tahoe.
+BOTTLE_TAG = 'tahoe'
+ARCHIVE_SUFFIXES = ('.tar.gz', '.tar.bz2', '.tar.xz', '.tar.zst', '.tgz', '.zip')
+
+
+def formula_version(source):
+    # Versão que entra no nome do bottle: explícita ou derivada do basename da
+    # URL estável (z3-5.4.1.tar.gz -> 5.4.1). None quando não dá para saber.
+    match = re.search(r'^  version "([^"]+)"', source, re.M)
+    if match:
+        return match.group(1)
+    match = re.search(r'^  url "([^"]+)"', source, re.M)
+    if not match:
+        return None
+    name = urllib.parse.urlparse(match.group(1)).path.rsplit('/', 1)[-1]
+    for suffix in ARCHIVE_SUFFIXES:
+        if name.endswith(suffix):
+            name = name[:-len(suffix)]
+            break
+    match = re.search(r'\d+(?:\.\d+)+', name)
+    return match.group(0) if match else None
+
+
+def bottle_assets(source, short):
+    # Assets que o bloco bottle referencia: url explícita ou o nome que o brew
+    # deriva de <short>-<versão>.<tag>.bottle.tar.gz quando não há url. None =
+    # sem bloco ou impossível de resolver (não dá para validar).
+    block = re.search(r'(?ms)^  bottle do\n(.*?)^  end\n', source)
+    if not block:
+        return None
+    explicit = re.findall(r'^\s+url "([^"]+)"', block.group(1), re.M)
+    if explicit:
+        return {urllib.parse.unquote(Path(urllib.parse.urlparse(url).path).name)
+                for url in explicit}
+    version = formula_version(source)
+    if not version:
+        return None
+    return {f'{short}-{version}.{BOTTLE_TAG}.bottle.tar.gz',
+            f'{short}-{version}.all.bottle.tar.gz'}
+
+
+def bottle_block_missing(source, short, asset_names):
+    # O .rb aponta para um bottle NOSSO que não existe no release? Bloco sem
+    # url deriva a URL da versão atual: graft de um bloco antigo sobre fonte
+    # nova (z3 5.4.0 -> 5.4.1) gera 404 e cada shard cai para compilar a
+    # fórmula — justamente a duplicação que o dono único deveria evitar.
+    # Bottle de terceiro (fórmula reutilizada, ghcr.io) não é nosso asset e
+    # por definição não estaria em asset_names: não há o que validar.
+    block = re.search(r'(?ms)^  bottle do\n(.*?)^  end\n', source)
+    if not block or f'releases/download/{TAG}' not in block.group(1):
+        return False
+    assets = bottle_assets(source, short)
+    return bool(assets) and not (assets & set(asset_names))
 
 
 def checks():
@@ -969,6 +1081,13 @@ def adopt_bottles(release, full, formula_dir):
         if fetched is None:
             continue
         fetched = repair_bottle_urls(fetched.decode(), asset_map)
+        # Manifesto e .rb vêm de runs diferentes: o arquivo pode ter o bloco
+        # bottle de outra versão. Adotá-lo dá 404 no install e o shard compila
+        # a dep da fonte em vez de despejar o bottle do dono.
+        if bottle_block_missing(fetched, dep_short, asset_map):
+            print('Ignorando .rb com bottle ausente no release:', dep_short,
+                  flush=True)
+            continue
         if not target.exists() or target.read_text() != fetched:
             print('Adotando bottle publicado por outro shard:', dep_short, flush=True)
             target.write_text(fetched)
@@ -1004,6 +1123,23 @@ def has_test_block(short):
     return re.search(r'^\s*test do\b', source, re.M) is not None
 
 
+def missing_bottles(full, tap):
+    # --build-bottle recusa o install quando alguma dep não tem bottle
+    # ("cannot be installed from bottles and must be built from source") —
+    # dep nunca publicada, ou cujo bloco saiu por asset ausente. Falhar aqui
+    # perde a run inteira do membro; adiar deixa a dep sair pelo dono.
+    missing = []
+    for dep in run('brew', 'deps', '--formula', '--full-name', '--include-build',
+                   '--include-test', full, capture=True).split():
+        if not dep.startswith(tap + '/'):
+            continue  # dep do core sempre tem bottle
+        short = dep.split('/')[-1]
+        formula = TAP_ROOT / 'Formula' / (short + '.rb')
+        if formula.is_file() and 'bottle do' not in formula.read_text():
+            missing.append(short)
+    return missing
+
+
 def brew_install(*args, cmd='install'):
     # A imagem do runner já tem binários em /usr/local/bin (aws, azcopy...) que
     # conflitam com brew link: o keg é construído, o install sai com erro só
@@ -1019,18 +1155,26 @@ def brew_install(*args, cmd='install'):
         run('brew', 'link', '--overwrite', short)
 
 
-def wait_for_publish(release, dep_short, timeout=2700, interval=120):
+def wait_left(deadline):
+    # Segundos até o prazo compartilhado do shard; 0 quando não há prazo (1ª
+    # passada ou modo local) — a consulta vira única e o membro é adiado.
+    return 0 if deadline is None else max(0.0, deadline - time.monotonic())
+
+
+def wait_for_publish(release, dep_short, timeout=0, interval=120):
     # Dep pertence a outro shard e está no build_set desta run: o dono vai
     # publicá-la; compilar localmente duplicaria o trabalho (llvm@21 = horas).
-    # Espera a entrada no manifesto e adota o .rb promovido ao aparecer. Deps
-    # leves caem para a compilação local após o timeout; pesadas usam
-    # timeout=0 (consulta única) e adiam o membro — o chamador decide.
+    # Espera a entrada no manifesto e adota o .rb promovido ao aparecer. O
+    # timeout padrão é 0 (consulta única): o chamador adia o membro em vez de
+    # ficar parado, e a segunda passada reaproveita o que o dono publicou.
+    # O TTL do manifesto é menor que o intervalo de poll para não repetir o
+    # download de todos os fragmentos a cada dep do mesmo membro.
     deadline = time.monotonic() + timeout
     while True:
         assets = release_assets(release['id'])
         asset_map = {asset['name']: asset['browser_download_url']
                      for asset in assets}
-        entry = (combined_manifest(release, assets, ttl=0)
+        entry = (combined_manifest(release, assets, ttl=110)
                  .get(dep_short) or {})
         if entry.get('reused') or entry.get('asset') in asset_map:
             asset_name = f'Formula-{dep_short}.rb'
@@ -1040,14 +1184,20 @@ def wait_for_publish(release, dep_short, timeout=2700, interval=120):
                 return True
             fetched = fetch_if_present(asset_map[asset_name])
             if fetched is not None:
-                target = TAP_ROOT / 'Formula' / (dep_short + '.rb')
-                target.write_text(repair_bottle_urls(
-                    fetched.decode(), asset_map))
-                print(f'Dep publicada por outro shard; adotada: {dep_short}',
-                      flush=True)
-                return True
-            print(f'Asset {asset_name} listado mas ainda indisponível; '
-                  'aguardando propagação', flush=True)
+                source = repair_bottle_urls(fetched.decode(), asset_map)
+                # Manifesto e .rb podem vir de runs diferentes: adotar um .rb
+                # cujo bottle não existe faria o brew cair para a fonte em
+                # cada shard (o 404 do z3 5.4.1).
+                if not bottle_block_missing(source, dep_short, asset_map):
+                    (TAP_ROOT / 'Formula' / (dep_short + '.rb')).write_text(source)
+                    print(f'Dep publicada por outro shard; adotada: {dep_short}',
+                          flush=True)
+                    return True
+                print(f'Dep {dep_short} publicada sem o bottle correspondente; '
+                      'aguardando o dono republicar', flush=True)
+            else:
+                print(f'Asset {asset_name} listado mas ainda indisponível; '
+                      'aguardando propagação', flush=True)
         if time.monotonic() >= deadline:
             return False
         print(f'Aguardando dep de outro shard: {dep_short}', flush=True)
@@ -1055,11 +1205,11 @@ def wait_for_publish(release, dep_short, timeout=2700, interval=120):
 
 
 def install_missing_deps(full, tap, order_index, release=None,
-                         dep_owner=None, my_shard=None, build_set_shorts=()):
+                         build_set_shorts=(), wait_deadline=None):
     # --build-bottle exige bottle em toda dep instalável e --force-bottle se
     # aplica à operação inteira: pré-instala as ausentes com install comum
-    # (despeja bottle adotado/publicado ou compila como fallback local — só o
-    # shard dono publica), deixando o install final tratar só do alvo.
+    # (despeja bottle adotado/publicado), deixando o install final tratar só
+    # do alvo.
     # --ignore-dependencies: a lista já é o fechamento transitivo em ordem
     # topológica, e a travagem de deps do brew conflita consigo mesma quando
     # a árvore mistura dep qualificada com dep curta de .rb antigo promovido
@@ -1072,16 +1222,16 @@ def install_missing_deps(full, tap, order_index, release=None,
                             key=lambda d: order_index.get(d, 0)):
         if dep_short in installed:
             continue
-        if (release and dep_short in build_set_shorts
-                and dep_owner.get(dep_short, my_shard) != my_shard):
-            if heavy(dep_short):
-                # Esperar 45min e compilar llvm/rust localmente duplicaria
-                # horas de runner em cada shard: consulta única e, sem
-                # publicação, adia o membro para a segunda passada.
-                if not wait_for_publish(release, dep_short, timeout=0):
-                    raise Deferred(dep_short)
-            else:
-                wait_for_publish(release, dep_short)
+        if dep_short in build_set_shorts:
+            # Toda fórmula do build_set tem UM dono, e só ele compila. Fora do
+            # dono — ou no próprio dono quando o build dela falhou/foi adiado —
+            # a dep nunca é compilada aqui: adota-se o bottle publicado ou o
+            # membro é adiado. Sem essa regra a dep leve (z3) caía no fallback
+            # local de cada consumidor e era compilada em paralelo em N shards
+            # enquanto o dono publicava o mesmo bottle.
+            if not wait_for_publish(release, dep_short,
+                                    timeout=wait_left(wait_deadline)):
+                raise Deferred(f'{dep_short} ainda não publicada')
         try:
             brew_install('--ignore-dependencies', tap + '/' + dep_short)
         except subprocess.CalledProcessError:
@@ -1137,8 +1287,6 @@ def build_shard(idx, local=False):
     else:
         members = plan_data['shards'][idx]
     order_index = {short_name(n): i for i, n in enumerate(plan_data['order'])}
-    dep_owner = {short_name(n): i for i, shard in enumerate(plan_data['shards'])
-                 for n in shard}
     # Retomada dentro do mesmo run: fragmentos e manifesto anteriores dizem o
     # que já foi publicado por qualquer shard e não precisa repetir.
     assets = release_assets(release['id'])
@@ -1147,12 +1295,12 @@ def build_shard(idx, local=False):
     write_formula_dir(plan_data)
     # Sanitiza .rb promovidos cujo bottle aponta para asset ausente no release
     # (órfão de publish anterior ou dep que outro shard ainda não publicou):
-    # sem o bloco bottle o brew compila a dep da fonte em vez de falhar no 404.
-    our_bottles = f'releases/download/{TAG}'
+    # sem o bloco bottle o brew compila da fonte em vez de falhar no 404 — e
+    # um 404 faz cada shard compilar a mesma fórmula por conta própria.
     for dep_rb in (TAP_ROOT / 'Formula').glob('*.rb'):
         source = dep_rb.read_text()
-        if (our_bottles in source and 'bottle do' in source
-                and (done.get(dep_rb.stem) or {}).get('asset') not in asset_names):
+        if 'bottle do' in source and bottle_block_missing(source, dep_rb.stem,
+                                                          asset_names):
             dep_rb.write_text(strip_bottle_block(source))
     link_own_tap(owner, repository, tap)
     if not local:
@@ -1161,16 +1309,28 @@ def build_shard(idx, local=False):
         installed = run('brew', 'list', '--formula', capture=True).split()
         if installed:
             run('brew', 'uninstall', '--force', '--ignore-dependencies', *installed)
-    fragment = {}
-    failed = []
     frag_name = 'manifest-local.json' if local else f'manifest-{idx}.json'
+    # Funde o fragmento anterior: as entradas são o checkpoint do shard e
+    # precisam sobreviver a um publish que falhe em consolidar — zerar o
+    # arquivo apagaria do combinado tudo que runs anteriores publicaram.
+    fragment = {}
+    frag_asset = next((a for a in assets if a['name'] == frag_name), None)
+    if frag_asset:
+        fetched = fetch_if_present(frag_asset['browser_download_url'])
+        if fetched:
+            fragment = json.loads(fetched)
+    failed = []
     out_dir = WORK / f'out-{idx}'
     out_dir.mkdir(exist_ok=True)
     frag_path = out_dir / frag_name
     root_url = f'https://github.com/{repo()}/releases/download/{TAG}'
     deferred = []
+    # Prazo compartilhado da espera por deps de outro shard: só a segunda
+    # passada espera, e nunca além do orçamento (o job morre em 6h e levaria
+    # o membro em voo junto).
+    wait_deadline = None if not budget else started + budget - 300
 
-    def attempt(name):
+    def attempt(name, wait=False):
         short = short_name(name)
         full = tap + '/' + short
         if (done.get(short) or {}).get('fp') == fps[name]:
@@ -1179,13 +1339,12 @@ def build_shard(idx, local=False):
         try:
             process_member(name, idx, tap, full, short, build_set, reusable,
                            release, fragment, order_index, root_url, fps,
-                           dep_owner, local)
+                           local, wait_deadline if wait else None)
         except Skipped as why:
             print(f'[{idx}] {short}: pulado — {why}', flush=True)
         except Deferred as dep:
             deferred.append(name)
-            print(f'[{idx}] {short}: adiado — dep pesada de outro shard '
-                  f'ainda pendente: {dep}', flush=True)
+            print(f'[{idx}] {short}: adiado — {dep}', flush=True)
         except Exception as err:
             # Falha isola o membro: ele fica pendente e o shard segue — todo o
             # trabalho publicado sobrevive e o re-run refaz só os falhos.
@@ -1207,13 +1366,14 @@ def build_shard(idx, local=False):
                   'esgotado; restantes ficam para a próxima run', flush=True)
             break
         attempt(name)
-    # Segunda passada: o dono pode ter publicado a dep pesada durante a run.
+    # Segunda passada: espera o dono publicar a dep (até o prazo do shard) em
+    # vez de sair sem fazer nada — o bottle aparece no meio da run.
     for name in list(deferred):
         if budget and time.monotonic() - started > budget:
             break
         if file_owner[short_name(name)] != name:
             continue
-        attempt(name)
+        attempt(name, wait=True)
     if failed:
         raise RuntimeError(
             f'Shard {idx}: membros falharam e seguem pendentes: '
@@ -1221,8 +1381,8 @@ def build_shard(idx, local=False):
 
 
 def process_member(name, idx, tap, full, short, build_set, reusable, release,
-                   fragment, order_index, root_url, fps, dep_owner,
-                   local=False):
+                   fragment, order_index, root_url, fps, local=False,
+                   wait_deadline=None):
     if local:
         if formula_info(full).get('installed'):
             raise Skipped('já instalado nesta máquina; local não desinstala kegs')
@@ -1239,18 +1399,23 @@ def process_member(name, idx, tap, full, short, build_set, reusable, release,
                           lines[-1] if lines else 'brew recusou o install')
             raise Skipped('brew recusaria: ' + reason.strip()[:160])
     if name in build_set and not reusable[name]:
-        # Deps resolvem pelo tap: members com bottle publicado despejam; os
-        # que outro shard ainda compila são aguardados/adotados (ou, em último
-        # caso, construídos localmente — só o shard dono publica).
+        # Deps resolvem pelo tap: as com bottle publicado despejam; as que
+        # outro shard ainda compila são adotadas quando publicarem, senão o
+        # membro é adiado (só o shard dono compila).
         adopt_bottles(release, full, TAP_ROOT / 'Formula')
-        install_missing_deps(full, tap, order_index, release, dep_owner, idx,
-                             {short_name(n) for n in build_set})
+        install_missing_deps(full, tap, order_index, release,
+                             {short_name(n) for n in build_set}, wait_deadline)
         tab = formula_info(full).get('installed') or []
-        if tab and not all(item.get('poured_from_bottle') for item in tab):
+        if not local and tab and not all(item.get('poured_from_bottle')
+                                        for item in tab):
             # Já foi compilado como dep de outro membro: refaz com test deps.
             # (reinstall não aceita --ignore-dependencies; uninstall+install
-            # equivale e evita o auto-deadlock da travagem de deps.)
+            # equivale e evita o auto-deadlock da travagem de deps.) No modo
+            # local nada é desinstalado: um keg da máquina nunca é tocado.
             run('brew', 'uninstall', '--force', '--ignore-dependencies', full)
+        missing = missing_bottles(full, tap)
+        if missing:
+            raise Deferred('sem bottle para: ' + ', '.join(sorted(missing)))
         # Sem --ignore-dependencies: o flag chega ao filho de build e zera
         # HOMEBREW_DEPENDENCIES (build.rb retorna antes de expand_deps) — o
         # superenv fica sem os opt_bin/pkgconfig das deps e compilações morrem
@@ -1294,8 +1459,8 @@ def process_member(name, idx, tap, full, short, build_set, reusable, release,
         # Reutilizado ou inalterado: despeja o bottle oficial/publicado e
         # valida que funciona dentro do grafo do tap.
         adopt_bottles(release, full, TAP_ROOT / 'Formula')
-        install_missing_deps(full, tap, order_index, release, dep_owner, idx,
-                             {short_name(n) for n in build_set})
+        install_missing_deps(full, tap, order_index, release,
+                             {short_name(n) for n in build_set}, wait_deadline)
         # --include-test traz as test deps que brew test exige instaladas.
         brew_install('--force-bottle', '--include-test',
                      '--ignore-dependencies', full)
@@ -1351,6 +1516,12 @@ def publish():
                 download(assets[asset_name]['browser_download_url']).decode(),
                 assets)
             grafted = graft_bottle_block(plan_data['normalized'][key], source)
+            # O bottle referenciado sumiu do release (ou o bloco veio de outra
+            # versão da fórmula e a URL derivada mudou)? Publicar o .rb assim
+            # quebraria todo install com 404 e cada shard compilaria da fonte:
+            # remove o bloco e o cliente compila até o rebuild completar.
+            if bottle_block_missing(grafted, short, assets):
+                grafted = strip_bottle_block(grafted)
             if grafted != source:
                 # Propaga o formato novo (deps qualificadas) mantendo o bottle
                 # publicado; o asset é renovado para que shards adotem o .rb
@@ -1359,12 +1530,6 @@ def publish():
                 refresh.write_text(grafted)
                 upload_asset(release['id'], refresh, asset_name)
                 source = grafted
-            # O bottle referenciado sumiu do release? Publicar o .rb assim
-            # quebraria todo install com 404: remove o bloco bottle e o
-            # cliente compila da fonte até o rebuild completar.
-            if (f'releases/download/{TAG}' in source and 'bottle do' in source
-                    and entry.get('asset') not in assets):
-                source = strip_bottle_block(source)
             target.write_text(source)
         elif not target.exists() and reusable[key]:
             # Arquivo de membro reutilizado é autossuficiente (bottle upstream);

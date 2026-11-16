@@ -51,9 +51,5 @@ class Mdfried < Formula
     Process.kill("TERM", pid)
     Process.wait(pid)
   end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "56c4c8f3a31ea4a17ae6340b35a381926601b53bd237a660da196e5cfa26c954"
-  end
 
 end

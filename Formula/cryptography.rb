@@ -46,9 +46,5 @@ class Cryptography < Formula
       assert_match "b'homebrew'", shell_output("#{python3} test.py")
     end
   end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "8d8218d774a4b2e88d00d487491a651a81245bea05cd050790ae68fb4c3a54e0"
-  end
 
 end

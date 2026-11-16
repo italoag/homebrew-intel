@@ -44,9 +44,5 @@ class Maturin < Formula
       system python3, "-c", "import maturin"
     end
   end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "f622a9ad393b3203436c931f6e2a9e837a9f13ab02edfd30fc86040b2b5731c2"
-  end
 
 end

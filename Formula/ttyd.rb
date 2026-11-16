@@ -49,9 +49,5 @@ class Ttyd < Formula
     output = shell_output("curl --silent --retry 5 --retry-connrefused http://localhost:#{port}")
     assert_match "<title>ttyd - Terminal</title>", output[..256]
   end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "b14dfef9e2bce2a5c88ff76df28d3f5d256dfae8ee8afcd6de156ee05819aaae"
-  end
 
 end

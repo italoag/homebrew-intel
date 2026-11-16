@@ -39,9 +39,5 @@ class Libevent < Formula
     system ENV.cc, "test.c", "-L#{lib}", "-levent", "-o", "test"
     system "./test"
   end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "7f09701a351091a249824f860b6ed26d43bf0a5b5ad2173a75022406e201c7ee"
-  end
 
 end

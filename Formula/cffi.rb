@@ -54,9 +54,5 @@ class Cffi < Formula
       assert_equal 3, shell_output("#{python} sum.py").to_i
     end
   end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "1aca2ead0cf81a7356eade5ad247d37a4b482f8c66642d6521d69f3ec440c5fe"
-  end
 
 end

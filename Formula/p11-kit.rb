@@ -46,7 +46,7 @@ class P11Kit < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "4225d46a105810421e24740ae6aff08f46d2f80c8786d7afe945bfd07812455c"
+    sha256 tahoe: "b85425495f93ec6ae759530442c1c4306b88242ec54611290527e3543d460995"
   end
 
 end

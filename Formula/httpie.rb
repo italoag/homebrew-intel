@@ -100,9 +100,5 @@ class Httpie < Formula
     raw_url = "https://raw.githubusercontent.com/Homebrew/homebrew-core/HEAD/Formula/h/httpie.rb"
     assert_match "PYTHONPATH", shell_output("#{bin}/http --ignore-stdin #{raw_url}")
   end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "483a0a6dd07102122cebd891ec3c61e5ee02f7719a9ac67fd0d1b148b55a9d7a"
-  end
 
 end

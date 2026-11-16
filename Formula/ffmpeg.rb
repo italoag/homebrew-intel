@@ -102,9 +102,5 @@ class Ffmpeg < Formula
     system bin/"ffmpeg", "-filter_complex", "testsrc=rate=1:duration=5", mp4out
     assert_path_exists mp4out, "Failed to create video.mp4!"
   end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "d2e8b10775c254cfec141b3651bcf7a540ca25aa253b838a1cbdc1ec10005ca0"
-  end
 
 end

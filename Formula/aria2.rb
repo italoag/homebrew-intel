@@ -58,9 +58,5 @@ class Aria2 < Formula
     system bin/"aria2c", "https://brew.sh/"
     assert_path_exists testpath/"index.html", "Failed to create index.html!"
   end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "8119c5be47f2abd7e150e52ff908080db18ab9c84681f02fec6383d425154829"
-  end
 
 end

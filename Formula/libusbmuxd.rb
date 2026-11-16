@@ -43,9 +43,5 @@ class Libusbmuxd < Formula
       Process.wait(pid)
     end
   end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "b1a871e8b6734e8574527afbd0573a243cf88ddeb88f34b2e8547dbb9ce1f942"
-  end
 
 end

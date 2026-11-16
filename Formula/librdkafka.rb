@@ -50,9 +50,5 @@ class Librdkafka < Formula
     system ENV.cc, "test.c", "-L#{lib}", "-lrdkafka", "-lz", "-lpthread", "-o", "test"
     system "./test"
   end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "ba66671e7c07953f2a6782994b77362f2690f4edd0599120cbc31ba0d6331365"
-  end
 
 end
