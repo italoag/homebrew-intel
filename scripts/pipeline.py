@@ -1309,9 +1309,17 @@ def build_shard(idx, local=False):
         installed = run('brew', 'list', '--formula', capture=True).split()
         if installed:
             run('brew', 'uninstall', '--force', '--ignore-dependencies', *installed)
-    fragment = {}
-    failed = []
     frag_name = 'manifest-local.json' if local else f'manifest-{idx}.json'
+    # Funde o fragmento anterior: as entradas são o checkpoint do shard e
+    # precisam sobreviver a um publish que falhe em consolidar — zerar o
+    # arquivo apagaria do combinado tudo que runs anteriores publicaram.
+    fragment = {}
+    frag_asset = next((a for a in assets if a['name'] == frag_name), None)
+    if frag_asset:
+        fetched = fetch_if_present(frag_asset['browser_download_url'])
+        if fetched:
+            fragment = json.loads(fetched)
+    failed = []
     out_dir = WORK / f'out-{idx}'
     out_dir.mkdir(exist_ok=True)
     frag_path = out_dir / frag_name
