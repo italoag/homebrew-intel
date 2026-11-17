@@ -1,0 +1,59 @@
+Formula/boost.rb
+  s_a6c2d66b4b0258::t_beef6fd5be3515 133-137
+Formula/httpie.rb
+  s_a6c2d66b4b0258::t_beef6fd5be3515 103-107
+Formula/libssh2.rb
+  s_a6c2d66b4b0258::t_beef6fd5be3515 168-172
+Formula/ttyd.rb
+  s_a6c2d66b4b0258::t_beef6fd5be3515 52-56
+Formula/libusbmuxd.rb
+  s_a6c2d66b4b0258::t_beef6fd5be3515 46-50
+Formula/icu4c@78.rb
+  s_a6c2d66b4b0258::t_beef6fd5be3515 50-54
+Formula/notmuch.rb
+  s_a6c2d66b4b0258::t_beef6fd5be3515 85-89
+Formula/ada-url.rb
+  s_a6c2d66b4b0258::t_beef6fd5be3515 82-86
+Formula/cffi.rb
+  s_a6c2d66b4b0258::t_beef6fd5be3515 57-61
+Formula/libevent.rb
+  s_a6c2d66b4b0258::t_beef6fd5be3515 42-46
+Formula/xapian.rb
+  s_a6c2d66b4b0258::t_beef6fd5be3515 72-76
+Formula/librdkafka.rb
+  s_a6c2d66b4b0258::t_beef6fd5be3515 53-57
+Formula/coreutils.rb
+  s_a6c2d66b4b0258::t_beef6fd5be3515 139-143
+Formula/aria2.rb
+  s_a6c2d66b4b0258::t_beef6fd5be3515 61-65
+Formula/merve.rb
+  s_a6c2d66b4b0258::t_beef6fd5be3515 53-57
+Formula/unar.rb
+  s_a6c2d66b4b0258::t_beef6fd5be3515 83-87
+Formula/cryptography.rb
+  s_a6c2d66b4b0258::t_beef6fd5be3515 49-53
+Formula/yajl.rb
+  s_a6c2d66b4b0258::t_beef6fd5be3515 43-47
+Formula/pygobject3.rb
+  s_a6c2d66b4b0258::t_beef6fd5be3515 62-66
+Formula/exiftool.rb
+  s_a6c2d66b4b0258::t_beef6fd5be3515 109-113
+Formula/libgit2.rb
+  s_a6c2d66b4b0258::t_beef6fd5be3515 76-80
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b1bb4437bcd7cfa62febe64b88c90fb2bf22663d",
+  "prompts": {},
+  "sessions": {
+    "s_a6c2d66b4b0258": {
+      "agent_id": {
+        "tool": "windsurf",
+        "id": "malleable-nigella",
+        "model": "unknown"
+      },
+      "human_author": "Italo A. G. <182202+italoag@users.noreply.github.com>"
+    }
+  }
+}
