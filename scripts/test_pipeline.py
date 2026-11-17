@@ -521,6 +521,39 @@ class SingleOwnerBuildTests(unittest.TestCase):
         with patch.object(p, 'formula_info', return_value=info):
             self.assertFalse(p.stable_version_installed('u/intel/texinfo'))
 
+    def test_build_tool_bump_does_not_invalidate_dependents(self):
+        # pkgconf/cmake entram como dep de quase tudo mas não mudam o binário:
+        # contá-los no fp fazia um bump de patch invalidar 160 fórmulas,
+        # inclusive o llvm, que não cabe nas 6h do job.
+        order = ['pkgconf', 'jq']
+        graph = {'pkgconf': [], 'jq': ['pkgconf']}
+        owner = {'pkgconf': 'pkgconf', 'jq': 'jq'}
+        base = p.member_fps(order, graph, {'pkgconf': 'p1', 'jq': 'j1'}, owner)
+        bumped = p.member_fps(order, graph, {'pkgconf': 'p2', 'jq': 'j1'}, owner)
+        self.assertEqual(base['jq'], bumped['jq'])
+        # Dep de runtime continua invalidando em cascata.
+        runtime = {'openssl': [], 'jq': ['openssl']}
+        owner2 = {'openssl': 'openssl', 'jq': 'jq'}
+        a = p.member_fps(['openssl', 'jq'], runtime,
+                         {'openssl': 'o1', 'jq': 'j1'}, owner2)
+        b = p.member_fps(['openssl', 'jq'], runtime,
+                         {'openssl': 'o2', 'jq': 'j1'}, owner2)
+        self.assertNotEqual(a['jq'], b['jq'])
+
+    def test_published_bottle_survives_dependency_bump(self):
+        # Mesma versão da fórmula = mesmo bottle, ainda que uma dep tenha
+        # subido de patch: o publish do Homebrew também não reconstrói nesse
+        # caso, e reconstruir o llvm custa 10h.
+        source = ('class Jq < Formula\n'
+                  '  url "https://e.org/jq-1.7.1.tar.gz"\n  revision 3\nend\n')
+        self.assertTrue(p.bottle_matches_version(
+            source, 'jq', 'jq-1.7.1_3.tahoe.bottle.tar.gz'))
+        self.assertFalse(p.bottle_matches_version(
+            source, 'jq', 'jq-1.7.1.tahoe.bottle.tar.gz'))
+        self.assertFalse(p.bottle_matches_version(
+            source, 'jq', 'jq-1.7.0_3.tahoe.bottle.tar.gz'))
+        self.assertFalse(p.bottle_matches_version(source, 'jq', None))
+
     def test_wait_is_bounded_by_the_shard_deadline(self):
         # A segunda passada espera o dono publicar, mas nunca além do
         # orçamento do shard (o job morre em 6h).
