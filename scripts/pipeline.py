@@ -1594,7 +1594,10 @@ def publish():
             # versão da fórmula e a URL derivada mudou)? Publicar o .rb assim
             # quebraria todo install com 404 e cada shard compilaria da fonte:
             # remove o bloco e o cliente compila até o rebuild completar.
-            if bottle_block_missing(grafted, short, assets):
+            # Só para membro que vai ser reconstruído (stale): num membro em
+            # dia o manifesto já garante que o asset existe, e apagar o bloco
+            # ali era o que sumia com bottles válidos a cada publish.
+            if stale and bottle_block_missing(grafted, short, assets):
                 grafted = strip_bottle_block(grafted)
             if grafted != source:
                 # Propaga o formato novo (deps qualificadas) mantendo o bottle
