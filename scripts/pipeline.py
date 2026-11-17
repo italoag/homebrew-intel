@@ -1590,6 +1590,13 @@ def publish():
                 download(assets[asset_name]['browser_download_url']).decode(),
                 assets)
             grafted = graft_bottle_block(plan_data['normalized'][key], source)
+            # O asset pode ter perdido o bloco num publish antigo. O arquivo do
+            # repo ainda o tem e o plano o considera em dia: usa o do repo, e o
+            # upload abaixo devolve o bloco ao asset.
+            if 'bottle do' not in grafted and not stale and target.exists():
+                atual = target.read_text()
+                if 'bottle do' in atual:
+                    grafted = graft_bottle_block(plan_data['normalized'][key], atual)
             # O bottle referenciado sumiu do release (ou o bloco veio de outra
             # versão da fórmula e a URL derivada mudou)? Publicar o .rb assim
             # quebraria todo install com 404 e cada shard compilaria da fonte:
