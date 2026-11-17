@@ -40,4 +40,9 @@ class Yajl < Formula
     output = pipe_output("#{bin}/json_verify", "[0,1,2,3]").strip
     assert_equal "JSON is valid", output
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "b911f7e316fce383308ccd29739b97857bb1716fe72bb41ef43f01751eb4399f"
+  end
+
 end

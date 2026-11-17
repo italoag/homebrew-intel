@@ -80,4 +80,9 @@ class Unar < Formula
     system bin/"unar", "README.md.gz"
     assert_path_exists testpath/"README.md"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "d8b5c803966830d5931c8701b039f8688e34814efd45bcd8ee9d917e01b98053"
+  end
+
 end

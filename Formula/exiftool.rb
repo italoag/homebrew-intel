@@ -106,4 +106,9 @@ class Exiftool < Formula
       assert_match "BrotliEXIF", shell_output("#{bin}/exiftool -verbose input.jxl")
     end
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "070a928234fea1ded44648d594e20b05a18c962f26ae54a4322ca1114d947615"
+  end
+
 end

@@ -73,4 +73,9 @@ class Libgit2 < Formula
     system ENV.cc, "test.c", "-o", "test", *flags
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "003c1bf0030421f4425fd5e6e43bd42c4e23809e073e7376701d8edc4497e16b"
+  end
+
 end
