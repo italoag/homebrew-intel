@@ -413,6 +413,21 @@ class BottleReferenceTests(unittest.TestCase):
         self.assertFalse(p.bottle_block_missing(
             'class N < Formula\n  url "https://e.org/n.tgz"\nend\n', 'n', set()))
 
+    def test_bottle_block_with_revision_matches_revisioned_asset(self):
+        # libgit2 1.9.7 com revision 2 publica libgit2-1.9.7_2: omitir a
+        # revisão fazia um bloco válido parecer órfão e o publish o removia.
+        source = ('class Libgit2 < Formula\n'
+                  '  url "https://e.org/libgit2/v1.9.7.tar.gz"\n'
+                  '  revision 2\n'
+                  '  bottle do\n'
+                  '    root_url "https://github.com/u/homebrew-intel/releases/download/tahoe-bottles"\n'
+                  '    sha256 tahoe: "abc"\n'
+                  '  end\nend\n')
+        self.assertIn('libgit2-1.9.7_2.tahoe.bottle.tar.gz',
+                      p.bottle_assets(source, 'libgit2'))
+        self.assertFalse(p.bottle_block_missing(
+            source, 'libgit2', {'libgit2-1.9.7_2.tahoe.bottle.tar.gz'}))
+
     def test_explicit_bottle_url_is_validated_by_basename(self):
         source = ('class P < Formula\n  url "https://e.org/p-1.0.tar.gz"\n'
                   '  bottle do\n'
@@ -505,6 +520,39 @@ class SingleOwnerBuildTests(unittest.TestCase):
         info['installed'] = [{'version': '7.2'}]
         with patch.object(p, 'formula_info', return_value=info):
             self.assertFalse(p.stable_version_installed('u/intel/texinfo'))
+
+    def test_build_tool_bump_does_not_invalidate_dependents(self):
+        # pkgconf/cmake entram como dep de quase tudo mas não mudam o binário:
+        # contá-los no fp fazia um bump de patch invalidar 160 fórmulas,
+        # inclusive o llvm, que não cabe nas 6h do job.
+        order = ['pkgconf', 'jq']
+        graph = {'pkgconf': [], 'jq': ['pkgconf']}
+        owner = {'pkgconf': 'pkgconf', 'jq': 'jq'}
+        base = p.member_fps(order, graph, {'pkgconf': 'p1', 'jq': 'j1'}, owner)
+        bumped = p.member_fps(order, graph, {'pkgconf': 'p2', 'jq': 'j1'}, owner)
+        self.assertEqual(base['jq'], bumped['jq'])
+        # Dep de runtime continua invalidando em cascata.
+        runtime = {'openssl': [], 'jq': ['openssl']}
+        owner2 = {'openssl': 'openssl', 'jq': 'jq'}
+        a = p.member_fps(['openssl', 'jq'], runtime,
+                         {'openssl': 'o1', 'jq': 'j1'}, owner2)
+        b = p.member_fps(['openssl', 'jq'], runtime,
+                         {'openssl': 'o2', 'jq': 'j1'}, owner2)
+        self.assertNotEqual(a['jq'], b['jq'])
+
+    def test_published_bottle_survives_dependency_bump(self):
+        # Mesma versão da fórmula = mesmo bottle, ainda que uma dep tenha
+        # subido de patch: o publish do Homebrew também não reconstrói nesse
+        # caso, e reconstruir o llvm custa 10h.
+        source = ('class Jq < Formula\n'
+                  '  url "https://e.org/jq-1.7.1.tar.gz"\n  revision 3\nend\n')
+        self.assertTrue(p.bottle_matches_version(
+            source, 'jq', 'jq-1.7.1_3.tahoe.bottle.tar.gz'))
+        self.assertFalse(p.bottle_matches_version(
+            source, 'jq', 'jq-1.7.1.tahoe.bottle.tar.gz'))
+        self.assertFalse(p.bottle_matches_version(
+            source, 'jq', 'jq-1.7.0_3.tahoe.bottle.tar.gz'))
+        self.assertFalse(p.bottle_matches_version(source, 'jq', None))
 
     def test_wait_is_bounded_by_the_shard_deadline(self):
         # A segunda passada espera o dono publicar, mas nunca além do
