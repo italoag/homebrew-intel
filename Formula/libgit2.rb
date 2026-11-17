@@ -73,5 +73,4 @@ class Libgit2 < Formula
     system ENV.cc, "test.c", "-o", "test", *flags
     system "./test"
   end
-
 end

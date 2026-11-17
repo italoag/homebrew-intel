@@ -100,5 +100,4 @@ class Httpie < Formula
     raw_url = "https://raw.githubusercontent.com/Homebrew/homebrew-core/HEAD/Formula/h/httpie.rb"
     assert_match "PYTHONPATH", shell_output("#{bin}/http --ignore-stdin #{raw_url}")
   end
-
 end

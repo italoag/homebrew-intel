@@ -40,5 +40,4 @@ class Yajl < Formula
     output = pipe_output("#{bin}/json_verify", "[0,1,2,3]").strip
     assert_equal "JSON is valid", output
   end
-
 end

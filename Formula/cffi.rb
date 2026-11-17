@@ -54,5 +54,4 @@ class Cffi < Formula
       assert_equal 3, shell_output("#{python} sum.py").to_i
     end
   end
-
 end

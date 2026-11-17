@@ -47,5 +47,4 @@ class Icu4cAT78 < Formula
       system bin/"gendict", "--uchars", "hello", "dict"
     end
   end
-
 end

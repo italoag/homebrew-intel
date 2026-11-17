@@ -165,5 +165,4 @@ class Libssh2 < Formula
     system ENV.cc, "test.c", "-L#{lib}", "-lssh2", "-o", "test"
     system "./test"
   end
-
 end

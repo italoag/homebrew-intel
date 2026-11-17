@@ -88,7 +88,6 @@ class GobjectIntrospection < Formula
     system ENV.cc, "main.c", "-o", "test", *pkgconf_flags
     system "./test"
   end
-
 end
 
 __END__

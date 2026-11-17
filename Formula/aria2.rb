@@ -58,5 +58,4 @@ class Aria2 < Formula
     system bin/"aria2c", "https://brew.sh/"
     assert_path_exists testpath/"index.html", "Failed to create index.html!"
   end
-
 end

@@ -106,5 +106,4 @@ class Exiftool < Formula
       assert_match "BrotliEXIF", shell_output("#{bin}/exiftool -verbose input.jxl")
     end
   end
-
 end

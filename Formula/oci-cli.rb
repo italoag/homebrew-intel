@@ -180,5 +180,4 @@ class OciCli < Formula
 
     assert_match "Could not find config file", shell_output("#{bin}/oci session validate 2>&1", 1)
   end
-
 end

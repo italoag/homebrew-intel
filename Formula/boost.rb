@@ -130,5 +130,4 @@ class Boost < Formula
                     "-L#{formula_opt_lib("zstd")}", "-lzstd"
     system "./test"
   end
-
 end

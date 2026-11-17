@@ -44,5 +44,4 @@ class Maturin < Formula
       system python3, "-c", "import maturin"
     end
   end
-
 end

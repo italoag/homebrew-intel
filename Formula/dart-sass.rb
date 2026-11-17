@@ -74,5 +74,4 @@ class DartSass < Formula
     assert_equal "div img{border:0px}",
     shell_output("#{bin}/sass --style compressed input.scss").strip
   end
-
 end

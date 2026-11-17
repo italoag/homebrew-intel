@@ -45,5 +45,4 @@ class Py3cairo < Formula
       system python, "-c", "import cairo; print(cairo.version)"
     end
   end
-
 end

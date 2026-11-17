@@ -548,5 +548,4 @@ class LlvmAT21 < Formula
       end
     end
   end
-
 end

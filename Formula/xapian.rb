@@ -69,5 +69,4 @@ class Xapian < Formula
     system bin/"xapian-config", "--libs"
     system python3, "-c", "import xapian"
   end
-
 end

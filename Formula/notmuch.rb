@@ -82,5 +82,4 @@ class Notmuch < Formula
     system bin/"notmuch-git", "-C", testpath/"git", "init"
     assert_path_exists testpath/"git"
   end
-
 end

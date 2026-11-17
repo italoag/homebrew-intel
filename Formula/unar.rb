@@ -80,5 +80,4 @@ class Unar < Formula
     system bin/"unar", "README.md.gz"
     assert_path_exists testpath/"README.md"
   end
-
 end

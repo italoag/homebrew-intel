@@ -59,5 +59,4 @@ class Pygobject3 < Formula
       system python, "test.py"
     end
   end
-
 end

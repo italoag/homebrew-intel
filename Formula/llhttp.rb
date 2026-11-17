@@ -49,5 +49,4 @@ class Llhttp < Formula
     system ENV.cc, "test.c", "-o", "test", "-L#{lib}", "-lllhttp"
     assert_equal "Message completed!\nSuccessfully parsed!\n", shell_output("./test")
   end
-
 end

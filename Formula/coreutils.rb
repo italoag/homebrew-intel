@@ -136,5 +136,4 @@ class Coreutils < Formula
     system bin/"gsha1sum", "-c", "test.sha1"
     system bin/"gln", "-f", "test", "test.sha1"
   end
-
 end

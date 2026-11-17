@@ -79,5 +79,4 @@ class AdaUrl < Formula
     Process.wait(pid)
     assert_match "search_start 25", output_log.read
   end
-
 end

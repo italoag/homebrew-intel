@@ -51,5 +51,4 @@ class Mdfried < Formula
     Process.kill("TERM", pid)
     Process.wait(pid)
   end
-
 end

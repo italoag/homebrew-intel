@@ -46,5 +46,4 @@ class Cryptography < Formula
       assert_match "b'homebrew'", shell_output("#{python3} test.py")
     end
   end
-
 end

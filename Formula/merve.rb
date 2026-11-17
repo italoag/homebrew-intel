@@ -50,5 +50,4 @@ class Merve < Formula
     system ENV.cc, "test-merv.c", "-I#{include}", "-L#{lib}", "-lmerve", "-o", "test-merv"
     assert_equal "2 bar 2\n", shell_output("./test-merv")
   end
-
 end

@@ -102,5 +102,4 @@ class Ffmpeg < Formula
     system bin/"ffmpeg", "-filter_complex", "testsrc=rate=1:duration=5", mp4out
     assert_path_exists mp4out, "Failed to create video.mp4!"
   end
-
 end

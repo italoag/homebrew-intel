@@ -43,5 +43,4 @@ class Libusbmuxd < Formula
       Process.wait(pid)
     end
   end
-
 end
