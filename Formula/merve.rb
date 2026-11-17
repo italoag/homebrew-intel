@@ -50,9 +50,4 @@ class Merve < Formula
     system ENV.cc, "test-merv.c", "-I#{include}", "-L#{lib}", "-lmerve", "-o", "test-merv"
     assert_equal "2 bar 2\n", shell_output("./test-merv")
   end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "cc2c36b780f915e24b38bb0036116958704420598103b92734bb4570f911d7de"
-  end
-
 end

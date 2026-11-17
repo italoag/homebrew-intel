@@ -69,9 +69,4 @@ class Xapian < Formula
     system bin/"xapian-config", "--libs"
     system python3, "-c", "import xapian"
   end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "126efdacc5a608f0164dcc23c5c7a98eaa872615889e48e35a558387da5bfe44"
-  end
-
 end

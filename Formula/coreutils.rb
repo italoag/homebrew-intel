@@ -136,9 +136,4 @@ class Coreutils < Formula
     system bin/"gsha1sum", "-c", "test.sha1"
     system bin/"gln", "-f", "test", "test.sha1"
   end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "3553c4b51dfbfebba474089bf649783e5e3f9d1c44b83845ee521bb98c8af123"
-  end
-
 end

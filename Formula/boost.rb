@@ -130,9 +130,4 @@ class Boost < Formula
                     "-L#{formula_opt_lib("zstd")}", "-lzstd"
     system "./test"
   end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "16f5553ba6e89eb14b45477161d306625b35fc882f64c336e2485ce4f52a453e"
-  end
-
 end

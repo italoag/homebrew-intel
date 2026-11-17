@@ -165,9 +165,4 @@ class Libssh2 < Formula
     system ENV.cc, "test.c", "-L#{lib}", "-lssh2", "-o", "test"
     system "./test"
   end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "a6ca78a1c44313a51c0e5ebe73c045491809ef4034d02a5e058fe1e48762fe83"
-  end
-
 end

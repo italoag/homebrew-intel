@@ -257,5 +257,4 @@ class Rust < Formula
     end
     assert missing_linkage.empty?, "Missing linkage: #{missing_linkage.join(", ")}"
   end
-
 end
