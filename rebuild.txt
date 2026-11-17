@@ -1,0 +1,3 @@
+# Membros que precisam de rebuild por um motivo que o fingerprint não vê.
+# Uma linha por nome curto; o membro volta para a fila e é republicado.
+python@3.14

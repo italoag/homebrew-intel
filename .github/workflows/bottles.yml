@@ -5,7 +5,7 @@ on:
     - cron: '23 7 * * *'
   push:
     branches: [main]
-    paths: ['packages.txt', 'taps.txt', 'scripts/**', '.github/workflows/bottles.yml']
+    paths: ['packages.txt', 'taps.txt', 'rebuild.txt', 'scripts/**', '.github/workflows/bottles.yml']
 permissions:
   contents: write
 concurrency:

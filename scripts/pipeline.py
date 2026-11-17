@@ -1025,6 +1025,20 @@ def plan():
             promoted = TAP_ROOT / 'Formula' / (short_name(name) + '.rb')
             if promoted.is_file() and 'bottle do' not in promoted.read_text():
                 build_set.add(name)
+    # rebuild.txt: membros que precisam de rebuild por um motivo que o
+    # fingerprint não enxerga — bottle construído contra uma dep que mudou de
+    # soname (python@3.14 x libintl.8 do gettext), por exemplo. Uma linha por
+    # nome curto; o membro volta para a fila e é republicado.
+    force = ROOT / 'rebuild.txt'
+    if force.is_file():
+        pedidos = {line.split('#', 1)[0].strip()
+                   for line in force.read_text().splitlines()} - {''}
+        for name in order:
+            short = short_name(name)
+            if short in pedidos and file_owner[short] == name:
+                if name not in build_set:
+                    print(f'Rebuild forçado por rebuild.txt: {short}', flush=True)
+                build_set.add(name)
     shards = prioritize(partition(order, graph, build_set, SHARDS),
                         graph, build_set)
     # A verificação de escape roda no plan: falha antes de gastar minutos de shard.
