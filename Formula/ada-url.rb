@@ -79,4 +79,9 @@ class AdaUrl < Formula
     Process.wait(pid)
     assert_match "search_start 25", output_log.read
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "1f22fe64864ab61efa2bb343e91e99e55427f8db466d4149d5275fe75f7a74f8"
+  end
+
 end
