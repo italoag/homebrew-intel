@@ -45,16 +45,6 @@ HEAVY = (('llvm', 40), ('lld', 40), ('rust', 45), ('openjdk', 35), ('gcc', 30),
          ('qt', 30), ('node', 30), ('ffmpeg', 25), ('go', 25), ('gtk', 20),
          ('boost', 20), ('emacs', 20), ('python@', 15), ('postgresql', 15),
          ('mysql', 15), ('ruby', 15))
-# Ferramentas de build: aparecem como dep de quase todo o catálogo, mas não
-# mudam o binário produzido. Ficam fora do fingerprint (ver member_fps).
-BUILD_TOOLS = {'pkgconf', 'pkg-config', 'cmake', 'ninja', 'meson', 'autoconf',
-               'automake', 'libtool', 'm4'}
-# Membros que não cabem no limite de 6h do job: o llvm do core é um PGO de
-# três estágios (~10h nesta classe de hardware) e morre sempre no timeout,
-# queimando o runner inteiro sem publicar nada. O shard do CI não os tenta;
-# eles saem no builder dedicado (modo local). O bottle já publicado continua
-# servindo: wait_for_publish adota pelo asset, sem olhar o fingerprint.
-CI_UNBUILDABLE = {'llvm'}
 
 
 class Skipped(Exception):
@@ -480,13 +470,10 @@ ARCHIVE_SUFFIXES = ('.tar.gz', '.tar.bz2', '.tar.xz', '.tar.zst', '.tgz', '.zip'
 def formula_version(source):
     # Versão que entra no nome do bottle: explícita ou derivada do basename da
     # URL estável (z3-5.4.1.tar.gz -> 5.4.1). None quando não dá para saber.
-    # `version` só no nível da classe: o bloco livecheck também declara
-    # version (z3 tem `version "12"` lá dentro) e não é a versão do bottle.
-    # `url` aceita 4 espaços porque fórmula com `stable do` declara lá (llvm).
     match = re.search(r'^  version "([^"]+)"', source, re.M)
     if match:
         return match.group(1)
-    match = re.search(r'^ {2,4}url "([^"]+)"', source, re.M)
+    match = re.search(r'^  url "([^"]+)"', source, re.M)
     if not match:
         return None
     name = urllib.parse.urlparse(match.group(1)).path.rsplit('/', 1)[-1]
@@ -500,11 +487,8 @@ def formula_version(source):
 
 def bottle_assets(source, short):
     # Assets que o bloco bottle referencia: url explícita ou o nome que o brew
-    # deriva de <short>-<versão>[_revisão].<tag>.bottle.tar.gz quando não há
-    # url. A revisão entra no nome (libgit2 1.9.7 com revision 2 publica
-    # libgit2-1.9.7_2): omiti-la fazia o bloco válido parecer órfão e o
-    # publish removia um bottle que existia. None = sem bloco ou impossível
-    # de resolver (não dá para validar).
+    # deriva de <short>-<versão>.<tag>.bottle.tar.gz quando não há url. None =
+    # sem bloco ou impossível de resolver (não dá para validar).
     block = re.search(r'(?ms)^  bottle do\n(.*?)^  end\n', source)
     if not block:
         return None
@@ -515,12 +499,8 @@ def bottle_assets(source, short):
     version = formula_version(source)
     if not version:
         return None
-    revision = re.search(r'^  revision (\d+)\s*$', source, re.M)
-    suffixes = [f'_{revision.group(1)}'] if revision else []
-    suffixes.append('')
-    return {f'{short}-{version}{suffix}.{tag}.bottle.tar.gz'
-            for suffix in suffixes
-            for tag in (BOTTLE_TAG, 'all')}
+    return {f'{short}-{version}.{BOTTLE_TAG}.bottle.tar.gz',
+            f'{short}-{version}.all.bottle.tar.gz'}
 
 
 def bottle_block_missing(source, short, asset_names):
@@ -535,22 +515,6 @@ def bottle_block_missing(source, short, asset_names):
         return False
     assets = bottle_assets(source, short)
     return bool(assets) and not (assets & set(asset_names))
-
-
-def bottle_matches_version(source, short, asset):
-    # O nome do asset embute a versão publicada (libgit2-1.9.7_2.tahoe...).
-    # Se a fórmula continua na mesma versão, o bottle corresponde a ela e o
-    # que mudou foi só o fingerprint (bump de dep): reconstruir seria
-    # trabalho perdido — é o modelo do próprio Homebrew, que não recompila
-    # bottle quando uma dependência sobe de patch.
-    if not asset or not asset.startswith(short + '-'):
-        return False
-    version = formula_version(source)
-    if not version:
-        return False
-    revision = re.search(r'^  revision (\d+)\s*$', source, re.M)
-    expected = f'{version}_{revision.group(1)}' if revision else version
-    return asset[len(short) + 1:].startswith(expected + '.')
 
 
 def checks():
@@ -707,25 +671,17 @@ def owners(order):
     return file_owner, dropped
 
 
-def member_fps(order, graph, sources, file_owner, patch_shas=None,
-               ignore_build_tools=True):
+def member_fps(order, graph, sources, file_owner, patch_shas=None):
     # Fingerprint por fórmula: fonte UPSTREAM (invariante a mudanças de
     # normalização nossas) + patches embutidos + fingerprint das deps, para que
     # mudança em uma dependência invalide os dependentes em cascata. O subgrafo
     # de donos tem ordem própria: uma dep descartada resolve para o dono core,
     # que pode aparecer depois em order.
-    # Ferramentas de build ficam de fora (ignore_build_tools): entram no grafo
-    # de quase tudo, mas não mudam o binário produzido. Incluí-las fazia um
-    # bump de patch do pkgconf invalidar 160 fórmulas — inclusive o llvm, que
-    # não cabe no orçamento de 6h e queimava um runner por run sem publicar.
     patch_shas = patch_shas or {}
     owner_names = [name for name in order if file_owner[short_name(name)] == name]
     ograph = {name: {file_owner[short_name(dep)] for dep in graph[name]
                      if file_owner[short_name(dep)] != name}
               for name in owner_names}
-    if ignore_build_tools:
-        ograph = {name: {dep for dep in deps if short_name(dep) not in BUILD_TOOLS}
-                  for name, deps in ograph.items()}
     fps = {}
     for name in topo(owner_names, ograph):
         dep_fps = sorted(fps[dep] for dep in ograph[name])
@@ -972,14 +928,7 @@ def plan():
         # o bottle já publicado continua válido e não precisa rebuild.
         legacy_norm = {n: transform(s, tap, set(graph), reusable[n])
                        for n, s in sources.items()}
-        # Dois fp legados: o da normalização antiga (deps curtas) e o que
-        # ainda contava ferramentas de build. Um bottle publicado sob
-        # qualquer um deles continua válido — só o fp é atualizado.
         legacy_fps = member_fps(order, graph, legacy_norm, file_owner)
-        legacy_fps_tools = member_fps(order, graph, normalized, file_owner,
-                                      patch_shas, ignore_build_tools=False)
-        legacy_candidates = {name: {legacy_fps[name], legacy_fps_tools[name]}
-                             for name in order}
         tables = [('manifest.json', manifest)]
         for asset in release_assets(release['id']):
             if re.fullmatch(r'manifest-(?:\d+|local)\.json', asset['name']):
@@ -992,11 +941,8 @@ def plan():
             for name in order:
                 short = short_name(name)
                 entry = table.get(short)
-                if not entry or entry.get('fp') == fps[name]:
-                    continue
-                if (entry['fp'] in legacy_candidates[name]
-                        or bottle_matches_version(normalized[name], short,
-                                                  entry.get('asset'))):
+                if (entry and entry.get('fp') == legacy_fps[name]
+                        and entry['fp'] != fps[name]):
                     table[short] = {**entry, 'fp': fps[name]}
                     migrated += 1
                     dirty = True
@@ -1017,14 +963,6 @@ def plan():
             build_set.add(name)
         elif not reusable[name] and entry.get('asset') not in assets:
             build_set.add(name)  # fingerprint ok mas asset sumiu do release.
-        elif not reusable[name] and entry.get('asset'):
-            # Manifesto diz publicado, mas o .rb promovido está sem bloco
-            # bottle (o publish removeu um bloco que julgou órfão). Dep sem
-            # bottle derruba todo --build-bottle que depende dela, então o
-            # membro volta para a fila e recupera o bloco.
-            promoted = TAP_ROOT / 'Formula' / (short_name(name) + '.rb')
-            if promoted.is_file() and 'bottle do' not in promoted.read_text():
-                build_set.add(name)
     shards = prioritize(partition(order, graph, build_set, SHARDS),
                         graph, build_set)
     # A verificação de escape roda no plan: falha antes de gastar minutos de shard.
@@ -1399,14 +1337,6 @@ def build_shard(idx, local=False):
     def attempt(name, wait=False):
         short = short_name(name)
         full = tap + '/' + short
-        if not local and short in CI_UNBUILDABLE:
-            # Não cabe no limite de 6h: tentar só queima o runner inteiro e
-            # termina em timeout, sem bottle. O bottle publicado continua
-            # válido para os dependentes; a reconstrução fica para o builder
-            # dedicado (modo local, sem orçamento).
-            print(f'[{idx}] {short}: fora do CI — excede o limite de 6h do job; '
-                  'reconstruir no builder dedicado', flush=True)
-            return
         if (done.get(short) or {}).get('fp') == fps[name]:
             print(f'[{idx}] {short}: já publicado; pulando', flush=True)
             return
