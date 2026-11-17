@@ -716,11 +716,15 @@ def graft_bottle_block(normalized, promoted):
 def write_aux_files(aliases, renames):
     # Alias vira symlink Aliases/<alias> -> ../Formula/<alvo>.rb (formato do
     # homebrew-core); renames vira formula_renames.json na raiz do tap.
+    # Alvo ainda não publicado não gera alias: symlink pendurado faz o
+    # `brew tap` abortar com "Non-file alias" e o tap não fica registrado.
     aliases_dir = TAP_ROOT / 'Aliases'
     for stale in aliases_dir.iterdir() if aliases_dir.is_dir() else []:
         if stale.name not in aliases:
             stale.unlink()
     for alias, target in aliases.items():
+        if not (TAP_ROOT / 'Formula' / (target + '.rb')).is_file():
+            continue
         link = aliases_dir / alias
         link.parent.mkdir(parents=True, exist_ok=True)
         if link.is_symlink() or link.exists():
