@@ -487,8 +487,11 @@ def formula_version(source):
 
 def bottle_assets(source, short):
     # Assets que o bloco bottle referencia: url explícita ou o nome que o brew
-    # deriva de <short>-<versão>.<tag>.bottle.tar.gz quando não há url. None =
-    # sem bloco ou impossível de resolver (não dá para validar).
+    # deriva de <short>-<versão>[_revisão].<tag>.bottle.tar.gz quando não há
+    # url. A revisão entra no nome (libgit2 1.9.7 com revision 2 publica
+    # libgit2-1.9.7_2): omiti-la fazia o bloco válido parecer órfão e o
+    # publish removia um bottle que existia. None = sem bloco ou impossível
+    # de resolver (não dá para validar).
     block = re.search(r'(?ms)^  bottle do\n(.*?)^  end\n', source)
     if not block:
         return None
@@ -499,8 +502,12 @@ def bottle_assets(source, short):
     version = formula_version(source)
     if not version:
         return None
-    return {f'{short}-{version}.{BOTTLE_TAG}.bottle.tar.gz',
-            f'{short}-{version}.all.bottle.tar.gz'}
+    revision = re.search(r'^  revision (\d+)\s*$', source, re.M)
+    suffixes = [f'_{revision.group(1)}'] if revision else []
+    suffixes.append('')
+    return {f'{short}-{version}{suffix}.{tag}.bottle.tar.gz'
+            for suffix in suffixes
+            for tag in (BOTTLE_TAG, 'all')}
 
 
 def bottle_block_missing(source, short, asset_names):
@@ -963,6 +970,14 @@ def plan():
             build_set.add(name)
         elif not reusable[name] and entry.get('asset') not in assets:
             build_set.add(name)  # fingerprint ok mas asset sumiu do release.
+        elif not reusable[name] and entry.get('asset'):
+            # Manifesto diz publicado, mas o .rb promovido está sem bloco
+            # bottle (o publish removeu um bloco que julgou órfão). Dep sem
+            # bottle derruba todo --build-bottle que depende dela, então o
+            # membro volta para a fila e recupera o bloco.
+            promoted = TAP_ROOT / 'Formula' / (short_name(name) + '.rb')
+            if promoted.is_file() and 'bottle do' not in promoted.read_text():
+                build_set.add(name)
     shards = prioritize(partition(order, graph, build_set, SHARDS),
                         graph, build_set)
     # A verificação de escape roda no plan: falha antes de gastar minutos de shard.

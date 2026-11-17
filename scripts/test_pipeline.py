@@ -413,6 +413,21 @@ class BottleReferenceTests(unittest.TestCase):
         self.assertFalse(p.bottle_block_missing(
             'class N < Formula\n  url "https://e.org/n.tgz"\nend\n', 'n', set()))
 
+    def test_bottle_block_with_revision_matches_revisioned_asset(self):
+        # libgit2 1.9.7 com revision 2 publica libgit2-1.9.7_2: omitir a
+        # revisão fazia um bloco válido parecer órfão e o publish o removia.
+        source = ('class Libgit2 < Formula\n'
+                  '  url "https://e.org/libgit2/v1.9.7.tar.gz"\n'
+                  '  revision 2\n'
+                  '  bottle do\n'
+                  '    root_url "https://github.com/u/homebrew-intel/releases/download/tahoe-bottles"\n'
+                  '    sha256 tahoe: "abc"\n'
+                  '  end\nend\n')
+        self.assertIn('libgit2-1.9.7_2.tahoe.bottle.tar.gz',
+                      p.bottle_assets(source, 'libgit2'))
+        self.assertFalse(p.bottle_block_missing(
+            source, 'libgit2', {'libgit2-1.9.7_2.tahoe.bottle.tar.gz'}))
+
     def test_explicit_bottle_url_is_validated_by_basename(self):
         source = ('class P < Formula\n  url "https://e.org/p-1.0.tar.gz"\n'
                   '  bottle do\n'
