@@ -1,0 +1,59 @@
+Formula/icu4c@78.rb
+  s_a6c2d66b4b0258::t_dad5fda442592d 50-54
+Formula/xapian.rb
+  s_a6c2d66b4b0258::t_dad5fda442592d 72-75
+Formula/aria2.rb
+  s_a6c2d66b4b0258::t_dad5fda442592d 61-65
+Formula/librdkafka.rb
+  s_a6c2d66b4b0258::t_dad5fda442592d 53-56
+Formula/libevent.rb
+  s_a6c2d66b4b0258::t_dad5fda442592d 42-45
+Formula/cffi.rb
+  s_a6c2d66b4b0258::t_dad5fda442592d 57-61
+Formula/httpie.rb
+  s_a6c2d66b4b0258::t_dad5fda442592d 103-106
+Formula/libssh2.rb
+  s_a6c2d66b4b0258::t_dad5fda442592d 168-172
+Formula/libusbmuxd.rb
+  s_a6c2d66b4b0258::t_dad5fda442592d 46-49
+Formula/libgit2.rb
+  s_a6c2d66b4b0258::t_dad5fda442592d 76-80
+Formula/merve.rb
+  s_a6c2d66b4b0258::t_dad5fda442592d 53-57
+Formula/ttyd.rb
+  s_a6c2d66b4b0258::t_dad5fda442592d 52-55
+Formula/yajl.rb
+  s_a6c2d66b4b0258::t_dad5fda442592d 43-47
+Formula/ada-url.rb
+  s_a6c2d66b4b0258::t_dad5fda442592d 82-86
+Formula/notmuch.rb
+  s_a6c2d66b4b0258::t_dad5fda442592d 85-89
+Formula/boost.rb
+  s_a6c2d66b4b0258::t_dad5fda442592d 133-137
+Formula/cryptography.rb
+  s_a6c2d66b4b0258::t_dad5fda442592d 49-53
+Formula/coreutils.rb
+  s_a6c2d66b4b0258::t_dad5fda442592d 139-143
+Formula/pygobject3.rb
+  s_a6c2d66b4b0258::t_dad5fda442592d 62-66
+Formula/exiftool.rb
+  s_a6c2d66b4b0258::t_dad5fda442592d 109-113
+Formula/unar.rb
+  s_a6c2d66b4b0258::t_dad5fda442592d 83-87
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "42b13e118d64df07717b28755fd6f4199a42659c",
+  "prompts": {},
+  "sessions": {
+    "s_a6c2d66b4b0258": {
+      "agent_id": {
+        "tool": "windsurf",
+        "id": "malleable-nigella",
+        "model": "unknown"
+      },
+      "human_author": "Italo A. G. <182202+italoag@users.noreply.github.com>"
+    }
+  }
+}
