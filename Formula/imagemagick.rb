@@ -88,4 +88,5 @@ class Imagemagick < Formula
       assert_match feature, features
     end
   end
+
 end

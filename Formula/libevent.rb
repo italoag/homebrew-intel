@@ -39,5 +39,4 @@ class Libevent < Formula
     system ENV.cc, "test.c", "-L#{lib}", "-levent", "-o", "test"
     system "./test"
   end
-
 end

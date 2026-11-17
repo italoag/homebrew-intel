@@ -1,8 +1,8 @@
 class DockerCompose < Formula
   desc "Isolated development environments using Docker"
   homepage "https://docs.docker.com/compose/"
-  url "https://github.com/docker/compose/archive/refs/tags/v5.7.1.tar.gz"
-  sha256 "bd108789759d3e17ae5532dd6eee67b427dade4c85089daa2f85d6c8f3e3ccb6"
+  url "https://github.com/docker/compose/archive/refs/tags/v5.7.2.tar.gz"
+  sha256 "0229907b9966c12db265686c35e6d068699275186f98c339213eab7d65a6f717"
   license "Apache-2.0"
   head "https://github.com/docker/compose.git", branch: "main"
 
@@ -48,7 +48,7 @@ class DockerCompose < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "041585112f27b4f7b253b827f5f5ef4a7e1c6413b04831e811385683ee313097"
+    sha256 cellar: :any_skip_relocation, tahoe: "3fbcd552af013e6e8c2e0808cc416f1f5b113f51f61b7450114768eb597d05dd"
   end
 
 end

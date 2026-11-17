@@ -50,5 +50,4 @@ class Librdkafka < Formula
     system ENV.cc, "test.c", "-L#{lib}", "-lrdkafka", "-lz", "-lpthread", "-o", "test"
     system "./test"
   end
-
 end

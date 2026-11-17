@@ -257,9 +257,5 @@ class Rust < Formula
     end
     assert missing_linkage.empty?, "Missing linkage: #{missing_linkage.join(", ")}"
   end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "157af9660cd81179ad85989d5a79328df3f20d3dae3309d11ebc7566d10aa554"
-  end
 
 end

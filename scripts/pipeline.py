@@ -616,40 +616,18 @@ def tap_source_taps(external_taps):
             print(f'Trust falhou para {external}; seguindo', flush=True)
 
 
-def link_own_tap(owner, repository, tap, preserve=False):
+def link_own_tap(owner, repository, tap):
     # Disponibiliza o checkout como tap local sem clonar uma versão antiga.
-    # preserve: num clone real já registrado, renomeia em vez de apagar — o
-    # build local precisa do symlink, mas o tap do usuário é devolvido intacto
-    # no fim (ver restore_tap) em vez de ter que re-clonar.
     tap_path = Path(run('brew', '--repository', capture=True).strip()) / 'Library/Taps' / owner / repository
     tap_path.parent.mkdir(parents=True, exist_ok=True)
-    backup = None
-    if tap_path.is_symlink():
-        tap_path.unlink()
-    elif tap_path.exists():
-        if preserve:
-            backup = tap_path.with_name(tap_path.name + '.orig')
-            if backup.exists():
-                shutil.rmtree(backup)
-            tap_path.rename(backup)
+    if tap_path.is_symlink() or tap_path.exists():
+        if tap_path.is_symlink():
+            tap_path.unlink()
         else:
             shutil.rmtree(tap_path)
     tap_path.symlink_to(TAP_ROOT, target_is_directory=True)
     # Brew recusa carregar fórmulas de taps não confiáveis ao resolver dependências.
     run('brew', 'trust', tap)
-    return backup
-
-
-def restore_tap(backup):
-    # Devolve o tap original depois de uma run local: remove o symlink para
-    # .work/tap-local e traz de volta o clone que estava registrado.
-    if not backup:
-        return
-    tap_path = backup.with_name(backup.name.removesuffix('.orig'))
-    if tap_path.is_symlink():
-        tap_path.unlink()
-    backup.rename(tap_path)
-    print(f'Tap restaurado: {tap_path}', flush=True)
 
 
 def build_graph(roots, external_taps):
@@ -787,10 +765,6 @@ def write_aux_files(aliases, renames):
         if stale.name not in aliases:
             stale.unlink()
     for alias, target in aliases.items():
-        # Alvo ainda não publicado não gera alias: symlink pendurado faz o
-        # `brew tap` abortar com "Non-file alias" e o tap não fica registrado.
-        if not (TAP_ROOT / 'Formula' / (target + '.rb')).is_file():
-            continue
         link = aliases_dir / alias
         link.parent.mkdir(parents=True, exist_ok=True)
         if link.is_symlink() or link.exists():
@@ -1394,7 +1368,7 @@ def build_shard(idx, local=False):
         if 'bottle do' in source and bottle_block_missing(source, dep_rb.stem,
                                                           asset_names):
             dep_rb.write_text(strip_bottle_block(source))
-    tap_backup = link_own_tap(owner, repository, tap, preserve=local)
+    link_own_tap(owner, repository, tap)
     if not local:
         # Apenas VM descartável: evita satisfazer dependências com kegs de
         # outro tap. Na máquina do usuário isso destruiria o ambiente.
@@ -1458,25 +1432,22 @@ def build_shard(idx, local=False):
         frag_path.write_text(json.dumps(fragment, indent=2))
         upload_asset(release['id'], frag_path, frag_name)
 
-    try:
-        for name in members:
-            if file_owner[short_name(name)] != name:
-                continue
-            if budget and time.monotonic() - started > budget:
-                print(f'[{idx}] Orçamento de {BUILD_BUDGET_SECONDS // 3600}h '
-                      'esgotado; restantes ficam para a próxima run', flush=True)
-                break
-            attempt(name)
-        # Segunda passada: espera o dono publicar a dep (até o prazo do shard)
-        # em vez de sair sem fazer nada — o bottle aparece no meio da run.
-        for name in list(deferred):
-            if budget and time.monotonic() - started > budget:
-                break
-            if file_owner[short_name(name)] != name:
-                continue
-            attempt(name, wait=True)
-    finally:
-        restore_tap(tap_backup)
+    for name in members:
+        if file_owner[short_name(name)] != name:
+            continue
+        if budget and time.monotonic() - started > budget:
+            print(f'[{idx}] Orçamento de {BUILD_BUDGET_SECONDS // 3600}h '
+                  'esgotado; restantes ficam para a próxima run', flush=True)
+            break
+        attempt(name)
+    # Segunda passada: espera o dono publicar a dep (até o prazo do shard) em
+    # vez de sair sem fazer nada — o bottle aparece no meio da run.
+    for name in list(deferred):
+        if budget and time.monotonic() - started > budget:
+            break
+        if file_owner[short_name(name)] != name:
+            continue
+        attempt(name, wait=True)
     if failed:
         raise RuntimeError(
             f'Shard {idx}: membros falharam e seguem pendentes: '
@@ -1703,12 +1674,7 @@ def publish():
                 raise
             print('Push rejeitado; refazendo sobre a main atual', flush=True)
             run('git', 'fetch', 'origin', 'main')
-            # --mixed, nunca --soft: com --soft o índice antigo (de um
-            # checkout velho) entrava no commit e revertia o que a main
-            # ganhou no meio-tempo — foi assim que um publish apagou
-            # mudanças de scripts/ já mescladas.
-            run('git', 'reset', '--mixed', 'origin/main')
-            run('git', 'add', *add_paths)
+            run('git', 'reset', '--soft', 'origin/main')
             subprocess.run(['git', 'commit', '-m',
                             'Update Intel Tahoe bottle snapshot'],
                            cwd=ROOT, check=False)

@@ -49,5 +49,4 @@ class Ttyd < Formula
     output = shell_output("curl --silent --retry 5 --retry-connrefused http://localhost:#{port}")
     assert_match "<title>ttyd - Terminal</title>", output[..256]
   end
-
 end

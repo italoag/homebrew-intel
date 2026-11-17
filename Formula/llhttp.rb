@@ -49,4 +49,9 @@ class Llhttp < Formula
     system ENV.cc, "test.c", "-o", "test", "-L#{lib}", "-lllhttp"
     assert_equal "Message completed!\nSuccessfully parsed!\n", shell_output("./test")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "ee6dbc4dc7781a12ffc40f872de9b341fa62b2f6cb972f35b8317bf854b10cfa"
+  end
+
 end
