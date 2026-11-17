@@ -34,7 +34,7 @@ class Xorgproto < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "02301fe958df04d33c2ff9ffb438a217037f05e1abe2792f770d9f4b1cae186f"
+    sha256 cellar: :any_skip_relocation, tahoe: "a1bb5a475c11cf4cbfbe3063d1d362639f9fd55c72d562cbed35c0e93be0f23e"
   end
 
 end

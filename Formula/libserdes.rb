@@ -50,7 +50,7 @@ class Libserdes < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "6c0a33c88016440ccc6122a12dc5d766c6d110e4153778257d63cdd203a4221c"
+    sha256 cellar: :any, tahoe: "d8c88ff6cff580e1f170d979012dfc33ec9cbb8a9ba03ff553d05485b6e8bf2e"
   end
 
 end

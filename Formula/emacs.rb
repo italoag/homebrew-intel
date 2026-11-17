@@ -76,5 +76,4 @@ class Emacs < Formula
   test do
     assert_equal "4", shell_output("#{bin}/emacs --batch --eval=\"(print (+ 2 2))\"").strip
   end
-
 end
