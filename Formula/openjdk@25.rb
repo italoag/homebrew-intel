@@ -167,5 +167,4 @@ class OpenjdkAT25 < Formula
 
     assert_match "Hello, world!", shell_output("#{bin}/java HelloWorld")
   end
-
 end

@@ -164,5 +164,4 @@ class OpenjdkAT21 < Formula
 
     assert_match "Hello, world!", shell_output("#{bin}/java HelloWorld")
   end
-
 end

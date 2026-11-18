@@ -801,5 +801,4 @@ class Llvm < Formula
       end
     end
   end
-
 end
