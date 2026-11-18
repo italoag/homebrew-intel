@@ -1409,6 +1409,12 @@ def build_shard(idx, local=False):
     # passada espera, e nunca além do orçamento (o job morre em 6h e levaria
     # o membro em voo junto).
     wait_deadline = None if not budget else started + budget - 300
+    # Mesma lista que o plan usa: aqui ela impede o atalho de "já publicado"
+    # de descartar um membro que precisa ser reconstruído de propósito.
+    forced_file = ROOT / 'rebuild.txt'
+    forced = {line.split('#', 1)[0].strip()
+              for line in forced_file.read_text().splitlines()} - {''} \
+        if forced_file.is_file() else set()
 
     def attempt(name, wait=False):
         short = short_name(name)
@@ -1421,7 +1427,12 @@ def build_shard(idx, local=False):
             print(f'[{idx}] {short}: fora do CI — excede o limite de 6h do job; '
                   'reconstruir no builder dedicado', flush=True)
             return
-        if (done.get(short) or {}).get('fp') == fps[name]:
+        if short in forced:
+            # rebuild.txt pediu reconstrução explícita: o fp igual não vale
+            # como "já publicado" (o bottle existe mas está quebrado, ex.:
+            # python@3.14 ligado a um libintl que a dep não fornece mais).
+            print(f'[{idx}] {short}: rebuild forçado por rebuild.txt', flush=True)
+        elif (done.get(short) or {}).get('fp') == fps[name]:
             print(f'[{idx}] {short}: já publicado; pulando', flush=True)
             return
         try:
