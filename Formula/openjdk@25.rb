@@ -1,8 +1,8 @@
 class OpenjdkAT25 < Formula
   desc "Development kit for the Java programming language"
   homepage "https://openjdk.org/"
-  url "https://github.com/openjdk/jdk25u/archive/refs/tags/jdk-25.0.5.0.3-ga.tar.gz"
-  sha256 "b4dfab0e1a41ed6cc8595555323102d4b3910a7e6e14bc9ec59d945028030072"
+  url "https://github.com/openjdk/jdk25u/archive/refs/tags/jdk-25.0.5.1-ga.tar.gz"
+  sha256 "b4a28f325bc5f38f87c13489a5825613bba78a0e55ebe4202a993e982c62922e"
   license "GPL-2.0-only" => { with: "Classpath-exception-2.0" }
   compatibility_version 1
 
@@ -166,10 +166,6 @@ class OpenjdkAT25 < Formula
     system bin/"javac", "HelloWorld.java"
 
     assert_match "Hello, world!", shell_output("#{bin}/java HelloWorld")
-  end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "a590a34e2b9bb3d0c2f32f63f58439e4b47b31f9153953c900011652d4029a1b"
   end
 
 end

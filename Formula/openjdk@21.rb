@@ -1,8 +1,8 @@
 class OpenjdkAT21 < Formula
   desc "Development kit for the Java programming language"
   homepage "https://openjdk.org/"
-  url "https://github.com/openjdk/jdk21u/archive/refs/tags/jdk-21.0.13.0.3-ga.tar.gz"
-  sha256 "09f7bd8b26af3b838144e02de7c291770714def3c6ab42d609ce543c66d84893"
+  url "https://github.com/openjdk/jdk21u/archive/refs/tags/jdk-21.0.13.1-ga.tar.gz"
+  sha256 "222ab0f4f790dc93fc244eca0bafaa60976154141cc77ccbd83e5012c6ce8b8d"
   license "GPL-2.0-only" => { with: "Classpath-exception-2.0" }
   compatibility_version 1
 
@@ -163,10 +163,6 @@ class OpenjdkAT21 < Formula
     system bin/"javac", "HelloWorld.java"
 
     assert_match "Hello, world!", shell_output("#{bin}/java HelloWorld")
-  end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "37e6815b75eab35d8946be8319eb8c9a4e99cee0cfe31ebee7c8b7a82ec26a0b"
   end
 
 end

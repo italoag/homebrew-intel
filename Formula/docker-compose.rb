@@ -48,7 +48,7 @@ class DockerCompose < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "47f62c27596f44cf8bd76f91dd39100373eff14b6c615800aace4a68c7cfd9c5"
+    sha256 cellar: :any_skip_relocation, tahoe: "9781b7b73394fca660b2ed604bb8ca815b261ed0b74ac8d77614f11fe566dae3"
   end
 
 end
