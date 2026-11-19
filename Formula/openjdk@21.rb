@@ -164,4 +164,9 @@ class OpenjdkAT21 < Formula
 
     assert_match "Hello, world!", shell_output("#{bin}/java HelloWorld")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "8651d525c5460fde993926e807b63f11417cde5b730c7f72794151b546a3f74a"
+  end
+
 end

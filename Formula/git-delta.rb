@@ -1,8 +1,8 @@
 class GitDelta < Formula
   desc "Syntax-highlighting pager for git and diff output"
   homepage "https://dandavison.github.io/delta/"
-  url "https://github.com/dandavison/delta/archive/refs/tags/0.20.1.tar.gz"
-  sha256 "d9d502396e3595ee8fd926f1ed2e54ac9935baabd3569a3753efab36304f90fa"
+  url "https://github.com/dandavison/delta/archive/refs/tags/0.21.0.tar.gz"
+  sha256 "7af3523a6ec97375a5d27fe00cf9dd37d73b90e9bf1e12c5d62ed77107080769"
   license "MIT"
   compatibility_version 1
   head "https://github.com/dandavison/delta.git", branch: "main"
@@ -49,10 +49,6 @@ class GitDelta < Formula
     git_log_output = shell_output("git log -p --color=always")
     output = pipe_output(bin/"delta", git_log_output)
     assert_match "Hello, Delta!", output
-  end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "861b9453fa60f1e46aca51dd25d2a0ae6513446bd663b5b20a193c53a3710a6d"
   end
 
 end

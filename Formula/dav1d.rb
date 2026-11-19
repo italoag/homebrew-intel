@@ -34,7 +34,7 @@ class Dav1d < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "9ff802c16a2db90f138c560689f19d7d5869e392960f4ac238735f62a47a420a"
+    sha256 cellar: :any, tahoe: "b4f63af6376eefea4bf13438f7507494eede4c1ce1863d68251e71ecfed5c76d"
   end
 
 end

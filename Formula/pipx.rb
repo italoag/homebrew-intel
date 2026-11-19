@@ -66,5 +66,4 @@ class Pipx < Formula
     system bin/"pipx", "uninstall", "csvkit"
     refute_match "csvjoin", shell_output("#{bin}/pipx list")
   end
-
 end

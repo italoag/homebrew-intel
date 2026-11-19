@@ -76,4 +76,9 @@ class Emacs < Formula
   test do
     assert_equal "4", shell_output("#{bin}/emacs --batch --eval=\"(print (+ 2 2))\"").strip
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "e582c50b25beb4d55bde16e8c44b092ef2e9ca29e65cd4c923f2b21c46f10eb9"
+  end
+
 end

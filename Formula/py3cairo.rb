@@ -45,4 +45,9 @@ class Py3cairo < Formula
       system python, "-c", "import cairo; print(cairo.version)"
     end
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "6fdf5704421c98f1f5ae08eb9324aa8b301dae1a4a14b89ed55b187241a3b804"
+  end
+
 end

@@ -88,6 +88,11 @@ class GobjectIntrospection < Formula
     system ENV.cc, "main.c", "-o", "test", *pkgconf_flags
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "9482d709cc93c3a97b5b9a42f09cdec75b4e0f50be47d07bb33018c92a76682f"
+  end
+
 end
 
 __END__
