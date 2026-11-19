@@ -1512,24 +1512,20 @@ def process_member(name, idx, tap, full, short, build_set, reusable, release,
             # equivale e evita o auto-deadlock da travagem de deps.) No modo
             # local nada é desinstalado: um keg da máquina nunca é tocado.
             run('brew', 'uninstall', '--force', '--ignore-dependencies', full)
+        missing = missing_bottles(full, tap)
+        if missing:
+            # --build-bottle exige bottle em TODA dep. Construir sem o flag
+            # não resolve: o `brew bottle --no-rebuild` recusa keg instalado
+            # sem --build-bottle ("Formula was not installed with
+            # `--build-bottle`"). A saída é a dep ganhar bottle válido, o que
+            # rebuild.txt pede explicitamente.
+            raise Deferred('sem bottle para: ' + ', '.join(sorted(missing)))
         # Sem --ignore-dependencies: o flag chega ao filho de build e zera
         # HOMEBREW_DEPENDENCIES (build.rb retorna antes de expand_deps) — o
         # superenv fica sem os opt_bin/pkgconfig das deps e compilações morrem
         # na hora (cmake ENOENT, configure não acha .pc). As deps já foram
         # pré-instaladas em ordem, então a resolução aqui só valida o grafo.
-        missing = missing_bottles(full, tap)
-        if missing:
-            # --build-bottle exige bottle em TODA dep, e uma dep cujo bottle
-            # está quebrado (construído contra outra versão de uma lib) deixa
-            # o membro preso para sempre. Compila da fonte com
-            # --build-from-source — que também não pede bottle nas deps — e o
-            # `brew bottle` abaixo empacota o keg normalmente.
-            print(f'[{idx}] {short}: deps sem bottle '
-                  f'({", ".join(sorted(missing))}); construindo sem '
-                  '--build-bottle', flush=True)
-            brew_install('--build-from-source', '--include-test', full)
-        else:
-            brew_install('--build-bottle', '--include-test', full)
+        brew_install('--build-bottle', '--include-test', full)
         if has_test_block(short):
             run('brew', 'test', full)
         run('brew', 'linkage', '--test', full)

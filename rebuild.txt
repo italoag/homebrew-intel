@@ -1,3 +1,19 @@
 # Membros que precisam de rebuild por um motivo que o fingerprint não vê.
 # Uma linha por nome curto; o membro volta para a fila e é republicado.
+#
+# Bottle publicado sem bloco (o publish antigo removeu) ou cujo bottle não
+# instala mais porque foi construído contra outra versão de uma dependência.
 python@3.14
+dart-sass
+emacs
+ffmpeg
+gobject-introspection
+libgit2
+libssh2
+llvm@21
+maturin
+mdfried
+openjdk@21
+openjdk@25
+py3cairo
+rust
