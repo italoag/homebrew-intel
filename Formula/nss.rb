@@ -1,8 +1,8 @@
 class Nss < Formula
   desc "Libraries for security-enabled client and server applications"
   homepage "https://firefox-source-docs.mozilla.org/security/nss/index.html"
-  url "https://ftp.mozilla.org/pub/security/nss/releases/NSS_3_133_RTM/src/nss-3.133.tar.gz"
-  sha256 "4d752526b9846a1d962588cfbd09b7cc2a4f6a4effbd9157d58a30e8a2573065"
+  url "https://ftp.mozilla.org/pub/security/nss/releases/NSS_3_134_RTM/src/nss-3.134.tar.gz"
+  sha256 "bb3b300b457f44da9a9486917c3b33bbc5935ae3cdf60aa759a6880889439c50"
   license "MPL-2.0"
   compatibility_version 1
 
@@ -63,7 +63,14 @@ class Nss < Formula
 
     include_target = include/"nss"
     include_target.mkpath
-    Dir.glob("public/{dbm,nss}/*") { |file| cp file, include_target }
+    # Keep subdirectories such as `mozpkix`, which its headers include as `mozpkix/*.h`
+    Dir.glob("public/{dbm,nss}/**/*") do |file|
+      next if File.directory?(file)
+
+      target = include_target/Pathname(file).each_filename.drop(2).join("/")
+      target.dirname.mkpath
+      cp file, target
+    end
 
     lib.mkpath
     libexec.mkpath
@@ -112,7 +119,7 @@ class Nss < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "94f519f67759f0d4f87dcf623b4f1339ecc927d12010b9c1f70c9c187bab7aae"
+    sha256 cellar: :any, tahoe: "7f8e50d114ed72f4a9f56b6f62bb82acd256177b48d056bcbd62cbae4b332920"
   end
 
 end

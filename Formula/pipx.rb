@@ -66,4 +66,9 @@ class Pipx < Formula
     system bin/"pipx", "uninstall", "csvkit"
     refute_match "csvjoin", shell_output("#{bin}/pipx list")
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "f5eeeb570a3765c62757d2f033e940e98cd1956c005c5e605ce285948a1b61f0"
+  end
+
 end
