@@ -1,8 +1,8 @@
 {
   "tap": "italoag/intel",
-  "fingerprint": "bd7e54798323134e907ee77a2ce5fa281d4cfceb70f618742c13bcb2d4cb85f5",
+  "fingerprint": "9a5ad011e16e7a6027171f68190413ef856cda00fb9a6a55bdbdfdd64e6871d9",
   "tag": "tahoe-bottles",
-  "core_commit": "df69c4ae50a5c295943b98a727fcc48fd0c8d585",
+  "core_commit": "91e1765981cd394e1af71decd5c67f8cff5c438c",
   "roots": [
     "jq",
     "abseil",
@@ -635,7 +635,6 @@
     "fast_float",
     "firefly",
     "flatbuffers",
-    "fontconfig",
     "gdk-pixbuf",
     "gflags",
     "glog",
@@ -757,6 +756,7 @@
     "opencode",
     "openjdk@21",
     "openjdk@25",
+    "pipx",
     "presenterm",
     "ripgrep",
     "rtk",
@@ -764,6 +764,7 @@
     "rust",
     "rustscan",
     "starship",
-    "watchman"
+    "watchman",
+    "webp-pixbuf-loader"
   ]
 }
