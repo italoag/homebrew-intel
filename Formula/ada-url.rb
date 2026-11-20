@@ -1,10 +1,9 @@
 class AdaUrl < Formula
   desc "WHATWG-compliant and fast URL parser written in modern C++"
   homepage "https://ada-url.com"
-  url "https://github.com/ada-url/ada/archive/refs/tags/v4.0.0.tar.gz"
-  sha256 "6d6c7ef7dd2e329320d34eb2ab29ccdc879ee3935af9dfb894a6640e58dc381d"
+  url "https://github.com/ada-url/ada/archive/refs/tags/v4.1.1.tar.gz"
+  sha256 "ed818cfe260ec063e1f1d93fdafca4d158162ba515369bef085adc366a03a41c"
   license any_of: ["Apache-2.0", "MIT"]
-  revision 2
   compatibility_version 2
   head "https://github.com/ada-url/ada.git", branch: "main"
 
@@ -81,7 +80,7 @@ class AdaUrl < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "1f22fe64864ab61efa2bb343e91e99e55427f8db466d4149d5275fe75f7a74f8"
+    sha256 cellar: :any, tahoe: "da2c165d01392f78eaee8fef4256881c9ad67e1f78b089488155fab4fabbe782"
   end
 
 end

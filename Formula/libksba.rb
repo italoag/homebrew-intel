@@ -1,8 +1,8 @@
 class Libksba < Formula
   desc "X.509 and CMS library"
   homepage "https://www.gnupg.org/related_software/libksba/"
-  url "https://gnupg.org/ftp/gcrypt/libksba/libksba-1.9.0.tar.bz2"
-  sha256 "b070f3da9113df3804379f55e10cd00f0bc4993d5392157fecb5fd174a5d58ce"
+  url "https://gnupg.org/ftp/gcrypt/libksba/libksba-1.9.1.tar.bz2"
+  sha256 "9afdd398b4a076735e1e7fd29c7f6e7670b6c382aee2d3a55aa937b283f43e5b"
   license any_of: ["LGPL-3.0-or-later", "GPL-2.0-or-later"]
   compatibility_version 1
 
@@ -45,7 +45,7 @@ class Libksba < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "f6c917f173403ae4a1728f31bda88d341db7496c1a5e509a66671a8ed9221f2c"
+    sha256 cellar: :any, tahoe: "b0359e3df3c11e415ea3b6ac1c5e8f27d5ec0c733c5dd96d7e3ec6d889b5eb9c"
   end
 
 end

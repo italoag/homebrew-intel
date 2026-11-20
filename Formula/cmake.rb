@@ -1,10 +1,10 @@
 class Cmake < Formula
   desc "Cross-platform make"
   homepage "https://www.cmake.org/"
-  url "https://github.com/Kitware/CMake/releases/download/v4.5.0/cmake-4.5.0.tar.gz"
-  mirror "http://fresh-center.net/linux/misc/cmake-4.5.0.tar.gz"
-  mirror "http://fresh-center.net/linux/misc/legacy/cmake-4.5.0.tar.gz"
-  sha256 "424352d6133e8455e020da787008e8dc67abb18820af3532572ab35657e49213"
+  url "https://github.com/Kitware/CMake/releases/download/v4.5.1/cmake-4.5.1.tar.gz"
+  mirror "http://fresh-center.net/linux/misc/cmake-4.5.1.tar.gz"
+  mirror "http://fresh-center.net/linux/misc/legacy/cmake-4.5.1.tar.gz"
+  sha256 "a79bf33cbe05686fdf79c2bbbcfe5e8e62ad16d3d540fa737cbedfeed41fb69e"
   license "BSD-3-Clause"
   compatibility_version 1
   head "https://gitlab.kitware.com/cmake/cmake.git", branch: "master"
@@ -74,7 +74,7 @@ class Cmake < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "f3f709a9f680ce2e160432d8928d60631e61a6980bdde3fac888e05d74c51417"
+    sha256 cellar: :any_skip_relocation, tahoe: "bb26c767b6ad2f75478473b1174c8bfb069aab43086c7deda2a32bca631210ac"
   end
 
 end

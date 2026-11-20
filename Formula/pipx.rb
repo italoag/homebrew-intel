@@ -68,7 +68,7 @@ class Pipx < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "f5eeeb570a3765c62757d2f033e940e98cd1956c005c5e605ce285948a1b61f0"
+    sha256 cellar: :any_skip_relocation, tahoe: "c1b81ae28bf89ea052fef3ec277d7320af9325c35e9a8fdaea6ef4f83acfe9a9"
   end
 
 end

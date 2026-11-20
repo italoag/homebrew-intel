@@ -1,8 +1,8 @@
 {
   "tap": "italoag/intel",
-  "fingerprint": "d7677d82ec5097701b0214bb8f915f30b0379e0a4fe350463fb1c0e7a622bfa3",
+  "fingerprint": "d0b86449cbe01b07585703f85b723bbdb1286e78e4f517eb75c9ef911061e356",
   "tag": "tahoe-bottles",
-  "core_commit": "c770f15667c39441b6195cf7c888f6f4ddd452f0",
+  "core_commit": "cac63fbecd16b91620f98413f72c89c35bce3a60",
   "roots": [
     "jq",
     "abseil",
@@ -639,7 +639,6 @@
     "gflags",
     "glog",
     "gmime",
-    "gnutls",
     "gonzo",
     "googletest",
     "gradle",
@@ -754,7 +753,6 @@
     "oci-cli",
     "openclaw-cli",
     "opencode",
-    "pipx",
     "presenterm",
     "ripgrep",
     "rtk",
