@@ -1,11 +1,11 @@
 class Fb303 < Formula
   desc "Thrift functions for querying information from a service"
-  homepage "https://github.com/facebook/fb303"
-  url "https://github.com/facebook/fb303/archive/refs/tags/v2026.10.26.00.tar.gz"
+  homepage "https://github.com/meta/fb303"
+  url "https://github.com/meta/fb303/archive/refs/tags/v2026.10.26.00.tar.gz"
   sha256 "1cd7202240e7cca34db5c57d20d8a3fffc13c99452b475fbf1d72bf5274dbaf9"
   license "Apache-2.0"
   compatibility_version 1
-  head "https://github.com/facebook/fb303.git", branch: "main"
+  head "https://github.com/meta/fb303.git", branch: "main"
 
 
   depends_on "italoag/intel/cmake" => [:build, :test]
@@ -16,6 +16,8 @@ class Fb303 < Formula
   depends_on "italoag/intel/folly"
   depends_on "italoag/intel/gflags"
   depends_on "italoag/intel/glog"
+
+  deny_network_access!
 
   def install
     shared_args = ["-DBUILD_SHARED_LIBS=ON", "-DCMAKE_INSTALL_RPATH=#{rpath}"]

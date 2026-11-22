@@ -1,8 +1,8 @@
 class Qrcp < Formula
   desc "Transfer files to and from your computer by scanning a QR code"
   homepage "https://qrcp.sh"
-  url "https://github.com/claudiodangelis/qrcp/archive/refs/tags/v0.11.7.tar.gz"
-  sha256 "e3dcc23b85e2f37f378cf95b41a7a7c2ee5cd9941e3935a3325e3a0c8c770a06"
+  url "https://github.com/claudiodangelis/qrcp/archive/refs/tags/v0.12.0.tar.gz"
+  sha256 "7aba9290ff94a6265f99a85da2c1a94fadcc47d65c40cc172bbaa19ebcc43cc3"
   license "MIT"
 
   livecheck do
@@ -53,7 +53,7 @@ class Qrcp < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "f02112307236bf4e4d462e0281c000ae416a480aa2b222829d85802265a6b184"
+    sha256 cellar: :any_skip_relocation, tahoe: "2ac83a58f41fa8d9cbe461b98926366b83fb4bc07d9c8c19a9c4e1c73ee17de1"
   end
 
 end

@@ -157,6 +157,7 @@ class Rust < Formula
       rust-demangler
       src
     ]
+    release_channel = build.head? ? "nightly" : "stable"
     args = %W[
       --prefix=#{prefix}
       --sysconfdir=#{etc}
@@ -168,7 +169,7 @@ class Rust < Formula
       --disable-cargo-native-static
       --disable-docs
       --disable-lld
-      --release-channel=#{build.head? ? "nightly" : "stable"}
+      --release-channel=#{release_channel}
       --release-description=#{tap.user}
       --set=build.allocator=jemalloc
     ]

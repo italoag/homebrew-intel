@@ -1,16 +1,15 @@
 class Mvfst < Formula
   desc "QUIC transport protocol implementation"
-  homepage "https://github.com/facebook/mvfst"
-  url "https://github.com/facebook/mvfst/archive/refs/tags/v2026.10.26.00.tar.gz"
+  homepage "https://github.com/meta/mvfst"
+  url "https://github.com/meta/mvfst/archive/refs/tags/v2026.10.26.00.tar.gz"
   sha256 "7b2f2a84a5df3689d29a2c3c482b508e1d26251d568e9faf0ced22fb113e6dcd"
   license "MIT"
   compatibility_version 1
-  head "https://github.com/facebook/mvfst.git", branch: "main"
+  head "https://github.com/meta/mvfst.git", branch: "main"
 
 
   depends_on "italoag/intel/cmake" => [:build, :test]
   depends_on "italoag/intel/googletest" => :test
-  depends_on "italoag/intel/double-conversion"
   depends_on "italoag/intel/fizz"
   depends_on "italoag/intel/fmt"
   depends_on "italoag/intel/folly"

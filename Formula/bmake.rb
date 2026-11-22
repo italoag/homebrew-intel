@@ -14,6 +14,8 @@ class Bmake < Formula
 
   uses_from_macos "bc-gh" => :build
 
+  deny_network_access!
+
   def install
     # -DWITHOUT_PROG_LINK means "don't symlink as bmake-VERSION."
     # shell-ksh test segfaults since macOS 11.
@@ -44,7 +46,7 @@ class Bmake < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "09633e689a8d1d8b840722f70cf2f93e4e0d856b64df83ab16b7bb0bbfd21209"
+    sha256 tahoe: "cf46dbd6eab82608b7301f2c1937f61691b15a47917c6af02ea53d2276ea6415"
   end
 
 end

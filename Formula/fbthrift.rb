@@ -1,18 +1,17 @@
 class Fbthrift < Formula
   desc "Facebook's branch of Apache Thrift, including a new C++ server"
-  homepage "https://github.com/facebook/fbthrift"
-  url "https://github.com/facebook/fbthrift/archive/refs/tags/v2026.10.26.00.tar.gz"
+  homepage "https://github.com/meta/fbthrift"
+  url "https://github.com/meta/fbthrift/archive/refs/tags/v2026.10.26.00.tar.gz"
   sha256 "6ad18cfc24297120a536a0ef9c5a84f409c9aa4376057328e8dca9d45587d5a1"
   license "Apache-2.0"
   compatibility_version 1
-  head "https://github.com/facebook/fbthrift.git", branch: "main"
+  head "https://github.com/meta/fbthrift.git", branch: "main"
 
 
   depends_on "italoag/intel/bison" => :build # Needs Bison 3.1+
   depends_on "italoag/intel/cmake" => [:build, :test]
   depends_on "italoag/intel/mvfst" => [:build, :test]
   depends_on "italoag/intel/zstd" => :build
-  depends_on "italoag/intel/double-conversion"
   depends_on "italoag/intel/fizz"
   depends_on "italoag/intel/fmt"
   depends_on "italoag/intel/folly"
@@ -32,15 +31,9 @@ class Fbthrift < Formula
 
   conflicts_with "thrift", because: "both install `thrift` binaries"
 
-  def install
-    # Work around build failure with Xcode 16
-    # Issue ref: https://github.com/facebook/fbthrift/issues/618
-    # Issue ref: https://github.com/facebook/fbthrift/issues/607
-    ENV.append "CXXFLAGS", "-fno-assume-unique-vtables" if DevelopmentTools.clang_build_version >= 1600
-    # Restore `<fmt/core.h>` pulling in `<fmt/format.h>` (dropped in fmt 12.2); #702 doesn't apply to this tag.
-    # PR ref: https://github.com/facebook/fbthrift/pull/702
-    ENV.append "CXXFLAGS", "-DFMT_DEPRECATED_HEAVY_CORE"
+  deny_network_access!
 
+  def install
     ENV["OPENSSL_ROOT_DIR"] = formula_opt_prefix("openssl@4")
 
     # The static libraries are a bit annoying to build. If modifying this formula
