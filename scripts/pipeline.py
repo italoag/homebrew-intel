@@ -1265,21 +1265,22 @@ def missing_bottles(full, tap):
     # ("cannot be installed from bottles and must be built from source") —
     # dep nunca publicada, ou cujo bloco saiu por asset ausente. Falhar aqui
     # perde a run inteira do membro; adiar deixa a dep sair pelo dono.
-    # Dep JÁ INSTALADA e satisfeita o brew pula antes dessa checagem, então
-    # não conta: é o caso do modo local, onde o llvm da máquina serve o rust
-    # mesmo sem bottle para a versão que o tap declara.
     missing = []
-    installed = set(run('brew', 'list', '--formula', capture=True).split())
     for dep in run('brew', 'deps', '--formula', '--full-name', '--include-build',
                    '--include-test', full, capture=True).split():
         if not dep.startswith(tap + '/'):
             continue  # dep do core sempre tem bottle
         short = dep.split('/')[-1]
-        if short in installed:
-            continue
         formula = TAP_ROOT / 'Formula' / (short + '.rb')
-        if formula.is_file() and 'bottle do' not in formula.read_text():
-            missing.append(short)
+        if not formula.is_file() or 'bottle do' in formula.read_text():
+            continue
+        # Keg na mesma versão da fórmula: o brew a considera satisfeita e nem
+        # tenta o upgrade, então o --build-bottle passa (é o caso do llvm da
+        # máquina servindo o rust). Versão antiga não serve: o brew tentaria
+        # atualizar da fonte e recusaria.
+        if stable_version_installed(dep):
+            continue
+        missing.append(short)
     return missing
 
 

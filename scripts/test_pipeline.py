@@ -503,21 +503,23 @@ class SingleOwnerBuildTests(unittest.TestCase):
                 'class Openssl < Formula\n  url "x"\n  bottle do\n  end\nend\n')
             deps = 'italoag/intel/z3\nitaloag/intel/openssl\nhomebrew/core/jq\n'
             with patch.object(p, 'TAP_ROOT', Path(tmp)), \
-                 patch.object(p, 'run', side_effect=['', deps]):
+                 patch.object(p, 'run', return_value=deps), \
+                 patch.object(p, 'stable_version_installed', return_value=False):
                 self.assertEqual(
                     p.missing_bottles('italoag/intel/x', 'italoag/intel'), ['z3'])
 
-    def test_installed_dependency_without_bottle_is_not_missing(self):
-        # Dep já instalada e satisfeita o brew pula antes de validar o
-        # --build-bottle: adiar ali só impediria o build de acontecer.
+    def test_dependency_installed_at_formula_version_is_not_missing(self):
+        # Keg na versão da fórmula: o brew a considera satisfeita e pula antes
+        # de validar o --build-bottle. Versão antiga continuaria faltante.
         with tempfile.TemporaryDirectory() as tmp:
             formula_dir = Path(tmp) / 'Formula'
             formula_dir.mkdir()
             (formula_dir / 'llvm.rb').write_text(
                 'class Llvm < Formula\n  url "x"\nend\n')
             with patch.object(p, 'TAP_ROOT', Path(tmp)), \
-                 patch.object(p, 'run',
-                              side_effect=['llvm\nzstd\n', 'italoag/intel/llvm\n']):
+                 patch.object(p, 'run', return_value='italoag/intel/llvm\n'), \
+                 patch.object(p, 'stable_version_installed',
+                              side_effect=lambda dep: dep.endswith('/llvm')):
                 self.assertEqual(
                     p.missing_bottles('italoag/intel/rust', 'italoag/intel'), [])
 
