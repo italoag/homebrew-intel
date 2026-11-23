@@ -66,8 +66,8 @@ class Imagemagick < Formula
       "--without-wmf",
       "--without-jxl",
       "--without-openexr",
+      "--without-x",
     ]
-    args << "--without-x" if OS.mac?
 
     system "./configure", *args, *std_configure_args
     system "make", "install"
@@ -87,6 +87,10 @@ class Imagemagick < Formula
     %w[Modules heic jpeg png tiff].each do |feature|
       assert_match feature, features
     end
+  end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "8681a52dadda0bddd98b66e6470b1d2859ec745f33912fbe89443c41f3d9336c"
   end
 
 end

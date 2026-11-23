@@ -809,9 +809,4 @@ class Llvm < Formula
       end
     end
   end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "cc395201606f8a5671b9e43ad78df20df925261b2c3b34a5225a762bf3d2dd80"
-  end
-
 end
