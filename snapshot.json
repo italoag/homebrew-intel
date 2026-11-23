@@ -1,8 +1,8 @@
 {
   "tap": "italoag/intel",
-  "fingerprint": "353dfa336c40983952441d5762dcd6ed0c0fbd06b64e98acd19cc6e1ea5b86e5",
+  "fingerprint": "fde32aa35b7996ccc024d19ebb2514a40865e562fc2c8a4fc1527e3b424cdeae",
   "tag": "tahoe-bottles",
-  "core_commit": "15e73d5856c48efedf23440741fce2e95954b7cb",
+  "core_commit": "9575b2295e8b309added7320c50141fa4eac761b",
   "roots": [
     "jq",
     "abseil",
@@ -761,7 +761,6 @@
     "rust",
     "rustscan",
     "starship",
-    "uvwasi",
     "watchman",
     "webp-pixbuf-loader",
     "zstd"

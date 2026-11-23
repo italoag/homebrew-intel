@@ -20,6 +20,8 @@ class Edencommon < Formula
   depends_on "italoag/intel/fmt"
   depends_on "italoag/intel/folly"
 
+  deny_network_access!
+
   def install
     # Fix "Process terminated due to timeout" by allowing a longer timeout.
     # Related: https://gitlab.kitware.com/cmake/cmake/-/issues/26773
