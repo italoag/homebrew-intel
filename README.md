@@ -100,7 +100,18 @@ PIPELINE_ALLOW_LOCAL=1 GITHUB_TOKEN=<token com escopo repo> \
   disponíveis), pula o que já foi publicado e adota bottles que o CI publicar
   durante a execução.
 - **Não desinstala os kegs da máquina** (o CI faz isso por ser VM descartável);
-  as deps que faltarem são instaladas pelo próprio build.
+  as deps que faltarem são instaladas pelo próprio build. Para refazer um
+  membro que já está instalado (bottle publicado quebrado), liste-o
+  explicitamente — só os listados são removidos e reinstalados:
+
+  ```bash
+  PIPELINE_LOCAL_REBUILD=llvm,rust PIPELINE_ALLOW_LOCAL=1 \
+    GITHUB_TOKEN=<token> python3 scripts/pipeline.py local
+  ```
+
+- O tap aponta para `.work/tap-local` durante o build e o clone real volta ao
+  lugar no fim, inclusive em falha ou interrupção (o `.work` é apagado a cada
+  run; um tap apontando para lá quebraria o `brew`).
 - Publica bottle, `Formula-*.rb` e o fragmento a cada membro — o CI e a
   próxima run retomam do ponto em que parou.
 - Sem limite de orçamento de 5h (não há timeout de job).

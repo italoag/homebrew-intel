@@ -12,6 +12,7 @@ Subcomandos:
 Bottles e manifestos moram no release tahoe-bottles; qualquer trabalho já
 publicado sobrevive a timeout/falha, e a run seguinte refaz só o que falta.
 """
+import atexit
 import functools
 import hashlib
 import http.client
@@ -33,6 +34,9 @@ TAG = 'tahoe-bottles'  # release rolante: assets persistem entre runs (retomada)
 # Raiz do tap gerado: o CI usa o próprio checkout; o modo local usa uma cópia
 # em .work para não sujar o working tree do usuário.
 TAP_ROOT = ROOT
+# Clone do tap guardado em <tap>.orig enquanto o build usa o symlink para o
+# checkout; restore_tap() devolve no fim.
+_tap_backup = None
 # Casa com os 5 runners macos-26-intel simultâneos da conta: um shard a mais
 # ficaria na fila até um terminar e o run só fecharia com os outros ociosos.
 SHARDS = 5
@@ -553,6 +557,14 @@ def bottle_matches_version(source, short, asset):
     return asset[len(short) + 1:].startswith(expected + '.')
 
 
+def local_rebuild_targets():
+    # Rebuild local explícito: só o que o operador listou em
+    # PIPELINE_LOCAL_REBUILD é desinstalado. rebuild.txt é do CI e vale para a
+    # fila inteira — usá-lo aqui desinstalaria kegs da máquina sem pedido.
+    raw = os.environ.get('PIPELINE_LOCAL_REBUILD') or ''
+    return {name.strip() for name in raw.split(',')} - {''}
+
+
 def checks():
     # O modo local (PIPELINE_ALLOW_LOCAL=1) constrói numa máquina própria e
     # publica no mesmo release; não desinstala kegs da máquina.
@@ -616,18 +628,63 @@ def tap_source_taps(external_taps):
             print(f'Trust falhou para {external}; seguindo', flush=True)
 
 
+def tap_path_of(owner, repository):
+    return (Path(run('brew', '--repository', capture=True).strip())
+            / 'Library/Taps' / owner / repository)
+
+
 def link_own_tap(owner, repository, tap):
     # Disponibiliza o checkout como tap local sem clonar uma versão antiga.
-    tap_path = Path(run('brew', '--repository', capture=True).strip()) / 'Library/Taps' / owner / repository
+    global _tap_backup
+    tap_path = tap_path_of(owner, repository)
     tap_path.parent.mkdir(parents=True, exist_ok=True)
-    if tap_path.is_symlink() or tap_path.exists():
-        if tap_path.is_symlink():
-            tap_path.unlink()
-        else:
-            shutil.rmtree(tap_path)
+    if tap_path.is_dir() and not tap_path.is_symlink():
+        # Clone de verdade (máquina do usuário): guarda ao lado e devolve no
+        # fim. Deixar o tap apontando para .work quebra o brew assim que o
+        # diretório de trabalho é limpo — e .work é descartado a cada run.
+        _tap_backup = tap_path.with_name(tap_path.name + '.orig')
+        if _tap_backup.is_symlink():
+            _tap_backup.unlink()
+        elif _tap_backup.exists():
+            shutil.rmtree(_tap_backup)
+        tap_path.rename(_tap_backup)
+        atexit.register(restore_tap)
+    if tap_path.is_symlink():
+        tap_path.unlink()
+    elif tap_path.exists():
+        shutil.rmtree(tap_path)
     tap_path.symlink_to(TAP_ROOT, target_is_directory=True)
     # Brew recusa carregar fórmulas de taps não confiáveis ao resolver dependências.
     run('brew', 'trust', tap)
+
+
+def recover_tap(owner, repository):
+    # Run interrompida deixa o tap apontando para .work/tap-local — que a
+    # próxima run apaga — e o clone real em <tap>.orig: devolve o clone antes
+    # de qualquer coisa, senão o brew fica com um tap pendurado.
+    global _tap_backup
+    tap_path = tap_path_of(owner, repository)
+    backup = tap_path.with_name(tap_path.name + '.orig')
+    if backup.is_dir() and not backup.is_symlink():
+        _tap_backup = backup
+        restore_tap()
+
+
+def restore_tap():
+    # Devolve o clone do usuário para o lugar do symlink. Idempotente: roda no
+    # fim do build e de novo no atexit, cobrindo erro e interrupção.
+    global _tap_backup
+    if _tap_backup is None:
+        return
+    backup, _tap_backup = _tap_backup, None
+    tap_path = backup.with_name(backup.name.removesuffix('.orig'))
+    if tap_path.is_symlink():
+        tap_path.unlink()
+    elif tap_path.exists():
+        shutil.rmtree(tap_path)
+    if backup.exists():
+        backup.rename(tap_path)
+        print(f'Tap restaurado: {tap_path}', flush=True)
 
 
 def build_graph(roots, external_taps):
@@ -1208,12 +1265,18 @@ def missing_bottles(full, tap):
     # ("cannot be installed from bottles and must be built from source") —
     # dep nunca publicada, ou cujo bloco saiu por asset ausente. Falhar aqui
     # perde a run inteira do membro; adiar deixa a dep sair pelo dono.
+    # Dep JÁ INSTALADA e satisfeita o brew pula antes dessa checagem, então
+    # não conta: é o caso do modo local, onde o llvm da máquina serve o rust
+    # mesmo sem bottle para a versão que o tap declara.
     missing = []
+    installed = set(run('brew', 'list', '--formula', capture=True).split())
     for dep in run('brew', 'deps', '--formula', '--full-name', '--include-build',
                    '--include-test', full, capture=True).split():
         if not dep.startswith(tap + '/'):
             continue  # dep do core sempre tem bottle
         short = dep.split('/')[-1]
+        if short in installed:
+            continue
         formula = TAP_ROOT / 'Formula' / (short + '.rb')
         if formula.is_file() and 'bottle do' not in formula.read_text():
             missing.append(short)
@@ -1338,6 +1401,8 @@ def build_shard(idx, local=False):
     budget = None if local else BUILD_BUDGET_SECONDS
     owner, repository, tap = repo_tap()
     WORK.mkdir(exist_ok=True)
+    if local:
+        recover_tap(owner, repository)
     brew_update()
     retry('brew', 'tap', '--force', 'homebrew/core')
     release, plan_data = load_plan()
@@ -1415,6 +1480,10 @@ def build_shard(idx, local=False):
     forced = {line.split('#', 1)[0].strip()
               for line in forced_file.read_text().splitlines()} - {''} \
         if forced_file.is_file() else set()
+    if local:
+        # Pedido da máquina: o membro é refeito mesmo com fp igual ao publicado
+        # (o bottle existe, mas é justamente ele que precisa ser substituído).
+        forced |= local_rebuild_targets()
 
     def attempt(name, wait=False):
         short = short_name(name)
@@ -1428,10 +1497,12 @@ def build_shard(idx, local=False):
                   'reconstruir no builder dedicado', flush=True)
             return
         if short in forced:
-            # rebuild.txt pediu reconstrução explícita: o fp igual não vale
-            # como "já publicado" (o bottle existe mas está quebrado, ex.:
-            # python@3.14 ligado a um libintl que a dep não fornece mais).
-            print(f'[{idx}] {short}: rebuild forçado por rebuild.txt', flush=True)
+            # rebuild.txt (ou PIPELINE_LOCAL_REBUILD) pediu reconstrução
+            # explícita: o fp igual não vale como "já publicado" (o bottle
+            # existe mas está quebrado, ex.: python@3.14 ligado a um libintl
+            # que a dep não fornece mais).
+            print(f'[{idx}] {short}: rebuild forçado; ignorando o atalho de '
+                  'já publicado', flush=True)
         elif (done.get(short) or {}).get('fp') == fps[name]:
             print(f'[{idx}] {short}: já publicado; pulando', flush=True)
             return
@@ -1457,26 +1528,32 @@ def build_shard(idx, local=False):
         frag_path.write_text(json.dumps(fragment, indent=2))
         upload_asset(release['id'], frag_path, frag_name)
 
-    for name in members:
-        if file_owner[short_name(name)] != name:
-            continue
-        if budget and time.monotonic() - started > budget:
-            print(f'[{idx}] Orçamento de {BUILD_BUDGET_SECONDS // 3600}h '
-                  'esgotado; restantes ficam para a próxima run', flush=True)
-            break
-        attempt(name)
-    # Segunda passada: espera o dono publicar a dep (até o prazo do shard) em
-    # vez de sair sem fazer nada — o bottle aparece no meio da run.
-    for name in list(deferred):
-        if budget and time.monotonic() - started > budget:
-            break
-        if file_owner[short_name(name)] != name:
-            continue
-        attempt(name, wait=True)
-    if failed:
-        raise RuntimeError(
-            f'Shard {idx}: membros falharam e seguem pendentes: '
-            + ', '.join(failed))
+    try:
+        for name in members:
+            if file_owner[short_name(name)] != name:
+                continue
+            if budget and time.monotonic() - started > budget:
+                print(f'[{idx}] Orçamento de {BUILD_BUDGET_SECONDS // 3600}h '
+                      'esgotado; restantes ficam para a próxima run', flush=True)
+                break
+            attempt(name)
+        # Segunda passada: espera o dono publicar a dep (até o prazo do shard) em
+        # vez de sair sem fazer nada — o bottle aparece no meio da run.
+        for name in list(deferred):
+            if budget and time.monotonic() - started > budget:
+                break
+            if file_owner[short_name(name)] != name:
+                continue
+            attempt(name, wait=True)
+        if failed:
+            raise RuntimeError(
+                f'Shard {idx}: membros falharam e seguem pendentes: '
+                + ', '.join(failed))
+    finally:
+        # Devolve o clone do usuário mesmo com falha: o tap não pode continuar
+        # apontando para .work, que a próxima run apaga.
+        if local:
+            restore_tap()
 
 
 def process_member(name, idx, tap, full, short, build_set, reusable, release,
@@ -1484,7 +1561,15 @@ def process_member(name, idx, tap, full, short, build_set, reusable, release,
                    wait_deadline=None):
     if local:
         if formula_info(full).get('installed'):
-            raise Skipped('já instalado nesta máquina; local não desinstala kegs')
+            if short not in local_rebuild_targets():
+                raise Skipped('já instalado nesta máquina; '
+                              'use PIPELINE_LOCAL_REBUILD para refazer')
+            # Pedido explícito: o keg atual não serve (bottle publicado sem
+            # bloco ou quebrado) e o --build-bottle não pode reaproveitá-lo.
+            # Só este é removido, e o install abaixo o recoloca.
+            print(f'[{idx}] {short}: rebuild local pedido; '
+                  'removendo o keg atual', flush=True)
+            run('brew', 'uninstall', '--force', '--ignore-dependencies', full)
         # Dep instalada em versão de outro tap, bottle ausente, conflito de
         # tap: o --build-bottle recusaria no meio do caminho. O dry-run
         # detecta antes e o membro é pulado com a razão.

@@ -503,9 +503,23 @@ class SingleOwnerBuildTests(unittest.TestCase):
                 'class Openssl < Formula\n  url "x"\n  bottle do\n  end\nend\n')
             deps = 'italoag/intel/z3\nitaloag/intel/openssl\nhomebrew/core/jq\n'
             with patch.object(p, 'TAP_ROOT', Path(tmp)), \
-                 patch.object(p, 'run', return_value=deps):
+                 patch.object(p, 'run', side_effect=['', deps]):
                 self.assertEqual(
                     p.missing_bottles('italoag/intel/x', 'italoag/intel'), ['z3'])
+
+    def test_installed_dependency_without_bottle_is_not_missing(self):
+        # Dep já instalada e satisfeita o brew pula antes de validar o
+        # --build-bottle: adiar ali só impediria o build de acontecer.
+        with tempfile.TemporaryDirectory() as tmp:
+            formula_dir = Path(tmp) / 'Formula'
+            formula_dir.mkdir()
+            (formula_dir / 'llvm.rb').write_text(
+                'class Llvm < Formula\n  url "x"\nend\n')
+            with patch.object(p, 'TAP_ROOT', Path(tmp)), \
+                 patch.object(p, 'run',
+                              side_effect=['llvm\nzstd\n', 'italoag/intel/llvm\n']):
+                self.assertEqual(
+                    p.missing_bottles('italoag/intel/rust', 'italoag/intel'), [])
 
     def test_link_retry_matches_keg_with_revision(self):
         # texinfo 7.3 com revision 1 instala o keg como "7.3_1": comparar só
@@ -610,6 +624,75 @@ class SingleOwnerBuildTests(unittest.TestCase):
                  patch.object(p, 'fetch_if_present', return_value=Z3_SOURCE.encode()):
                 p.adopt_bottles(release, 'u/intel/target', formula_dir)
             self.assertIn('bottle do', (formula_dir / 'z3.rb').read_text())
+
+
+class LocalModeTests(unittest.TestCase):
+    def test_local_rebuild_targets_parses_env(self):
+        with patch.dict(os.environ, {'PIPELINE_LOCAL_REBUILD': ' llvm , rust ,,'}):
+            self.assertEqual(p.local_rebuild_targets(), {'llvm', 'rust'})
+        with patch.dict(os.environ, {}, clear=True):
+            self.assertEqual(p.local_rebuild_targets(), set())
+
+    def test_installed_member_is_uninstalled_only_when_requested(self):
+        args = ('rust', 0, 'u/intel', 'u/intel/rust', 'rust', set(), {}, {},
+                {}, {}, 'url', {})
+        installed = {'installed': [{'version': '1.0'}]}
+        with patch.dict(os.environ, {}, clear=True), \
+             patch.object(p, 'formula_info', return_value=installed), \
+             patch.object(p, 'run') as run:
+            with self.assertRaisesRegex(p.Skipped, 'PIPELINE_LOCAL_REBUILD'):
+                p.process_member(*args, local=True)
+            run.assert_not_called()
+
+    def test_requested_member_removes_keg_before_building(self):
+        args = ('rust', 0, 'u/intel', 'u/intel/rust', 'rust', set(), {}, {},
+                {}, {}, 'url', {})
+        installed = {'installed': [{'version': '1.0'}]}
+        with patch.dict(os.environ, {'PIPELINE_LOCAL_REBUILD': 'rust'}), \
+             patch.object(p, 'formula_info', return_value=installed), \
+             patch.object(p, 'run') as run, \
+             patch.object(p.subprocess, 'run', side_effect=RuntimeError('probe')):
+            with self.assertRaisesRegex(RuntimeError, 'probe'):
+                p.process_member(*args, local=True)
+            self.assertEqual(run.call_args.args, ('brew', 'uninstall', '--force',
+                                                  '--ignore-dependencies',
+                                                  'u/intel/rust'))
+
+    def test_local_run_restores_the_users_tap_clone(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            brew = Path(tmp) / 'brew'
+            tap = brew / 'Library/Taps/u/homebrew-intel'
+            tap.mkdir(parents=True)
+            (tap / 'marker').write_text('clone do usuário')
+            root = Path(tmp) / 'checkout'
+            root.mkdir()
+            with patch.object(p, 'TAP_ROOT', root), \
+                 patch.object(p, 'run', return_value=str(brew) + '\n'), \
+                 patch.object(p, '_tap_backup', None):
+                p.link_own_tap('u', 'homebrew-intel', 'u/intel')
+                # O build escreve no checkout; o clone do usuário fica guardado.
+                self.assertTrue(tap.is_symlink())
+                self.assertEqual(tap.resolve(), root.resolve())
+                p.restore_tap()
+                self.assertFalse(tap.is_symlink())
+                self.assertEqual((tap / 'marker').read_text(), 'clone do usuário')
+                self.assertFalse(tap.with_name('homebrew-intel.orig').exists())
+
+    def test_interrupted_run_gets_the_clone_back_before_building(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            brew = Path(tmp) / 'brew'
+            parent = brew / 'Library/Taps/u'
+            parent.mkdir(parents=True)
+            (parent / 'homebrew-intel.orig').mkdir()
+            (parent / 'homebrew-intel.orig' / 'marker').write_text('clone')
+            (parent / 'homebrew-intel').symlink_to(Path(tmp) / 'apagado',
+                                                   target_is_directory=True)
+            with patch.object(p, 'run', return_value=str(brew) + '\n'), \
+                 patch.object(p, '_tap_backup', None):
+                p.recover_tap('u', 'homebrew-intel')
+                tap = parent / 'homebrew-intel'
+                self.assertFalse(tap.is_symlink())
+                self.assertEqual((tap / 'marker').read_text(), 'clone')
 
 
 if __name__ == '__main__':
