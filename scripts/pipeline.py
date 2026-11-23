@@ -633,6 +633,12 @@ def tap_path_of(owner, repository):
             / 'Library/Taps' / owner / repository)
 
 
+def tap_backup_path(tap_path):
+    # Ponto inicial: o brew varre Library/Taps/*/* e listaria o backup como um
+    # tap extra (italoag/intel.orig), que ele tentaria atualizar e confiar.
+    return tap_path.with_name('.' + tap_path.name + '.orig')
+
+
 def link_own_tap(owner, repository, tap):
     # Disponibiliza o checkout como tap local sem clonar uma versão antiga.
     global _tap_backup
@@ -642,12 +648,13 @@ def link_own_tap(owner, repository, tap):
         # Clone de verdade (máquina do usuário): guarda ao lado e devolve no
         # fim. Deixar o tap apontando para .work quebra o brew assim que o
         # diretório de trabalho é limpo — e .work é descartado a cada run.
-        _tap_backup = tap_path.with_name(tap_path.name + '.orig')
-        if _tap_backup.is_symlink():
-            _tap_backup.unlink()
-        elif _tap_backup.exists():
-            shutil.rmtree(_tap_backup)
-        tap_path.rename(_tap_backup)
+        backup = tap_backup_path(tap_path)
+        if backup.is_symlink():
+            backup.unlink()
+        elif backup.exists():
+            shutil.rmtree(backup)
+        tap_path.rename(backup)
+        _tap_backup = (backup, tap_path)
         atexit.register(restore_tap)
     if tap_path.is_symlink():
         tap_path.unlink()
@@ -660,14 +667,16 @@ def link_own_tap(owner, repository, tap):
 
 def recover_tap(owner, repository):
     # Run interrompida deixa o tap apontando para .work/tap-local — que a
-    # próxima run apaga — e o clone real em <tap>.orig: devolve o clone antes
-    # de qualquer coisa, senão o brew fica com um tap pendurado.
+    # próxima run apaga — e o clone real guardado: devolve o clone antes de
+    # qualquer coisa, senão o brew fica com um tap pendurado.
     global _tap_backup
     tap_path = tap_path_of(owner, repository)
-    backup = tap_path.with_name(tap_path.name + '.orig')
-    if backup.is_dir() and not backup.is_symlink():
-        _tap_backup = backup
-        restore_tap()
+    for backup in (tap_backup_path(tap_path),
+                   tap_path.with_name(tap_path.name + '.orig')):
+        if backup.is_dir() and not backup.is_symlink():
+            _tap_backup = (backup, tap_path)
+            restore_tap()
+            return
 
 
 def restore_tap():
@@ -676,8 +685,7 @@ def restore_tap():
     global _tap_backup
     if _tap_backup is None:
         return
-    backup, _tap_backup = _tap_backup, None
-    tap_path = backup.with_name(backup.name.removesuffix('.orig'))
+    (backup, tap_path), _tap_backup = _tap_backup, None
     if tap_path.is_symlink():
         tap_path.unlink()
     elif tap_path.exists():

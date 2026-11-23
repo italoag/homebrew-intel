@@ -672,29 +672,31 @@ class LocalModeTests(unittest.TestCase):
                  patch.object(p, 'run', return_value=str(brew) + '\n'), \
                  patch.object(p, '_tap_backup', None):
                 p.link_own_tap('u', 'homebrew-intel', 'u/intel')
-                # O build escreve no checkout; o clone do usuário fica guardado.
+                # O build escreve no checkout; o clone do usuário fica guardado
+                # com ponto inicial para o brew não listá-lo como tap.
                 self.assertTrue(tap.is_symlink())
                 self.assertEqual(tap.resolve(), root.resolve())
                 p.restore_tap()
                 self.assertFalse(tap.is_symlink())
                 self.assertEqual((tap / 'marker').read_text(), 'clone do usuário')
-                self.assertFalse(tap.with_name('homebrew-intel.orig').exists())
+                self.assertFalse(tap.with_name('.homebrew-intel.orig').exists())
 
     def test_interrupted_run_gets_the_clone_back_before_building(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            brew = Path(tmp) / 'brew'
-            parent = brew / 'Library/Taps/u'
-            parent.mkdir(parents=True)
-            (parent / 'homebrew-intel.orig').mkdir()
-            (parent / 'homebrew-intel.orig' / 'marker').write_text('clone')
-            (parent / 'homebrew-intel').symlink_to(Path(tmp) / 'apagado',
-                                                   target_is_directory=True)
-            with patch.object(p, 'run', return_value=str(brew) + '\n'), \
-                 patch.object(p, '_tap_backup', None):
-                p.recover_tap('u', 'homebrew-intel')
-                tap = parent / 'homebrew-intel'
-                self.assertFalse(tap.is_symlink())
-                self.assertEqual((tap / 'marker').read_text(), 'clone')
+        for name in ('.homebrew-intel.orig', 'homebrew-intel.orig'):
+            with tempfile.TemporaryDirectory() as tmp:
+                brew = Path(tmp) / 'brew'
+                parent = brew / 'Library/Taps/u'
+                parent.mkdir(parents=True)
+                (parent / name).mkdir()
+                (parent / name / 'marker').write_text('clone')
+                (parent / 'homebrew-intel').symlink_to(Path(tmp) / 'apagado',
+                                                       target_is_directory=True)
+                with patch.object(p, 'run', return_value=str(brew) + '\n'), \
+                     patch.object(p, '_tap_backup', None):
+                    p.recover_tap('u', 'homebrew-intel')
+                    tap = parent / 'homebrew-intel'
+                    self.assertFalse(tap.is_symlink())
+                    self.assertEqual((tap / 'marker').read_text(), 'clone')
 
 
 if __name__ == '__main__':
