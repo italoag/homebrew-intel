@@ -8,6 +8,7 @@ class Cffi < Formula
   compatibility_version 1
 
 
+  depends_on "italoag/intel/python-setuptools" => :build
   depends_on "italoag/intel/python@3.14" => [:build, :test]
   depends_on "italoag/intel/python@3.15" => [:build, :test]
   depends_on "italoag/intel/pycparser"
@@ -16,9 +17,11 @@ class Cffi < Formula
 
   pypi_packages exclude_packages: "pycparser"
 
+  deny_network_access!
+
   def install
     python3_interpreters.each do |python|
-      system python, "-m", "pip", "install", *std_pip_args(build_isolation: true), "."
+      system python, "-m", "pip", "install", *std_pip_args, "."
     end
   end
 

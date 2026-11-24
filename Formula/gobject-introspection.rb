@@ -90,7 +90,7 @@ class GobjectIntrospection < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "4914ba0f44b1db4d3d1e75357c2bcb9bfd2386ee341165795a3f6f12d5fcaee8"
+    sha256 tahoe: "c6e774b244f62353f014cd3f5c035d2eeb07228ea5762cd508f924e4cefb904c"
   end
 
 end

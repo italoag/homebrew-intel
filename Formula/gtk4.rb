@@ -117,5 +117,4 @@ class Gtk4 < Formula
     # include a version check for the pkg-config files
     assert_match version.to_s, shell_output("cat #{lib}/pkgconfig/gtk4.pc").strip
   end
-
 end

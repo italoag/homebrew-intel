@@ -4,26 +4,14 @@ class Onnx < Formula
   url "https://github.com/onnx/onnx/archive/refs/tags/v1.23.2.tar.gz"
   sha256 "2f23784e27d210a23b059a847c305e305034fb4a842fface3ff37283f85a2b40"
   license "Apache-2.0"
+  revision 1
   compatibility_version 1
 
 
   depends_on "italoag/intel/cmake" => [:build, :test]
-  depends_on "italoag/intel/abseil"
   depends_on "italoag/intel/protobuf"
 
   uses_from_macos "italoag/intel/python@3.15" => :build
-
-  # Apply Fedora's workaround to allow `onnxruntime` to use `onnx` built without
-  # ONNX_DISABLE_STATIC_REGISTRATION[^1]. We can't use this option as it will
-  # break functionality for any dependents/users expecting the default behavior.
-  #
-  # [^1]: https://github.com/microsoft/onnxruntime/issues/8556#issuecomment-1006091632
-  patch do
-    url "https://src.fedoraproject.org/rpms/onnx/raw/4de8a450afd87b1ba1931f50d841e9c50b63d8a0/f/0004-Add-fixes-for-use-with-onnxruntime.patch"
-    sha256 "d9ddb735c065fd5dae11ab79371e62bdcca157a6d2a7705cc83ee612abeaaa98"
-    type :unofficial
-    resolves "https://github.com/microsoft/onnxruntime/issues/8556"
-  end
 
   def install
     # FIXME: From v1.22+, onnx internals are hidden by default, which breaks
@@ -37,6 +25,7 @@ class Onnx < Formula
       -DONNX_USE_PROTOBUF_SHARED_LIBS=ON
       -DPython3_EXECUTABLE=#{which("python3")}
     ]
+    args << "-DCMAKE_SHARED_LINKER_FLAGS=-Wl,-dead_strip_dylibs" if OS.mac? # strip abseil linkage
 
     system "cmake", "-S", ".", "-B", "build", *args, *std_cmake_args
     system "cmake", "--build", "build"
@@ -116,7 +105,7 @@ class Onnx < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "26b1de87a91d7e6a1442d40669fcdf39c5f70014e384183f598aef4eae263ec7"
+    sha256 cellar: :any, tahoe: "b417378ec80e91273b705ab26ceecee7ebe8c9d080bfe4ba3b3cd20cef7d92e1"
   end
 
 end

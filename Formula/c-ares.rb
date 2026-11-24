@@ -15,6 +15,8 @@ class CAres < Formula
 
   depends_on "italoag/intel/cmake" => :build
 
+  deny_network_access!
+
   def install
     args = %W[
       -DCARES_STATIC=ON

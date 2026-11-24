@@ -1,8 +1,8 @@
 {
   "tap": "italoag/intel",
-  "fingerprint": "9054bbf3fff1cc43fbaf041b21dfbc74b5f0ff5f488ef960a2b6842e92b01399",
+  "fingerprint": "cdcda62f6662af0b6c976031e0ae305b6c1d5af74f05ac4b67149cd6571bd1c8",
   "tag": "tahoe-bottles",
-  "core_commit": "2a8bc744c6b6332c53c1561c33fdfb625a33b33b",
+  "core_commit": "fe6c4419f7e9555df624c60afb276ba1ca21e059",
   "roots": [
     "jq",
     "abseil",
@@ -727,7 +727,6 @@
   "pending": [
     "adwaita-icon-theme",
     "asciidoc",
-    "asciidoctor",
     "certifi",
     "chafa",
     "chart-testing",
@@ -743,15 +742,15 @@
     "gonzo",
     "graphene",
     "gtk4",
+    "imagemagick",
     "jj",
     "kcat",
     "kondo",
+    "leptonica",
     "libserdes",
     "libxext",
-    "lld@21",
     "lld@22",
     "llvm",
-    "llvm@21",
     "localai",
     "maturin",
     "mdfried",
@@ -768,7 +767,6 @@
     "ripgrep",
     "rtk",
     "ruby",
-    "rust",
     "rustscan",
     "simdjson",
     "starship",
@@ -776,7 +774,6 @@
     "watchman",
     "webp-pixbuf-loader",
     "xcb-proto",
-    "z3",
     "zstd"
   ]
 }
