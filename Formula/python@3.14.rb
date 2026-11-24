@@ -123,7 +123,7 @@ class PythonAT314 < Formula
   deny_network_access!
 
   def install
-    openssl = deps.find { |dep| dep.name.split("/").last.start_with?("openssl@") }.name
+    openssl = dep("openssl").name
     # Unset these so that installing pip and setuptools puts them where we want
     # and not into some other Python the user has installed.
     ENV["PYTHONHOME"] = nil
@@ -569,7 +569,7 @@ class PythonAT314 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "581d9190594877bfe570ec0c463b377083ed857f6e16645ba166a8a77ae2ce45"
+    sha256 tahoe: "8d02e737f72dbc164297190f926e8d6a459752f193cad845afa142c1b5845899"
   end
 
 end

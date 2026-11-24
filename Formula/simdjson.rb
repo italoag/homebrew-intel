@@ -1,10 +1,10 @@
 class Simdjson < Formula
   desc "SIMD-accelerated C++ JSON parser"
   homepage "https://simdjson.org"
-  url "https://github.com/simdjson/simdjson/archive/refs/tags/v5.2.0.tar.gz"
-  sha256 "499176afd4b32fbe6f65551ef573b880407280072e1c19e22df0b45da58cdf64"
+  url "https://github.com/simdjson/simdjson/archive/refs/tags/v5.3.0.tar.gz"
+  sha256 "5e59df8bd3fa760937e6a2ca68193399c85b52b5042716700b149a734737dced"
   license "Apache-2.0"
-  compatibility_version 3
+  compatibility_version 4
   head "https://github.com/simdjson/simdjson.git", branch: "master"
 
 
@@ -39,7 +39,7 @@ class Simdjson < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "20a11ad52485bf7d40b3c187cfe5f6a2b9bb9bb0248e301e5c94e3ed0cc7b64c"
+    sha256 cellar: :any, tahoe: "975841b8dd683e829f85023f35290742f7d854f00848ab4e6fe238988d16f2c0"
   end
 
 end

@@ -17,18 +17,12 @@ class Py3cairo < Formula
 
   deny_network_access!
 
-  def pythons
-    deps.map(&:to_formula)
-        .select { |f| f.name.match?(/^python@\d\.\d+$/) }
-        .map { |f| f.opt_libexec/"bin/python" }
-  end
-
   def site_packages(python)
     prefix/Language::Python.site_packages(python)
   end
 
   def install
-    pythons.each do |python|
+    python3_interpreters.each do |python|
       python_version = Language::Python.major_minor_version(python)
       builddir = "build#{python_version}"
       system "meson", "setup", builddir, "-Dpython=#{python}",
@@ -41,13 +35,13 @@ class Py3cairo < Formula
   end
 
   test do
-    pythons.each do |python|
+    python3_interpreters.each do |python|
       system python, "-c", "import cairo; print(cairo.version)"
     end
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "00e0202ca8f553d1fe2ecf35e347ef1b4a7deb23976c419066dd1c100928a562"
+    sha256 cellar: :any, tahoe: "6a6a2d7ee08a0b1e9be5e0ddad87684e07b0cb836928698c4fd3ef269571d61b"
   end
 
 end

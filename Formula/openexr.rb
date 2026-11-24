@@ -46,7 +46,7 @@ class Openexr < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "bacad608fd27f7e51bff06588720d5fca522a6a7d221a51d423927555ba36273"
+    sha256 cellar: :any, tahoe: "fed5f7243f17de5c1ffe88ae913ad1a61fd6deb225d38bfa75331b6fd2e375da"
   end
 
 end

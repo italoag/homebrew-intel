@@ -135,15 +135,14 @@ class Libssh2 < Formula
 
   deny_network_access!
 
-  def openssl = deps.map { |d| d.name.split("/").last }.find { |d| d.match?(/^openssl(@\d+(\.\d+)*)?$/) }
-
   def install
+    openssl_prefix = dep("openssl").opt_prefix
     args = %W[
       --disable-silent-rules
       --disable-examples-build
       --with-openssl
       --with-libz
-      --with-libssl-prefix=#{formula_opt_prefix(openssl)}
+      --with-libssl-prefix=#{openssl_prefix}
     ]
 
     system "./buildconf" if build.head?
@@ -167,7 +166,7 @@ class Libssh2 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "05275445ffc5530e418521e6482325aee2870d819546883c4bbb839fab92236c"
+    sha256 cellar: :any, tahoe: "80b682ecb4bb7a9bc1b78d2f0cad0a81572a255cb234b8ae346a807374c72bc0"
   end
 
 end

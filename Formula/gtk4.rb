@@ -1,8 +1,8 @@
 class Gtk4 < Formula
   desc "Toolkit for creating graphical user interfaces"
   homepage "https://gtk.org/"
-  url "https://download.gnome.org/sources/gtk/4.24/gtk-4.24.1.tar.xz"
-  sha256 "e98abe720e16129c8c0f50761dee0a2e9ae2478055e31018f6cf977fcf6513e9"
+  url "https://download.gnome.org/sources/gtk/4.24/gtk-4.24.2.tar.xz"
+  sha256 "05561abc25d1b1400136bf79ab68830cb4b053d1922ae97e551b3f19755bf3cb"
   license "LGPL-2.1-or-later"
   compatibility_version 1
   head "https://gitlab.gnome.org/GNOME/gtk.git", branch: "main"
@@ -57,6 +57,8 @@ class Gtk4 < Formula
     depends_on "libxrandr"
     depends_on "wayland"
   end
+
+  deny_network_access!
 
   def install
     # Replace deprecated `sassc` with `sass` in the meson build file
@@ -114,10 +116,6 @@ class Gtk4 < Formula
     system "./test"
     # include a version check for the pkg-config files
     assert_match version.to_s, shell_output("cat #{lib}/pkgconfig/gtk4.pc").strip
-  end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "507f912c57b4ab857bbfab5f7afc0f8672295f0141f5e578ef4b9c24e8dd537d"
   end
 
 end
