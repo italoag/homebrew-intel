@@ -1,8 +1,8 @@
 class Mvfst < Formula
   desc "QUIC transport protocol implementation"
   homepage "https://github.com/meta/mvfst"
-  url "https://github.com/meta/mvfst/archive/refs/tags/v2026.10.26.00.tar.gz"
-  sha256 "7b2f2a84a5df3689d29a2c3c482b508e1d26251d568e9faf0ced22fb113e6dcd"
+  url "https://github.com/meta/mvfst/archive/refs/tags/v2026.11.23.00.tar.gz"
+  sha256 "1990ea9839c72b15ec33aef42cf2cdb89ffb6d4a153cef1d85d020e3f6d48dd6"
   license "MIT"
   compatibility_version 1
   head "https://github.com/meta/mvfst.git", branch: "main"
@@ -82,7 +82,7 @@ class Mvfst < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "ef191550b010b722c170a58fa769300d0e99a2a1dc838733941a277389478511"
+    sha256 cellar: :any, tahoe: "d41c4da3696387f2a05be74597edf39293d6be65355917424b967a5b8b85792b"
   end
 
 end

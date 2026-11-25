@@ -1,8 +1,8 @@
 class Folly < Formula
   desc "Collection of reusable C++ library artifacts developed at Facebook"
   homepage "https://github.com/meta/folly"
-  url "https://github.com/meta/folly/archive/refs/tags/v2026.10.26.00.tar.gz"
-  sha256 "b47fe04b804adfb51c65cda6b171505e67b9d1d69621106e54697821d1bf7ebc"
+  url "https://github.com/meta/folly/archive/refs/tags/v2026.11.23.00.tar.gz"
+  sha256 "44946e05dbeb6cf1d74ff590c76586e87de54fdf7e045388341b5755af8edb0b"
   license "Apache-2.0"
   compatibility_version 1
   head "https://github.com/meta/folly.git", branch: "main"
@@ -68,10 +68,6 @@ class Folly < Formula
   end
   patch do
     file "Patches/folly/remove-mno-sse2.diff"
-  end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "bc96288166e7f56d7362a13aab58caa6c5678d48a787debea19051ecc4c5d5af"
   end
 
 end

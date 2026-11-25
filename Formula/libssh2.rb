@@ -166,7 +166,7 @@ class Libssh2 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "473ee5ad7af66af21a35a745e20a5da2c1461d46fbb98722e923a6506e24cdb0"
+    sha256 cellar: :any, tahoe: "68a04697133b69da66ca12bbc8b8e3c94285dfc0ffce48ee8131b60cd8a40b48"
   end
 
 end

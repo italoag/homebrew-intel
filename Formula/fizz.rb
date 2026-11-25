@@ -1,8 +1,8 @@
 class Fizz < Formula
   desc "C++14 implementation of the TLS-1.3 standard"
   homepage "https://github.com/facebookincubator/fizz"
-  url "https://github.com/facebookincubator/fizz/archive/refs/tags/v2026.10.26.00.tar.gz"
-  sha256 "3f481c7157e91ff3dbede77290db539355f297db73f74593c81bf7c602229ebe"
+  url "https://github.com/facebookincubator/fizz/archive/refs/tags/v2026.11.23.00.tar.gz"
+  sha256 "9f8c278d601acbc789b7a90dd0c869c04c7a408866e3d725ccb2b4e3e8da52d6"
   license "BSD-3-Clause"
   compatibility_version 1
   head "https://github.com/facebookincubator/fizz.git", branch: "main"
@@ -87,7 +87,7 @@ class Fizz < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "6c46543f82c073a39cbf92a27ff7fa901ed741d9e247cd470e7e8fa61faf39a6"
+    sha256 cellar: :any, tahoe: "83973dc1ae8ad8045820cdd0c2c90ecd12859832f3053ac775c2d7e948effa03"
   end
 
 end
