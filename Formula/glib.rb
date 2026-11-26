@@ -3,8 +3,8 @@ class Glib < Formula
 
   desc "Core application library for C"
   homepage "https://docs.gtk.org/glib/"
-  url "https://download.gnome.org/sources/glib/2.90/glib-2.90.1.tar.xz"
-  sha256 "93c941aa17d5eb1d53fe838365f29a8b4e539c222a256d974ec8f30fc413e396"
+  url "https://download.gnome.org/sources/glib/2.90/glib-2.90.2.tar.xz"
+  sha256 "edf473b4f5ee70a31d2410622ee605dc4a2c8c46dbc0ec53c9abbaf3960232fd"
   license "LGPL-2.1-or-later"
   compatibility_version 1
 
@@ -191,10 +191,6 @@ class Glib < Formula
       }
     CPP
     system ENV.cxx, "-o", "typecheck", "typecheck.cpp", "-I#{include}/glib-2.0", "-I#{lib}/glib-2.0/include"
-  end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "e958a67d9a04374873ddc202e7680c17c5de4ab96de13056dd50202edc87b4a1"
   end
 
 end

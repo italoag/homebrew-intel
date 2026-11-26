@@ -8,7 +8,7 @@ class Fbthrift < Formula
   head "https://github.com/meta/fbthrift.git", branch: "main"
 
 
-  depends_on "italoag/intel/bison" => :build # Needs Bison 3.1+
+  depends_on "italoag/intel/boost" => :build
   depends_on "italoag/intel/cmake" => [:build, :test]
   depends_on "italoag/intel/mvfst" => [:build, :test]
   depends_on "italoag/intel/zstd" => :build
@@ -21,11 +21,9 @@ class Fbthrift < Formula
   depends_on "italoag/intel/wangle"
   depends_on "italoag/intel/xxhash"
 
-  uses_from_macos "flex" => :build
   uses_from_macos "italoag/intel/python@3.15" => :build
 
   on_linux do
-    depends_on "italoag/intel/boost"
     depends_on "zlib-ng-compat"
   end
 
@@ -45,11 +43,9 @@ class Fbthrift < Formula
       shared_args << "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-dead_strip_dylibs"
     end
 
-    # We build in-source to avoid an error from thrift/lib/cpp2/test:
-    # Output path .../build/shared/thrift/lib/cpp2/test/../../../conformance/if is unusable or not a directory
-    system "cmake", "-S", ".", "-B", ".", *shared_args, *std_cmake_args
-    system "cmake", "--build", "."
-    system "cmake", "--install", "."
+    system "cmake", "-S", ".", "-B", "build", *shared_args, *std_cmake_args
+    system "cmake", "--build", "build"
+    system "cmake", "--install", "build"
 
     elisp.install "thrift/contrib/thrift.el"
     (share/"vim/vimfiles/syntax").install "thrift/contrib/thrift.vim"
@@ -93,5 +89,4 @@ class Fbthrift < Formula
     system "cmake", "-S", ".", "-B", "build", *std_cmake_args
     system "cmake", "--build", "build"
   end
-
 end

@@ -10,7 +10,6 @@ class Wangle < Formula
 
   depends_on "italoag/intel/cmake" => [:build, :test]
   depends_on "italoag/intel/libevent" => :build
-  depends_on "italoag/intel/double-conversion"
   depends_on "italoag/intel/fizz"
   depends_on "italoag/intel/fmt"
   depends_on "italoag/intel/folly"
@@ -83,5 +82,4 @@ class Wangle < Formula
     assert_match("Hello from Homebrew!", output)
     assert_match("Another test line.", output)
   end
-
 end

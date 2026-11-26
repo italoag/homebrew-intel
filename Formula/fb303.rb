@@ -68,5 +68,4 @@ class Fb303 < Formula
     system "cmake", "--build", "."
     assert_equal "BaseService", shell_output("./test").strip
   end
-
 end

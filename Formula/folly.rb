@@ -69,5 +69,4 @@ class Folly < Formula
   patch do
     file "Patches/folly/remove-mno-sse2.diff"
   end
-
 end

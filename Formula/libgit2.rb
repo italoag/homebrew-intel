@@ -75,7 +75,7 @@ class Libgit2 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "e008a2d622fce9e23a009232031a85715cb4d92198e15cf35e90e4bf544a96a7"
+    sha256 cellar: :any, tahoe: "9a8c6f3773475acb6c35365e98598663e305878afc089ec0548555a6e61216ad"
   end
 
 end

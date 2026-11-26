@@ -41,7 +41,7 @@ class Libyaml < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "64a1cd2b80f1f41f1f2048c1f8cb335a767dc441180193c9eb69122f53a28951"
+    sha256 cellar: :any, tahoe: "a7b2970af2dddf3a96350f45f553f4c540179291db933abbfe8031bdbdcb9c02"
   end
 
 end

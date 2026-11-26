@@ -51,7 +51,7 @@ class Dolt < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "b4c9a1a5c13b5927ab1ddc672f9913c5ddcf9007362f7c2d1e20184298901310"
+    sha256 cellar: :any, tahoe: "bbd37b619238f1205849d7a9a4707651361fc510eec2a4d56a77d548bfb14d2c"
   end
 
 end
