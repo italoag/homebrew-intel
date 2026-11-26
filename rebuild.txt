@@ -1,19 +1,11 @@
 # Membros que precisam de rebuild por um motivo que o fingerprint não vê.
 # Uma linha por nome curto; o membro volta para a fila e é republicado.
+# IMPORTANTE: remova a entrada assim que o rebuild publicar — senão toda
+# run reconstrói o membro de novo e queima o orçamento do shard.
 #
-# Bottle publicado sem bloco (o publish antigo removeu) ou cujo bottle não
-# instala mais porque foi construído contra outra versão de uma dependência.
-python@3.14
+# python@3.14, emacs, gobject-introspection, libgit2, libssh2, llvm@21,
+# openjdk@21, openjdk@25, py3cairo e rust já republicaram (removidos).
 dart-sass
-emacs
 ffmpeg
-gobject-introspection
-libgit2
-libssh2
-llvm@21
 maturin
 mdfried
-openjdk@21
-openjdk@25
-py3cairo
-rust
