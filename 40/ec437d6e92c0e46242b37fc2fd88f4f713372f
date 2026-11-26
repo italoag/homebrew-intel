@@ -1,0 +1,21 @@
+Formula/llvm.rb
+  s_a6c2d66b4b0258::t_1492b297d474d7 25-29
+scripts/pipeline.py
+  s_a6c2d66b4b0258::t_75d05772f61c6d 1627-1631
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "40ec437d6e92c0e46242b37fc2fd88f4f713372f",
+  "prompts": {},
+  "sessions": {
+    "s_a6c2d66b4b0258": {
+      "agent_id": {
+        "tool": "windsurf",
+        "id": "malleable-nigella",
+        "model": "unknown"
+      },
+      "human_author": "Italo A. G. <182202+italoag@users.noreply.github.com>"
+    }
+  }
+}
