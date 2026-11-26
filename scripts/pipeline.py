@@ -1624,6 +1624,11 @@ def process_member(name, idx, tap, full, short, build_set, reusable, release,
             run('brew', 'test', full)
         run('brew', 'linkage', '--test', full)
         out = WORK / f'pkg-{idx}' / short
+        # Limpa no início do membro: um json/tarball de run anterior (outra
+        # versão) contamina o glob e o "len != 1" derrubava um build de horas
+        # depois de pronto — foi o que aconteceu com o llvm 23.1.6. Artefatos
+        # desta tentativa continuam no diretório se uma etapa posterior falhar.
+        shutil.rmtree(out, ignore_errors=True)
         out.mkdir(parents=True, exist_ok=True)
         run('brew', 'bottle', '--json', '--no-rebuild',
             '--root-url=' + root_url, full, cwd=out)

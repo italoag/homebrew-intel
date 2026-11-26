@@ -22,6 +22,11 @@ class Llvm < Formula
     regex(/^llvmorg[._-]v?(\d+(?:\.\d+)+)$/i)
   end
 
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "8b236a9279e573dfbbaf1e80e61e30b928b96cf4062214c0003194c069c1e3a8"
+  end
+
 
   keg_only :provided_by_macos
 
