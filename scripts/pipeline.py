@@ -1077,9 +1077,16 @@ def plan():
                 entry = table.get(short)
                 if not entry or entry.get('fp') == fps[name]:
                     continue
-                if (entry['fp'] in legacy_candidates[name]
-                        or bottle_matches_version(normalized[name], short,
-                                                  entry.get('asset'))):
+                # Só migra por formato de fp legado. Um atalho anterior
+                # migrava também quando o NOME do asset batia com a versão
+                # da fórmula — mas isso certificava como válido qualquer
+                # bottle cuja versão própria não mudou, mesmo com o fechamento
+                # de deps alterado: foi assim que python@3.14 (libintl.8),
+                # merve (libsimdutf.38) e edencommon (símbolo de folly
+                # removido) ficaram eternamente "publicados" com ABI quebrada.
+                # Mudança real de dep exige rebuild real; migração por versão
+                # escondia isso e o rebuild.txt virava remendo permanente.
+                if entry['fp'] in legacy_candidates[name]:
                     table[short] = {**entry, 'fp': fps[name]}
                     migrated += 1
                     dirty = True

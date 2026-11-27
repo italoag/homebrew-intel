@@ -2,7 +2,7 @@
   "tap": "italoag/intel",
   "fingerprint": "d339936be2b338d0d987374ee879a9192ae997b84a46e08492370d1bed308b43",
   "tag": "tahoe-bottles",
-  "core_commit": "2fee07326c3e03715d2ef9d2fedd20509e50a12f",
+  "core_commit": "a9db4aaf97fd61b0975ccd7ab4fc430db69cc3a0",
   "roots": [
     "jq",
     "abseil",
@@ -720,7 +720,5 @@
     "xcb-proto",
     "xtrans"
   ],
-  "pending": [
-    "watchman"
-  ]
+  "pending": []
 }
