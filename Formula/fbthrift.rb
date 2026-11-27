@@ -89,4 +89,9 @@ class Fbthrift < Formula
     system "cmake", "-S", ".", "-B", "build", *std_cmake_args
     system "cmake", "--build", "build"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "e6f0d12b9c5ad797cd18cab3d679f17dc144cdb07e8f3cb85815ca820fedea9a"
+  end
+
 end

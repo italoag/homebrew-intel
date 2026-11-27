@@ -16,8 +16,8 @@ class Gonzo < Formula
     sha256 cellar: :any,                 x86_64_linux:      "3dcda4692cf03c51c582043450024d31e083a0e352270a6633dc46e9880a1c80"
   end
 
-  depends_on "go" => :build
-  depends_on "node" => :build
+  depends_on "italoag/intel/go" => :build
+  depends_on "italoag/intel/node" => :build
 
   def install
     # UI build
@@ -27,7 +27,7 @@ class Gonzo < Formula
       -X main.version=#{version}
       -X main.commit=#{tap.user}
       -X main.buildTime=#{time.iso8601}
-      -X main.goVersion=#{Formula["go"].version}
+      -X main.goVersion=#{Formula["italoag/intel/go"].version}
     ]
     system "go", "build", *std_go_args(ldflags:), "./cmd/gonzo"
 

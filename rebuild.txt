@@ -8,6 +8,3 @@
 # build do node morre procurando a .38. (ffmpeg, maturin, dart-sass e
 # mdfried já republicaram; removidos.)
 merve
-edencommon
-fizz
-mvfst

@@ -82,4 +82,9 @@ class Wangle < Formula
     assert_match("Hello from Homebrew!", output)
     assert_match("Another test line.", output)
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "b791412e37d67a8dd1fc5f6991d59aa6894be49d8f0b50bc748bb56d25d82b5e"
+  end
+
 end
