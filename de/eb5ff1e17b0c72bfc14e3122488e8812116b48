@@ -1,0 +1,28 @@
+Patches/folly/remove-mno-sse2.diff
+  s_a6c2d66b4b0258::t_99fdb325dbdf3a 1-6,9-17
+scripts/pipeline.py
+  s_a6c2d66b4b0258::t_2ec9d13b3d8517 451,457-464,468,470-471,477-486
+  s_a6c2d66b4b0258::t_f48f9a978fc2be 1045,1466,1725
+  s_a6c2d66b4b0258::t_0f58574121de4a 1641-1649
+rebuild.txt
+  s_a6c2d66b4b0258::t_99fdb325dbdf3a 10
+  s_a6c2d66b4b0258::t_5bca044b6e2a41 6-9
+scripts/test_pipeline.py
+  s_a6c2d66b4b0258::t_a93ec946d959fd 630-688
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "deeb5ff1e17b0c72bfc14e3122488e8812116b48",
+  "prompts": {},
+  "sessions": {
+    "s_a6c2d66b4b0258": {
+      "agent_id": {
+        "tool": "windsurf",
+        "id": "malleable-nigella",
+        "model": "unknown"
+      },
+      "human_author": "Italo A. G. <182202+italoag@users.noreply.github.com>"
+    }
+  }
+}
