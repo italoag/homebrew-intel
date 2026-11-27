@@ -53,7 +53,7 @@ class Chafa < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "93ec265f8eeed8f24eea319a465f94a15d2c8ab3e3df8259107bb23c161a00db"
+    sha256 cellar: :any, tahoe: "1b5c449d19aaa728995989a8c404c306e41af78580fb42370b56d2edca19d066"
   end
 
 end

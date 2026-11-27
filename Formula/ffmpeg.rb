@@ -110,7 +110,7 @@ class Ffmpeg < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "2cad19b6c8700e48d0e2a9003e6c032893799ae1f8948e0c91efd2b412a9c1a2"
+    sha256 tahoe: "0767596c12da5bdb4ebd57c80dfcd0ae574358e8a2495d498503a4b786382e52"
   end
 
 end

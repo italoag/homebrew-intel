@@ -192,5 +192,9 @@ class Glib < Formula
     CPP
     system ENV.cxx, "-o", "typecheck", "typecheck.cpp", "-I#{include}/glib-2.0", "-I#{lib}/glib-2.0/include"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "73449de0ff756c7b0b9e9e43eab9d04ef76ae4e14f7d02a74362b184e05410bd"
+  end
 
 end

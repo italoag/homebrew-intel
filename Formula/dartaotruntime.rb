@@ -68,7 +68,7 @@ class Dartaotruntime < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "b07c1f57717678f9b3babe2c5467d2040c205670845de1c390aa5d3240976d6e"
+    sha256 cellar: :any_skip_relocation, tahoe: "a2d7cf43ab6b32dc20884f305dce94b5d9c4d42e750f5c28493b66bd9473bcbd"
   end
 
 end

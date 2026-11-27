@@ -117,4 +117,9 @@ class Gtk4 < Formula
     # include a version check for the pkg-config files
     assert_match version.to_s, shell_output("cat #{lib}/pkgconfig/gtk4.pc").strip
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 tahoe: "68de07a473b96ab7418afc6145d1f67af46f7eb58e223601a2237ee1eed43927"
+  end
+
 end

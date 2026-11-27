@@ -45,7 +45,7 @@ class ChartTesting < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "49fb2aee3d874f4d79def325a030538cbfaa2c68dd3ac1985d75b5041183155d"
+    sha256 cellar: :any_skip_relocation, tahoe: "6e33109afd570f16a73c10d9b876008bcb8bc766ca24a6a91417e9843cabc25b"
   end
 
 end

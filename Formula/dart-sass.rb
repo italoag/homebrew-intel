@@ -75,4 +75,9 @@ class DartSass < Formula
     assert_equal "div img{border:0px}",
     shell_output("#{bin}/sass --style compressed input.scss").strip
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "dbb095d18d4a948d17c2c90a12174eb81262d62818dd4054eca7d76932f20d4b"
+  end
+
 end

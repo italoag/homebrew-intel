@@ -51,4 +51,9 @@ class GitDelta < Formula
     output = pipe_output(bin/"delta", git_log_output)
     assert_match "Hello, Delta!", output
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "d1ea8587e2ed016bfb6b7ae5f7ed1bf10396cf7efb2467a8e130c59616941504"
+  end
+
 end
