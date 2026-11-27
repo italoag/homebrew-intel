@@ -1,0 +1,13 @@
+# Membros que precisam de rebuild por um motivo que o fingerprint não vê.
+# Uma linha por nome curto; o membro volta para a fila e é republicado.
+# IMPORTANTE: remova a entrada assim que o rebuild publicar — senão toda
+# run reconstrói o membro de novo e queima o orçamento do shard.
+#
+# merve-1.2.2_6 foi construído contra libsimdutf.38, mas o simdutf atual
+# tem soname .39 — o brew avisa "Broken dependencies" ao despejar e o
+# build do node morre procurando a .38. (ffmpeg, maturin, dart-sass e
+# mdfried já republicaram; removidos.)
+merve
+edencommon
+fizz
+mvfst

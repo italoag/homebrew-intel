@@ -70,7 +70,7 @@ class Edencommon < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "e7332294f7438237e34c8c416d5183a29275e3998278721be2802bca01f6954f"
+    sha256 cellar: :any, tahoe: "9a93f7ca6f79814c422249132eeb3ffe2698ad326374e9548ac46d273b411391"
   end
 
 end

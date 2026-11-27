@@ -60,7 +60,7 @@ class Czkawka < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "4a95f952f500829ed75d342e211563f9aa8f96b6f736417b79583043059ca99d"
+    sha256 cellar: :any, tahoe: "c9b5a5fbac90354605fa7ed760bb98f221ecebbbd2eeec6f434b2aa1702d7e59"
   end
 
 end

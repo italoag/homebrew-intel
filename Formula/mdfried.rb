@@ -53,7 +53,7 @@ class Mdfried < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "4abab759046e7e0ebe3e99709bcc20c0bf54dac0e4a4f7a6bdee80c4fa3cd36c"
+    sha256 cellar: :any, tahoe: "06a7c6fc82629295201699ea870ff49f30ffca7f2e91b0d425f2c1dd187326bc"
   end
 
 end
