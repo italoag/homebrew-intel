@@ -448,24 +448,42 @@ def load_manifest(release):
 _manifest_cache = {}
 
 
-def combined_manifest(release, assets=None, ttl=600):
+def combined_manifest(release, assets=None, ttl=600, fps=None):
     # Manifesto principal + fragmentos dos shards: retrato combinado do que já
     # foi publicado. Cache de 10min: adopt consulta a cada membro (~80x) e sem
     # cache estouraria o rate limit do token; bottles publicados por outros
     # shards aparecem com atraso máximo do TTL — na pior hipótese a dep compila
     # localmente em vez de despejar (correto, só menos eficiente).
+    #
+    # Merge fp-aware (quando o caller passa o fps do plan): membros migram de
+    # shard entre runs e cada fragmento acumula entradas de todas as runs —
+    # o certifi tinha o fp correto em manifest-1/2 mas fps podres em
+    # manifest-0/4, e o merge "último ganha" deixava a entrada velha sombrear
+    # a boa, fazendo o plan reconstruir para sempre quem já tinha publicado.
+    # Uma entrada com o fp do plan é sempre preferível a uma sem; entre duas
+    # iguais nesse critério tanto faz (o fp é o endereço do conteúdo).
     assets = assets if assets is not None else release_assets(release['id'])
     now = time.monotonic()
     cached = _manifest_cache.get('data')
-    if cached is not None and now - _manifest_cache['t'] < ttl:
+    if fps is None and cached is not None and now - _manifest_cache['t'] < ttl:
         return dict(cached)
+    fp_by_short = ({short_name(k): v for k, v in fps.items()}
+                   if fps is not None else None)
     manifest = dict(load_manifest(release))
     for asset in assets:
         if re.fullmatch(r'manifest-(?:\d+|local)\.json', asset['name']):
             fetched = fetch_if_present(asset['browser_download_url'])
             if fetched:
-                manifest.update(json.loads(fetched))
-    _manifest_cache.update({'t': now, 'data': dict(manifest)})
+                for key, entry in json.loads(fetched).items():
+                    current = manifest.get(key)
+                    if (fp_by_short is not None and current is not None
+                            and key in fp_by_short
+                            and current.get('fp') == fp_by_short[key]
+                            and entry.get('fp') != fp_by_short[key]):
+                        continue
+                    manifest[key] = entry
+    if fps is None:
+        _manifest_cache.update({'t': now, 'data': dict(manifest)})
     return manifest
 
 
@@ -1023,8 +1041,8 @@ def plan():
     # Principal + fragmentos: os fragmentos são o checkpoint de cada shard e
     # valem mesmo quando um publish falha em consolidar — só o manifesto
     # principal deixaria membros publicados como pendentes e os rebuildaria.
-    manifest = combined_manifest(release)
     fps = member_fps(order, graph, sources, file_owner, patch_shas)
+    manifest = combined_manifest(release, fps=fps)
     # Membro congelado (origem sumiu): fp do manifesto preserva o bottle já
     # publicado; recalcular sobre o .rb local invalidaria e tentaria rebuild.
     for name in aux.get('frozen') or []:
@@ -1445,7 +1463,7 @@ def build_shard(idx, local=False):
     # que já foi publicado por qualquer shard e não precisa repetir.
     assets = release_assets(release['id'])
     asset_names = {asset['name'] for asset in assets}
-    done = combined_manifest(release, assets)
+    done = combined_manifest(release, assets, fps=fps)
     write_formula_dir(plan_data)
     # Sanitiza .rb promovidos cujo bottle aponta para asset ausente no release
     # (órfão de publish anterior ou dep que outro shard ainda não publicou):
@@ -1620,6 +1638,15 @@ def process_member(name, idx, tap, full, short, build_set, reusable, release,
         # na hora (cmake ENOENT, configure não acha .pc). As deps já foram
         # pré-instaladas em ordem, então a resolução aqui só valida o grafo.
         brew_install('--build-bottle', '--include-test', full)
+        # O brew não roda post_install quando o install é --build-bottle
+        # (formula_installer.rb: "Not running 'post_install' as we're building
+        # a bottle") — ele fica para o despejo na máquina final. Mas o teste e
+        # o linkage rodam aqui e agora, contra o keg cru: o test do ruby espera
+        # o dylib id que o post_install reescreve para o opt versionado e
+        # falhava sempre. Roda explicitamente — o efeito é o mesmo que o
+        # usuário veria ao despejar o bottle (e no-op quando não há
+        # post_install definido).
+        run('brew', 'postinstall', full)
         if has_test_block(short):
             run('brew', 'test', full)
         run('brew', 'linkage', '--test', full)
@@ -1695,7 +1722,7 @@ def publish():
     reusable = plan_data['reusable']
     fps = plan_data['fps']
     file_owner = plan_data['file_owner']
-    manifest = combined_manifest(release, list(assets.values()))
+    manifest = combined_manifest(release, list(assets.values()), fps=fps)
     # short -> chave do membro dono do arquivo Formula/<short>.rb.
     member_shorts = {short_name(name): name for name in order
                      if file_owner[short_name(name)] == name}

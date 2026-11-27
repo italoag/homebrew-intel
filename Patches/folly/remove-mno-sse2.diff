@@ -1,10 +1,20 @@
-O folly compila MathOperation_Simple.cpp com -mno-sse2 (fallback para x86
-antigo). O math.h do SDK 26 declara _Float16 sem guarda e o clang rejeita o
-tipo sem SSE2, quebrando o build: remove só a flag de SSE2; -mno-avx/-mno-avx2
-seguem valendo e o código do TU é genérico, sem intrínsecos.
+O folly compila as variantes *_disable das MathOperation com -mno-sse2 (para
+testar o fallback sem SIMD). O math.h do SDK 26 declara funções _Float16 sem
+guarda de target e o clang rejeita o tipo sem SSE2, quebrando o build. O
+upstream já tratou a variante simple no caso Apple (-fno-vectorize), mas os
+blocos avx2_disable/sse2_disable ficaram de fora — e x86_64 sempre tem SSE2,
+então remover a flag é seguro: o código desses TUs é genérico, sem intrínsecos.
 --- a/folly/crypto/detail/CMakeLists.txt
 +++ b/folly/crypto/detail/CMakeLists.txt
-@@ -37,7 +37,6 @@
+@@ -57,7 +57,6 @@
+     PRIVATE
+       -mno-avx
+       -mno-avx2
+-      -mno-sse2
+   )
+ endif ()
+ 
+@@ -131,6 +130,5 @@
      PRIVATE
        -mno-avx
        -mno-avx2

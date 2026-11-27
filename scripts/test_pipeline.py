@@ -627,6 +627,65 @@ class SingleOwnerBuildTests(unittest.TestCase):
                 p.adopt_bottles(release, 'u/intel/target', formula_dir)
             self.assertIn('bottle do', (formula_dir / 'z3.rb').read_text())
 
+class CombinedManifestTests(unittest.TestCase):
+    def setUp(self):
+        p._manifest_cache.clear()
+
+    def assets(self, *names):
+        return [{'name': n, 'browser_download_url': 'url/' + n} for n in names]
+
+    def test_merge_prefers_fp_matching_entry_over_stale(self):
+        # certifi migrando de shard deixa fps velhos em fragmentos de outros
+        # shards: o correto não pode ser sombreado pelo "último ganha".
+        frags = {
+            'manifest-0.json': json.dumps({'certifi': {'fp': 'velho'}}),
+            'manifest-4.json': json.dumps({'certifi': {'fp': 'velho2'}}),
+            'manifest-1.json': json.dumps({'certifi': {'fp': 'bom'}}),
+        }
+        with patch.object(p, 'load_manifest', return_value={}),              patch.object(p, 'fetch_if_present',
+                          side_effect=lambda url: frags[url[4:]].encode()):
+            got = p.combined_manifest({'id': 1}, self.assets(
+                'manifest-0.json', 'manifest-1.json', 'manifest-4.json'),
+                fps={'certifi': 'bom'})
+        self.assertEqual(got['certifi']['fp'], 'bom')
+
+    def test_merge_without_fps_keeps_last_write_wins(self):
+        frags = {
+            'manifest-0.json': json.dumps({'certifi': {'fp': 'a'}}),
+            'manifest-1.json': json.dumps({'certifi': {'fp': 'b'}}),
+        }
+        with patch.object(p, 'load_manifest', return_value={}),              patch.object(p, 'fetch_if_present',
+                          side_effect=lambda url: frags[url[4:]].encode()):
+            got = p.combined_manifest({'id': 1}, self.assets(
+                'manifest-0.json', 'manifest-1.json'))
+        self.assertEqual(got['certifi']['fp'], 'b')
+
+    def test_merge_fp_matching_entry_is_updated_by_newer_match(self):
+        # Duas entradas com o fp do plan: a segunda ganha normalmente.
+        frags = {
+            'manifest-0.json': json.dumps(
+                {'certifi': {'fp': 'bom', 'asset': 'a'}}),
+            'manifest-1.json': json.dumps(
+                {'certifi': {'fp': 'bom', 'asset': 'b'}}),
+        }
+        with patch.object(p, 'load_manifest', return_value={}),              patch.object(p, 'fetch_if_present',
+                          side_effect=lambda url: frags[url[4:]].encode()):
+            got = p.combined_manifest({'id': 1}, self.assets(
+                'manifest-0.json', 'manifest-1.json'), fps={'certifi': 'bom'})
+        self.assertEqual(got['certifi']['asset'], 'b')
+
+    def test_merge_tap_qualified_fp_keys_use_short_name(self):
+        frags = {
+            'manifest-2.json': json.dumps({'opencode': {'fp': 'velho'}}),
+            'manifest-3.json': json.dumps({'opencode': {'fp': 'bom'}}),
+        }
+        with patch.object(p, 'load_manifest', return_value={}),              patch.object(p, 'fetch_if_present',
+                          side_effect=lambda url: frags[url[4:]].encode()):
+            got = p.combined_manifest({'id': 1}, self.assets(
+                'manifest-3.json', 'manifest-2.json'),
+                fps={'anomalyco/tap/opencode': 'bom'})
+        self.assertEqual(got['opencode']['fp'], 'bom')
+
 
 class LocalModeTests(unittest.TestCase):
     def test_local_rebuild_targets_parses_env(self):

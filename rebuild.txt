@@ -3,9 +3,8 @@
 # IMPORTANTE: remova a entrada assim que o rebuild publicar — senão toda
 # run reconstrói o membro de novo e queima o orçamento do shard.
 #
-# python@3.14, emacs, gobject-introspection, libgit2, libssh2, llvm@21,
-# openjdk@21, openjdk@25, py3cairo e rust já republicaram (removidos).
-dart-sass
-ffmpeg
-maturin
-mdfried
+# merve-1.2.2_6 foi construído contra libsimdutf.38, mas o simdutf atual
+# tem soname .39 — o brew avisa "Broken dependencies" ao despejar e o
+# build do node morre procurando a .38. (ffmpeg, maturin, dart-sass e
+# mdfried já republicaram; removidos.)
+merve
