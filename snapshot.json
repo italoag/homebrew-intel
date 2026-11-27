@@ -1,8 +1,8 @@
 {
   "tap": "italoag/intel",
-  "fingerprint": "09f8be6d4619b94a459f9483e970c8352b5bf27223bc1de238073f52460d3d42",
+  "fingerprint": "a1bbe86c456f11b9275893e9e40915c988240ae86bf9457c663ad6ac3e723c62",
   "tag": "tahoe-bottles",
-  "core_commit": "c034486c217c34a3cb8e5f0f39b7d321ab3e5d47",
+  "core_commit": "5d2a6f497b5bab5f1938ea3347cbc9377b80e49c",
   "roots": [
     "jq",
     "abseil",

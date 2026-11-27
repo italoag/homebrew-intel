@@ -67,11 +67,14 @@ class Folly < Formula
     system "./test"
   end
   patch do
+    file "Patches/folly/instantiate-str-to-integral-stringpiece.diff"
+  end
+  patch do
     file "Patches/folly/remove-mno-sse2.diff"
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "d97f1200ad11b08d049087f6c46ec033427494e596b1d2ea2f38713f6a37d5b9"
+    sha256 cellar: :any, tahoe: "db0e3731b743cc391f20a3e0a62c8465c42df423ac7ecb20b3c03d7e14fd5c40"
   end
 
 end

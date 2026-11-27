@@ -87,7 +87,7 @@ class Fizz < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "fef4617e6370f7970e023b638aa99da830abb3c9516cd6ae7bd2e4d1bac69977"
+    sha256 cellar: :any, tahoe: "89bb56c5ed6222a9aecad02f338fa3584ee2e6cb888516a228b1c998c67097d2"
   end
 
 end

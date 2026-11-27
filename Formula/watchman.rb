@@ -75,7 +75,7 @@ class Watchman < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "3266a02a4aec8c5cf342ef732a6636eaf59d5590373758f135748450abc594d8"
+    sha256 cellar: :any, tahoe: "03312d47b3c7b641cd5f806fe2f11ce102e4f1f0349def4d036ba53d8d18c20b"
   end
 
 end
