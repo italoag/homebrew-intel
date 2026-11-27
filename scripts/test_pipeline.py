@@ -694,6 +694,19 @@ class LocalModeTests(unittest.TestCase):
         with patch.dict(os.environ, {}, clear=True):
             self.assertEqual(p.local_rebuild_targets(), set())
 
+
+    def test_forced_file_members_reads_rebuild_txt(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'rebuild.txt').write_text(
+                '# comentario\nmerve\nedencommon # inline\n\n')
+            with patch.object(p, 'ROOT', root):
+                self.assertEqual(p.forced_file_members(),
+                                 {'merve', 'edencommon'})
+            (root / 'rebuild.txt').unlink()
+            with patch.object(p, 'ROOT', root):
+                self.assertEqual(p.forced_file_members(), set())
+
     def test_installed_member_is_uninstalled_only_when_requested(self):
         args = ('rust', 0, 'u/intel', 'u/intel/rust', 'rust', set(), {}, {},
                 {}, {}, 'url', {})
@@ -717,7 +730,7 @@ class LocalModeTests(unittest.TestCase):
                 p.process_member(*args, local=True)
             self.assertEqual(run.call_args.args, ('brew', 'uninstall', '--force',
                                                   '--ignore-dependencies',
-                                                  'u/intel/rust'))
+                                                  'rust'))
 
     def test_local_run_restores_the_users_tap_clone(self):
         with tempfile.TemporaryDirectory() as tmp:

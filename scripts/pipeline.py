@@ -575,6 +575,17 @@ def bottle_matches_version(source, short, asset):
     return asset[len(short) + 1:].startswith(expected + '.')
 
 
+def forced_file_members():
+    # Membros listados em rebuild.txt: o plan os força para o build_set, mas o
+    # modo local pode rodar sobre um plan.json antigo que ainda os tinha como
+    # publicados — a mesma lista precisa valer aqui.
+    forced_file = ROOT / 'rebuild.txt'
+    if not forced_file.is_file():
+        return set()
+    return {line.split('#', 1)[0].strip()
+            for line in forced_file.read_text().splitlines()} - {''}
+
+
 def local_rebuild_targets():
     # Rebuild local explícito: só o que o operador listou em
     # PIPELINE_LOCAL_REBUILD é desinstalado. rebuild.txt é do CI e vale para a
@@ -1459,10 +1470,24 @@ def build_shard(idx, local=False):
     file_owner = plan_data['file_owner']
     build_set = set(plan_data['build_set'])
     if local:
+        # PIPELINE_LOCAL_REBUILD/rebuild.txt forçam membros para dentro do
+        # build_set mesmo num plan.json antigo que ainda os tinha como
+        # publicados — sem isso eles cairiam no ramo de despejo em vez do
+        # ramo de compilação.
+        forced_names = {n for n in plan_data['order']
+                        if short_name(n) in forced_file_members()}
+        build_set |= forced_names
         # Máquina própria: assume o build_set inteiro na ordem da jornada,
         # publicando no fragmento 'local' — o plan combina todos os fragmentos.
         members = prioritize([[n for n in plan_data['order'] if n in build_set]],
                              plan_data['graph'], build_set)[0]
+        # PIPELINE_LOCAL_ONLY=fizz,watchman limita a este subconjunto: a fila
+        # inteira incluiria builds de horas (node) quando só uma cadeia pequena
+        # interessa. Deps fora da lista entram normalmente como dependências.
+        only = {x.strip() for x in
+                os.environ.get('PIPELINE_LOCAL_ONLY', '').split(',') if x.strip()}
+        if only:
+            members = [n for n in members if short_name(n) in only]
     else:
         members = plan_data['shards'][idx]
     order_index = {short_name(n): i for i, n in enumerate(plan_data['order'])}
@@ -1510,10 +1535,7 @@ def build_shard(idx, local=False):
     wait_deadline = None if not budget else started + budget - 300
     # Mesma lista que o plan usa: aqui ela impede o atalho de "já publicado"
     # de descartar um membro que precisa ser reconstruído de propósito.
-    forced_file = ROOT / 'rebuild.txt'
-    forced = {line.split('#', 1)[0].strip()
-              for line in forced_file.read_text().splitlines()} - {''} \
-        if forced_file.is_file() else set()
+    forced = forced_file_members()
     if local:
         # Pedido da máquina: o membro é refeito mesmo com fp igual ao publicado
         # (o bottle existe, mas é justamente ele que precisa ser substituído).
@@ -1603,7 +1625,9 @@ def process_member(name, idx, tap, full, short, build_set, reusable, release,
             # Só este é removido, e o install abaixo o recoloca.
             print(f'[{idx}] {short}: rebuild local pedido; '
                   'removendo o keg atual', flush=True)
-            run('brew', 'uninstall', '--force', '--ignore-dependencies', full)
+            # Nome curto: o keg pode ter vindo do homebrew/core (a máquina
+            # é do usuário) e o brew só o encontra sem a qualificação de tap.
+            run('brew', 'uninstall', '--force', '--ignore-dependencies', short)
         # Dep instalada em versão de outro tap, bottle ausente, conflito de
         # tap: o --build-bottle recusaria no meio do caminho. O dry-run
         # detecta antes e o membro é pulado com a razão.
