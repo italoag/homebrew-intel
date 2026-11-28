@@ -1,0 +1,21 @@
+packages.txt
+  s_99402dfa83c971::t_4faf507732efa0 289-307
+taps.txt
+  s_99402dfa83c971::t_d07048277ff173 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "70db401ce6b86f00859dcae875d885df0bd0f2cd",
+  "prompts": {},
+  "sessions": {
+    "s_99402dfa83c971": {
+      "agent_id": {
+        "tool": "devin",
+        "id": "s_99402dfa83c971",
+        "model": "unknown"
+      },
+      "human_author": "Italo A. G. <182202+italoag@users.noreply.github.com>"
+    }
+  }
+}
