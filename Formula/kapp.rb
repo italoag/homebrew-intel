@@ -32,5 +32,9 @@ class Kapp < Formula
     output = shell_output("#{bin}/kapp deploy-config")
     assert_match "Copy over all metadata (with resourceVersion, etc.)", output
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "1ef75da174ffdd19adaf4dabf8300dd29a3da963a62997d81238f041a9ccc37b"
+  end
 
 end

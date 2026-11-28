@@ -32,7 +32,7 @@ class Jj < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "6db462ded875e9adfa4369d4e2182aea9657283a5e9cbe418af3b5d733933f55"
+    sha256 cellar: :any_skip_relocation, tahoe: "fd3b41fe1d261a6edf4333775f4e79ae3f60447f7dbeea467dcd2dad239fd826"
   end
 
 end

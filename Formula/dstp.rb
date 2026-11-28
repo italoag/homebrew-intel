@@ -7,8 +7,16 @@ class Dstp < Formula
   head "https://github.com/ycd/dstp.git", branch: "main"
 
   bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "ee7874467a8e0bf4678584a75762e9f3b907aa6fb6e2a2d4e003486c027af266"
+    manifest_sha256 "dd47c0706b5bbf909e40414eff94c14cd6b985185d55c46c5a98422aab6971a5"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "37dcd0b9a86d548d9965bb14944f706a5fa6d78c83d7a8dc04d9e9ffb2b57fe1"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "d846454cb98d9ca168c8a2975a2d551a00b444afa2a3a0599d4bc956e24c9b35"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "d846454cb98d9ca168c8a2975a2d551a00b444afa2a3a0599d4bc956e24c9b35"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "d846454cb98d9ca168c8a2975a2d551a00b444afa2a3a0599d4bc956e24c9b35"
+    sha256 cellar: :any_skip_relocation, arm64_ventura:     "d846454cb98d9ca168c8a2975a2d551a00b444afa2a3a0599d4bc956e24c9b35"
+    sha256 cellar: :any_skip_relocation, sonoma:            "cb67648c382f56115631967b9d5c7fc76c9209299e524ea22f7d32c48e44f34c"
+    sha256 cellar: :any_skip_relocation, ventura:           "cb67648c382f56115631967b9d5c7fc76c9209299e524ea22f7d32c48e44f34c"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "f66f81e0d40aacd8eee14bbc3d74ce73cbebe5da3f36958e5c2d1f90d1d23a97"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "7bbbb70466510b3a9d41a5a6479b9a667d7d55deaf87e739a0957201995ded19"
   end
 
   depends_on "italoag/intel/go" => :build

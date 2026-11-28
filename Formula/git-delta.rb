@@ -53,7 +53,7 @@ class GitDelta < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "d1ea8587e2ed016bfb6b7ae5f7ed1bf10396cf7efb2467a8e130c59616941504"
+    sha256 cellar: :any, tahoe: "f62f4ee207428b5a5123bc63672fffacce0bbb8784f48173b8ab41d366db7ad2"
   end
 
 end

@@ -39,7 +39,7 @@ class Socat < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "55615b3b594c533ca1106e40ce7d00e9ae7cbd5dc7044cefe4e47595681d041f"
+    sha256 cellar: :any, tahoe: "f54912d37f9c87126fea9062204ac8e768ca84de8aeeb337c900704277c0f373"
   end
 
 end

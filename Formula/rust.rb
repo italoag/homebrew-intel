@@ -6,8 +6,8 @@ class Rust < Formula
   head "https://github.com/rust-lang/rust.git", branch: "main"
 
   stable do
-    url "https://static.rust-lang.org/dist/rustc-1.100.0-src.tar.gz"
-    sha256 "e8904548563117043c24a67c4967119b7c9ed304821988283e7681122ceec98b"
+    url "https://static.rust-lang.org/dist/rustc-1.100.1-src.tar.gz"
+    sha256 "67a6e519b177b5f62cb3685a200527fc0fc685df40a33ca2017f14bafd6bf710"
 
     # From https://github.com/rust-lang/rust/blob/#{version}/src/stage0
     # HEAD does not use these as it needs a nightly rust
@@ -257,7 +257,7 @@ class Rust < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "1f1fd89a3af384b4ffd2abab127021a2c292fb04d9520ca05d797fbe68102b76"
+    sha256 cellar: :any, tahoe: "a78ea79aa1a2ef799a027479afb7c4a774586bdfae377db0302d8334839e5172"
   end
 
 end

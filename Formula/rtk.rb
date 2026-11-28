@@ -29,7 +29,7 @@ class Rtk < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "ed201f2832e607975ed11ba9ed5c9a78aa6002930ad027158843b8b71660bb35"
+    sha256 cellar: :any_skip_relocation, tahoe: "4c025d4191436072792c85745c693040135714a5a671c361e135ce9ed37d1f8d"
   end
 
 end

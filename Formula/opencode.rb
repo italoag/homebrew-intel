@@ -46,7 +46,7 @@ class Opencode < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "622df1e19917df0acdd05e39d2cf364fe2fc91ba17a496c2c49f6c52327bd554"
+    sha256 cellar: :any_skip_relocation, tahoe: "885bbc27a3c5178493368360d8fdca1431ffd99609a019d9eca0b6aa9d7ea0b2"
   end
 
 end

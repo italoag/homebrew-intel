@@ -63,7 +63,7 @@ class Herdr < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "212d59ef724ebf922881a6c45a731e6bfec585af6aa1d2e8a66c159449706fee"
+    sha256 cellar: :any_skip_relocation, tahoe: "d469519f6db07983fbaf851212d5c93149b2ef5025256ac3df632e67e3e1bf22"
   end
 
 end

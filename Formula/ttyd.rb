@@ -52,7 +52,7 @@ class Ttyd < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "20a9484989c5be4ba32745db67b9f5ae64e2b4059a4682682bff23523a81f851"
+    sha256 cellar: :any, tahoe: "daa477e8a6e8c7e96502d39dadb5f2fc27d37ec6bb368785947883763256a0f1"
   end
 
 end

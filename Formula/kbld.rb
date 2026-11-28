@@ -41,5 +41,9 @@ class Kbld < Formula
     output = shell_output("#{bin}/kbld -f #{test_yaml}")
     assert_match "image: index.docker.io/library/nginx@sha256", output
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "c173cdbe9174c024271e07839f36a64f646d8649257c9f60783989b90ba31fde"
+  end
 
 end

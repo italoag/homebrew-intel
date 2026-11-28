@@ -3,6 +3,7 @@
 import argparse
 from datetime import datetime, timezone
 import hashlib
+from concurrent.futures import ThreadPoolExecutor
 import json
 import os
 from pathlib import Path
@@ -141,7 +142,7 @@ def migration_plan(partial=False):
     if not roots:
         raise SystemExit('Nenhuma candidata no inventário.')
     missing = set(roots) - set(snapshot['order'])
-    if missing:
+    if missing and not partial:
         raise SystemExit('A esteira ainda não publicou: ' + ', '.join(sorted(missing)))
     order_set = set(snapshot['order'])
     # Deps de membros vêm qualificadas para o tap; deps implícitas (ex.:
@@ -153,17 +154,37 @@ def migration_plan(partial=False):
     ready_roots = []
     blocked = {}
     deps_of = {}
+    eligible = []
     for name in roots:
         short = name.split('/')[-1]
+        # Com --partial, raiz fora do snapshot é pulada em vez de fatal:
+        # ela não tem fórmula publicada e não pode migrar agora.
+        if name in missing or short in {m.split('/')[-1] for m in missing}:
+            blocked[short] = 'ainda não publicada pela esteira'
+            continue
         if short in pending:
             blocked[short] = 'aguardando publicação pela esteira'
             continue
+        eligible.append(name)
+
+    def fetch_deps(name):
+        short = name.split('/')[-1]
         try:
-            deps_of[name] = brew('deps', '--full-name', tap + '/' + short).split()
+            return name, brew('deps', '--full-name', tap + '/' + short).split(), None
         except subprocess.CalledProcessError:
-            blocked[short] = 'fórmula não resolve no tap'
+            return name, None, 'fórmula não resolve no tap'
+
+    # brew deps é leitura pura: as chamadas paralelas derrubam minutos de
+    # espera serial no plano (centenas de raízes).
+    with ThreadPoolExecutor(max_workers=6) as pool:
+        dep_results = list(pool.map(fetch_deps, eligible))
+    for name, deps, err in dep_results:
+        short = name.split('/')[-1]
+        if err:
+            blocked[short] = err
             continue
-        missing_deps = sorted({dep.split('/')[-1] for dep in deps_of[name]} & pending)
+        deps_of[name] = deps
+        missing_deps = sorted({dep.split('/')[-1] for dep in deps} & pending)
         if missing_deps:
             blocked[short] = 'deps pendentes: ' + ', '.join(missing_deps)
             continue
@@ -183,12 +204,25 @@ def migration_plan(partial=False):
                 # curto; o keg do tap a satisfaz na ordem do snapshot.
                 closure.add(tap + '/' + short)
             else:
-                raise SystemExit('Dependência fora do tap: ' + dep + '; migração bloqueada.')
+                # Dep fora do tap não bloqueia quando já está instalada ou
+                # quando tem bottle despejável no core (ex.: `all`, que é
+                # independente de plataforma): o brew a resolve sem compilar.
+                try:
+                    dep_info = info(short)
+                except subprocess.CalledProcessError:
+                    raise SystemExit('Dependência fora do tap: ' + dep +
+                                     '; migração bloqueada.')
+                files = (dep_info.get('bottle') or {}).get('stable', {}).get('files', {})
+                if not dep_info.get('installed') and not files:
+                    raise SystemExit('Dependência fora do tap e sem bottle: ' +
+                                     dep + '; migração bloqueada.')
     short_set = {key.split('/')[-1] for key in order_set}
     if any(full.removeprefix(tap + '/') not in short_set for full in closure):
         raise SystemExit('Dependência fora do snapshot: migração bloqueada.')
     names = list(dict.fromkeys(key.split('/')[-1] for key in snapshot['order']
                                if tap + '/' + key.split('/')[-1] in closure))
+    with ThreadPoolExecutor(max_workers=6) as pool:
+        desired_infos = dict(zip(names, pool.map(lambda n: info(tap + '/' + n), names)))
     installed = json.loads(brew('info', '--json=v2', '--installed'))['formulae']
     installed_by_name = {item['name']: item for item in installed}
     pinned = set(brew('list', '--pinned').split())
@@ -211,7 +245,7 @@ def migration_plan(partial=False):
                            for item in current.get('installed', [])):
             raise SystemExit('Instalação HEAD/com opções exige revisão: ' + name)
         full = tap + '/' + name
-        desired = info(full)
+        desired = desired_infos[name]
         files = ((desired.get('bottle') or {}).get('stable') or {}).get('files') or {}
         if name in reused_shorts:
             # Fórmula servida pelo bottle oficial do mantenedor (URL upstream);
@@ -240,6 +274,14 @@ def migration_plan(partial=False):
 
 def migrate(apply, partial=False):
     snapshot, installed, plan, blocked = migration_plan(partial)
+    tap = snapshot['tap']
+    # Pacotes já instalados a partir deste tap não precisam de migração:
+    # atualizações futuras seguem pelo upgrade normal do brew.
+    before = len(plan)
+    plan = [item for item in plan if item['previous_origin'] != tap]
+    skipped = before - len(plan)
+    if skipped:
+        print(f'{skipped} já migrados para {tap}; ignorados.')
     WORK.mkdir(exist_ok=True)
     (WORK / 'migration-plan.json').write_text(json.dumps(plan, indent=2) + '\n')
     for item in plan:

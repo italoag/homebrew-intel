@@ -39,7 +39,7 @@ class SourceHighlight < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "ae0124e5175955ee5fdf0f79117d5cfe64762d6c6823616ae1b09ea667fa1897"
+    sha256 tahoe: "7b53628e0b7ae11011bcd6b44b0115e02f27e10acc38e212c81bf4937ad7fa0e"
   end
 
 end

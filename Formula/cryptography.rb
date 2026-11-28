@@ -42,7 +42,7 @@ class Cryptography < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "8d8218d774a4b2e88d00d487491a651a81245bea05cd050790ae68fb4c3a54e0"
+    sha256 cellar: :any, tahoe: "ad4b20b14b3060155da41fcdc62f9440d7dbfbe3652485202e836d9abc14377c"
   end
 
 end

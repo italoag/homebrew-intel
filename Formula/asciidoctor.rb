@@ -195,7 +195,7 @@ class Asciidoctor < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "6a6900ad008c1bb11656e322a1df58769376631eb3824961efcf31012d79cde8"
+    sha256 cellar: :any_skip_relocation, tahoe: "f34c3191b1dd43e85a2efa086844619a5da0afbe766bf012e5863d321c8c6cf7"
   end
 
 end

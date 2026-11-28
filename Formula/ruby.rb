@@ -283,7 +283,7 @@ class Ruby < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "82c72b6d940313f87a47db6b56ac62ae8b700d42f681f63e5b5126488cf4f0a7"
+    sha256 tahoe: "e6de766051d97d8b2ac1ddd47ed895198b2c8c06ce2759c54e55a9ab002fb213"
   end
 
 end

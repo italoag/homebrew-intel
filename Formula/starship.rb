@@ -34,7 +34,7 @@ class Starship < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "fa73b0a0a77ab91994a8e55d54b6d186c327671b55f6a22b14905c91bfad0564"
+    sha256 cellar: :any_skip_relocation, tahoe: "54041cd1f0d03af8e244c6fcb96023296f6eeacfffe93873071cc276ffa671cb"
   end
 
 end

@@ -37,7 +37,7 @@ class Ripgrep < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "2047fae8a7efc84d0b7335b3f8bae185f7497ffa51f52484eb55ea586cf8d986"
+    sha256 cellar: :any, tahoe: "361bb552cc86880d7d5eab72d3588d1468f389ecd347d715e43d32e50dfaa28e"
   end
 
 end

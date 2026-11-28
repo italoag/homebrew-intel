@@ -84,7 +84,7 @@ class Unar < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "d8b5c803966830d5931c8701b039f8688e34814efd45bcd8ee9d917e01b98053"
+    sha256 cellar: :any, tahoe: "fa457dacf120b233e7eeac9684c4d2c90966da160e75281ee87a90929e4abca9"
   end
 
 end

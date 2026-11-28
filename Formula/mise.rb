@@ -59,7 +59,7 @@ class Mise < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "32c9604c90abe34bf135f5e9a7f295001afb0533f22da1b136b63a8acb2aa046"
+    sha256 cellar: :any_skip_relocation, tahoe: "7740d53ec93375bd927c5e4b4de0e58d4a56f072f120feeaaa3fd90950477a90"
   end
 
 end

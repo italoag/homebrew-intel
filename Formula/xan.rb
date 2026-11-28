@@ -27,7 +27,7 @@ class Xan < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "ab2e4d622f2056aebd930283287d3f70892d03104408fdd57ce31c9b81b74d9a"
+    sha256 cellar: :any_skip_relocation, tahoe: "ab932263f185e748d2fc4b0f7449b6ee5d3b0a09ea3c21af0e659afd54a2a066"
   end
 
 end

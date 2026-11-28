@@ -70,7 +70,7 @@ class DartSdk < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "435496349d88243a3497d64a3a0ea2ab18ee0876ebe0c267919a86ed4c8d4d2e"
+    sha256 cellar: :any, tahoe: "01200c7134c8be2040a8f69e1117d56c78c973c2871150c600c06106439029ca"
   end
 
 end

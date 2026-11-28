@@ -52,7 +52,7 @@ class Fish < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "4e33cbb200b117ffe8c1deb472c0b8d6ec0eb6bd82f66d49eed549e9710bd941"
+    sha256 tahoe: "aa27be567f4d22e4ea704527a1076bf1c971c5c85df5fe18aa9561def296de23"
   end
 
 end

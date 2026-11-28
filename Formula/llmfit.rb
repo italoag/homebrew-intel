@@ -23,5 +23,9 @@ class Llmfit < Formula
     assert_match version.to_s, shell_output("#{bin}/llmfit --version")
     assert_match(/Found \d+ model\(s\)/i, shell_output("#{bin}/llmfit search llama"))
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any_skip_relocation, tahoe: "45ff255e1d621cbb22fa4eec8d77ffa8c33f59d9e51d5f97a8dae23f0552bd11"
+  end
 
 end
