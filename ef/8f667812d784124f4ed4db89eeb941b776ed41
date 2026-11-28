@@ -1,0 +1,20 @@
+scripts/sync-installed.py
+  s_a6c2d66b4b0258::t_6f7b837743bb51 191-202
+  s_a6c2d66b4b0258::t_f8e00153130b27 144,158-162
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ef8f667812d784124f4ed4db89eeb941b776ed41",
+  "prompts": {},
+  "sessions": {
+    "s_a6c2d66b4b0258": {
+      "agent_id": {
+        "tool": "windsurf",
+        "id": "malleable-nigella",
+        "model": "unknown"
+      },
+      "human_author": "Italo A. G. <182202+italoag@users.noreply.github.com>"
+    }
+  }
+}
