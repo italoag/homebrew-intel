@@ -141,7 +141,7 @@ def migration_plan(partial=False):
     if not roots:
         raise SystemExit('Nenhuma candidata no inventário.')
     missing = set(roots) - set(snapshot['order'])
-    if missing:
+    if missing and not partial:
         raise SystemExit('A esteira ainda não publicou: ' + ', '.join(sorted(missing)))
     order_set = set(snapshot['order'])
     # Deps de membros vêm qualificadas para o tap; deps implícitas (ex.:
@@ -155,6 +155,11 @@ def migration_plan(partial=False):
     deps_of = {}
     for name in roots:
         short = name.split('/')[-1]
+        # Com --partial, raiz fora do snapshot é pulada em vez de fatal:
+        # ela não tem fórmula publicada e não pode migrar agora.
+        if name in missing or short in {m.split('/')[-1] for m in missing}:
+            blocked[short] = 'ainda não publicada pela esteira'
+            continue
         if short in pending:
             blocked[short] = 'aguardando publicação pela esteira'
             continue
@@ -183,7 +188,18 @@ def migration_plan(partial=False):
                 # curto; o keg do tap a satisfaz na ordem do snapshot.
                 closure.add(tap + '/' + short)
             else:
-                raise SystemExit('Dependência fora do tap: ' + dep + '; migração bloqueada.')
+                # Dep fora do tap não bloqueia quando já está instalada ou
+                # quando tem bottle despejável no core (ex.: `all`, que é
+                # independente de plataforma): o brew a resolve sem compilar.
+                try:
+                    dep_info = info(short)
+                except subprocess.CalledProcessError:
+                    raise SystemExit('Dependência fora do tap: ' + dep +
+                                     '; migração bloqueada.')
+                files = (dep_info.get('bottle') or {}).get('stable', {}).get('files', {})
+                if not dep_info.get('installed') and not files:
+                    raise SystemExit('Dependência fora do tap e sem bottle: ' +
+                                     dep + '; migração bloqueada.')
     short_set = {key.split('/')[-1] for key in order_set}
     if any(full.removeprefix(tap + '/') not in short_set for full in closure):
         raise SystemExit('Dependência fora do snapshot: migração bloqueada.')
