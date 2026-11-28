@@ -105,7 +105,7 @@ class Onnx < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "b417378ec80e91273b705ab26ceecee7ebe8c9d080bfe4ba3b3cd20cef7d92e1"
+    sha256 cellar: :any, tahoe: "cecfcbb132e17b164784b6b4207c3d89235e92fccac81853d83c8d6407963ea8"
   end
 
 end

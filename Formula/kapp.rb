@@ -1,38 +1,36 @@
 class Kapp < Formula
-  desc "Kapp"
+  desc "CLI tool for Kubernetes users to group and manage bulk resources"
   homepage "https://carvel.dev/kapp/"
-  version "v0.66.2"
+  url "https://github.com/carvel-dev/kapp/archive/refs/tags/v0.66.2.tar.gz"
+  sha256 "8983b3f80312e65b97d909d426fea1536666e1012e174df0d83be114d59c01c7"
+  license "Apache-2.0"
+  head "https://github.com/carvel-dev/kapp.git", branch: "develop"
 
-  if OS.mac?
-    if Hardware::CPU.arm?
-      url "https://github.com/carvel-dev/kapp/releases/download/v0.66.2/kapp-darwin-arm64"
-      sha256 "80fedd817c6df60253ba73b1f3d15a87daba5d401113cd74b2332899036a5a93"
-    else
-      url "https://github.com/carvel-dev/kapp/releases/download/v0.66.2/kapp-darwin-amd64"
-      sha256 "e93b89fbd1a15495725119bb4a0fd70b98efaa206532f9c8398ad4ad7a05c8aa"
-    end
-  elsif OS.linux?
-    if Hardware::CPU.arm?
-      url "https://github.com/carvel-dev/kapp/releases/download/v0.66.2/kapp-linux-arm64"
-      sha256 "3c2fc725afee527a0e38b4da55e41bdddf608d27a1ee830c29ba566132366fcb"
-    else
-      url "https://github.com/carvel-dev/kapp/releases/download/v0.66.2/kapp-linux-amd64"
-      sha256 "48122dc249e48f8c92e2b3613fb4672950aaef2570248655fbede4c4d57b08a3"
-    end
+  livecheck do
+    url :stable
+    strategy :github_latest
   end
 
+
+  depends_on "italoag/intel/go" => :build
+
+  deny_network_access!
+
   def install
-    bin.install stable.url.split("/")[-1] => "kapp"
-    
+    ldflags = "-X carvel.dev/kapp/pkg/kapp/version.Version=#{version}"
+    system "go", "build", *std_go_args(ldflags:), "./cmd/kapp"
+
+    generate_completions_from_executable(bin/"kapp", shell_parameter_format: :cobra)
   end
 
   test do
-    system "#{bin}/kapp", "version"
-  end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "9a94fb1aadd3ea423e70788e93f615a208a56ecd85f43518a1dfd4d3e3c3f612"
+    assert_match version.to_s, shell_output("#{bin}/kapp version")
+
+    output = shell_output("#{bin}/kapp list 2>&1", 1)
+    assert_match "try setting KUBERNETES_MASTER environment variable", output
+
+    output = shell_output("#{bin}/kapp deploy-config")
+    assert_match "Copy over all metadata (with resourceVersion, etc.)", output
   end
 
 end
-

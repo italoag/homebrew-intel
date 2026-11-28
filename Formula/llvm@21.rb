@@ -556,7 +556,7 @@ class LlvmAT21 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "d180b9471419e71ebb003e45dbae59cc3d4c1677a5ed6d8cc320b8d5fde03984"
+    sha256 cellar: :any, tahoe: "c76f90d2aa72a9f80c381636834697928278f056fa8f2247d8488441a3de1b13"
   end
 
 end

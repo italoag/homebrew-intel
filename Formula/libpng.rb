@@ -61,7 +61,7 @@ class Libpng < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "99326672729d05cf35251ebdfeaea0ebb6e0072ec5fb278488ca447082148cb5"
+    sha256 cellar: :any, tahoe: "ca09a5a308b4cdd8e67c1b1bbc36c3bff5c4262443d28622b2c53b578b493b42"
   end
 
 end

@@ -119,7 +119,7 @@ class Nss < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "7f8e50d114ed72f4a9f56b6f62bb82acd256177b48d056bcbd62cbae4b332920"
+    sha256 cellar: :any, tahoe: "79b63b5318a2ed328196509499f3f6272b6198455a485101fe7bf61469710f71"
   end
 
 end

@@ -47,7 +47,7 @@ class Openjph < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "ed13a53dc831a6ab52d878a6ad66a65d68e4dcdeadf3e1e72519e3fcb6ec4d78"
+    sha256 cellar: :any, tahoe: "a251d8e07d290ab0f979551053655b11d898cf9c70bb93c26151487898f20634"
   end
 
 end

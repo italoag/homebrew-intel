@@ -44,7 +44,7 @@ class JsonC < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "9f0dc7838b133b674d4e8803c8d17402884f9ff448ddf74af5af9b7844185923"
+    sha256 cellar: :any, tahoe: "04c11457059c099f736dcf00ac0b943dc537326bf853a15aace0d2cf2a439826"
   end
 
 end

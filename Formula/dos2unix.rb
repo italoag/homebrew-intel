@@ -50,7 +50,7 @@ class Dos2unix < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "872363ff06fa77dc8d9d28df41b8781411386ee01b1329a46db9cd3ff7e47b69"
+    sha256 cellar: :any_skip_relocation, tahoe: "96ac31ff4f7f70e786db30f36244d6c9954c3a10107f4fe9c02d6222d376035a"
   end
 
 end

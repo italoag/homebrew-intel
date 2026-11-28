@@ -60,7 +60,7 @@ class Aria2 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "8119c5be47f2abd7e150e52ff908080db18ab9c84681f02fec6383d425154829"
+    sha256 tahoe: "2c8e599bf1297fff2b119ff4a7ec50551a847959d829d2b476d0b089359e8387"
   end
 
 end

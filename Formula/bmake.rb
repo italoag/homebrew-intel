@@ -46,7 +46,7 @@ class Bmake < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "cf46dbd6eab82608b7301f2c1937f61691b15a47917c6af02ea53d2276ea6415"
+    sha256 tahoe: "82bb8e6ac279e74f08c9c9f45b2db4be070b5291588fb027525abf04077e2099"
   end
 
 end

@@ -71,7 +71,7 @@ class Xapian < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "126efdacc5a608f0164dcc23c5c7a98eaa872615889e48e35a558387da5bfe44"
+    sha256 cellar: :any, tahoe: "7a19e1a2428a104808d387c00de9059aa5023fd954209b652c3f24bf8c99ee81"
   end
 
 end

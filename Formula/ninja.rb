@@ -44,7 +44,7 @@ class Ninja < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "fb3e3a65db840fef85d616e020d3e1e40b66cdb82f216df8d7d50a11d8cafa12"
+    sha256 cellar: :any_skip_relocation, tahoe: "90eb941b45f47ec13f894c31e760a3987ca932397d9aa8aa75360a4673514fc0"
   end
 
 end

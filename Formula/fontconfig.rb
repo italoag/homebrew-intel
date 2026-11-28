@@ -74,7 +74,7 @@ class Fontconfig < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "ce2ed4717311ec1f2c9e4ef9efe078529957aac5670cddeb339050ed6af701eb"
+    sha256 tahoe: "459fa5639e6c53554e7bb4501f09f2dadf93ca9ff6e2b66a2246930c9e655d38"
   end
 
 end

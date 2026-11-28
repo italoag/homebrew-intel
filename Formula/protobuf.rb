@@ -64,7 +64,7 @@ class Protobuf < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "45bac33f3dca3e8e1a707448c8b2a3813cbc701a043d53c39750573275774db2"
+    sha256 cellar: :any, tahoe: "b65ed5e867882f19a870b9b6e6d0a98d2c6b8b155cc9aee495cb719771dc7d31"
   end
 
 end

@@ -108,7 +108,7 @@ class Exiftool < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "070a928234fea1ded44648d594e20b05a18c962f26ae54a4322ca1114d947615"
+    sha256 cellar: :any, tahoe: "2ed8b5e8b38805d78329cb309b915d0d893f5b1f525423b9a1e8ebfae0bcb46f"
   end
 
 end

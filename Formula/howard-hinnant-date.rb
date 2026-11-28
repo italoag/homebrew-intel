@@ -1,20 +1,11 @@
 class HowardHinnantDate < Formula
   desc "C++ library for date and time operations based on <chrono>"
   homepage "https://github.com/HowardHinnant/date"
-  url "https://github.com/HowardHinnant/date/archive/refs/tags/v3.0.5.tar.gz"
-  sha256 "ef786edc203daec76475825640b3af247bd08e31fc52217e5ce8f76107b4bb05"
+  url "https://github.com/HowardHinnant/date/archive/refs/tags/v3.0.6.tar.gz"
+  sha256 "19f393877190e346ecbded5df4bbbb9bbfcc5aa57008becafeaacf5ea32d210b"
   license "MIT"
   compatibility_version 1
 
-  bottle do
-    sha256 cellar: :any, arm64_golden_gate: "e3b0bd13c2a60edd97b68ab8fae2aa9f3502c53703a2e724d58b7855980c0372"
-    sha256 cellar: :any, arm64_tahoe:       "08d425d276d462c1b67bd2ae8e4fc27a6719bfcf614c83a395950a4c748bf520"
-    sha256 cellar: :any, arm64_sequoia:     "edfd31d06de8c45bf8494b2be67466ad7119641ffa29faacb37e91c1ba38f0a4"
-    sha256 cellar: :any, arm64_sonoma:      "1d81e0b579ffcf1c93673c1cfe9d882c38b99aaa343342b9b1688309d9c2c876"
-    sha256 cellar: :any, sonoma:            "a69eb41463b79ce173d1f955caf13856abb06dbc1d6639936fcda604e828df73"
-    sha256 cellar: :any, arm64_linux:       "eda5d808784224ffc2841a9c51829514eb22d0408b227f3c2eb7cbd711e08de6"
-    sha256 cellar: :any, x86_64_linux:      "9deaee6eb543f5ada3286b05853300472fd5735cbe61f0f4cec122105e546c5c"
-  end
 
   depends_on "italoag/intel/cmake" => :build
 
@@ -44,4 +35,9 @@ class HowardHinnantDate < Formula
     system ENV.cxx, "test.cpp", "-std=c++1y", "-L#{lib}", "-ldate-tz", "-o", "test"
     system "./test"
   end
+  bottle do
+    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
+    sha256 cellar: :any, tahoe: "abe24a6644607476e3cd3a9b4a03719c85791f7a53a4e5446deb72b31f1d1b42"
+  end
+
 end

@@ -1,38 +1,45 @@
 class Kbld < Formula
-  desc "Kbld"
+  desc "Tool for building and pushing container images in development workflows"
   homepage "https://carvel.dev/kbld/"
-  version "v0.50.0"
+  url "https://github.com/carvel-dev/kbld/archive/refs/tags/v0.50.0.tar.gz"
+  sha256 "cf22e37617bc01022e7032ce1eb45cc8c58a56c8a083b590b4cf3854382f8b1b"
+  license "Apache-2.0"
+  head "https://github.com/carvel-dev/kbld.git", branch: "develop"
 
-  if OS.mac?
-    if Hardware::CPU.arm?
-      url "https://github.com/carvel-dev/kbld/releases/download/v0.50.0/kbld-darwin-arm64"
-      sha256 "21b9a581c2761b69a5b01ab9aaf8d996d163a8d3fd1c397ab92c1d3122dff5a8"
-    else
-      url "https://github.com/carvel-dev/kbld/releases/download/v0.50.0/kbld-darwin-amd64"
-      sha256 "5e06f38ce5f3be3a28cffbbc94a7e0ee122843f0e8624527bd402b149b066729"
-    end
-  elsif OS.linux?
-    if Hardware::CPU.arm?
-      url "https://github.com/carvel-dev/kbld/releases/download/v0.50.0/kbld-linux-arm64"
-      sha256 "ac12dad160aefa7e03558172e83825c524c1bb3d1a0b7b852be591ad2ee6fd42"
-    else
-      url "https://github.com/carvel-dev/kbld/releases/download/v0.50.0/kbld-linux-amd64"
-      sha256 "5f3eae9bb1e15f745d9e5a1a3b422bcc3aff265f0b178392c2de617a5bbc02ea"
-    end
+
+  depends_on "italoag/intel/go" => :build
+
+  allow_network_access! :test
+
+  def fetch
+    system "go", "mod", "download"
   end
 
   def install
-    bin.install stable.url.split("/")[-1] => "kbld"
-    
+    ldflags = %W[
+      -X carvel.dev/kbld/pkg/kbld/version.Version=#{version}
+    ]
+    system "go", "build", *std_go_args(ldflags:), "./cmd/kbld"
   end
 
   test do
-    system "#{bin}/kbld", "version"
-  end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "16dfa793bc84d5b0ae32efdcb778029eb7f492ec6f26a9e74ff4011a76ebc566"
+    assert_match version.to_s, shell_output("#{bin}/kbld --version")
+
+    test_yaml = testpath/"test.yml"
+    test_yaml.write <<~YAML
+      ---
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        name: test
+      spec:
+        containers:
+        - name: test
+          image: nginx:1.14.2
+    YAML
+
+    output = shell_output("#{bin}/kbld -f #{test_yaml}")
+    assert_match "image: index.docker.io/library/nginx@sha256", output
   end
 
 end
-

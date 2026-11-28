@@ -65,7 +65,7 @@ class Openjpeg < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "31077eb3febdc97d0dc132f93af9d5224551cac26681c6d1ace9b683c398be18"
+    sha256 cellar: :any, tahoe: "1273b8ffe21f87d924dd76285a4274db50f56a574d225108b3533323993e9c7a"
   end
 
 end

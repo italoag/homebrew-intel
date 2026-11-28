@@ -79,7 +79,7 @@ class Gmp < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "3a42c3eb585bc14f15784dc53d6ccd5a2a7de1fce9b345cf7ad398cf4dd927e7"
+    sha256 cellar: :any, tahoe: "cfd7cd31b3b4113174a9d6111fd0e7400bfe2daf3aed0be2e745e099e76227ef"
   end
 
 end

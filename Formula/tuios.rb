@@ -28,7 +28,7 @@ class Tuios < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "c998f4ec440bf6906a5d015bf6b65b3053b44750824e03cdc285836ced11f811"
+    sha256 cellar: :any_skip_relocation, tahoe: "777d4e305e793e659a4fb9beabd7b4ad82ba986c3d909c4348f2eb6c04a6bbf2"
   end
 
 end

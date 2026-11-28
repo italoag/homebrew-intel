@@ -81,7 +81,7 @@ class AdaUrl < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "7101d589bb98da676fd644e5e939d1e305ecd1f3722504f78971a12153d7607c"
+    sha256 cellar: :any, tahoe: "facc14abc7afe156febedca005b8f7a8bde9707947004e0604db95a2cfbef888"
   end
 
 end

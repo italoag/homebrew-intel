@@ -56,7 +56,7 @@ class Lowdown < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "489bd84b440a8d7f20b82081bd300575948505f08df7bd11bfeb4bce423af0c6"
+    sha256 cellar: :any, tahoe: "fdc6500a0f67ab4e0da31e9c0a1fdff150c6a6ee2e21fbb6923d0323f06e67b8"
   end
 
 end

@@ -85,7 +85,7 @@ class Gnutls < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "fa900d4254913100c18a97bf5a893d56632f21fc7c8c482a8097049fab201830"
+    sha256 tahoe: "6f652c63a56d72f62c6dbb4cbc9f2191434e5b7c32975d5925fff58606a020d6"
   end
 
 end

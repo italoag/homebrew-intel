@@ -59,7 +59,7 @@ class Mpdecimal < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "e7d2812e70468280d4d2c71c2131cd9c22515c7f6b7164f0f107912a51e28040"
+    sha256 cellar: :any, tahoe: "0f25399e6027f6d33c3e8bd5ee1ef7a2fa918402bd5cb2dbfa5c15ba80f52763"
   end
 
 end

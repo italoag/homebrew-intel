@@ -42,7 +42,7 @@ class Nbytes < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "e873bcc4f2acbd2f98f15ed481c40a7c1fe7ff7a6f8d5e9039ee05c773d087f6"
+    sha256 cellar: :any, tahoe: "053630015607ef610534aa2781d961b221371df07d80c345da5b96bd267b9b75"
   end
 
 end

@@ -41,7 +41,7 @@ class Libevent < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "3001b5acc73df67cc8a0570bd89a6c7087e75ec519d7fbab90cdd378ef6d572f"
+    sha256 cellar: :any, tahoe: "3f25db58292ba8cebdc71adc02e84f3afd27a6feae41d0d66f78e626cb3aa1df"
   end
 
 end

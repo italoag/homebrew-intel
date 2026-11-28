@@ -51,7 +51,7 @@ class Pcre2 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "dc0dcc2c51cc535045244a0168aef862b055b0f00030ea96eaddb7e8a9a45d77"
+    sha256 cellar: :any, tahoe: "c7ab09be3cb79ae7b38d8c4b36146e86212b15d44a81b2135a11a792ae6e409e"
   end
 
 end

@@ -60,7 +60,7 @@ class Libnghttp2 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "da88127cdf622970789f211c00023353c18dc83f8e6c5c0b64daaf2f921e4b68"
+    sha256 cellar: :any, tahoe: "4bb6dc20ee142e06a169429f927acf70eddccec82e544eb4f49615789aaa1417"
   end
 
 end

@@ -67,7 +67,7 @@ class Btop < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "2b583198c06b1ace078439870a72f89d68896807614665e470763258c1244c40"
+    sha256 tahoe: "9231e921945b0b9fc0a168e3ce1bf086c253f3685ad4ca77bb6dfc984361f412"
   end
 
 end

@@ -42,7 +42,7 @@ class Yajl < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "b911f7e316fce383308ccd29739b97857bb1716fe72bb41ef43f01751eb4399f"
+    sha256 cellar: :any, tahoe: "2c8fdb9a6fdf77e363f39e9ac6182339c73fdb63a081799ddbf317097e9dfea9"
   end
 
 end

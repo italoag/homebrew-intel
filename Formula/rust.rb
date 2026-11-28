@@ -257,7 +257,7 @@ class Rust < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "88ecceebd11fc8a404445030343cccfdb9ff557dc54a4430ec365dc8428c55bb"
+    sha256 cellar: :any, tahoe: "1f1fd89a3af384b4ffd2abab127021a2c292fb04d9520ca05d797fbe68102b76"
   end
 
 end

@@ -63,7 +63,7 @@ class Ethereum < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "8a502e7ca245d62b555c7df084be904ede1a0328cb89954c100af828ccc1c065"
+    sha256 cellar: :any_skip_relocation, tahoe: "3388ac23b6efd020c0fc653c5d6091d333fbc64641087cb7f4b34ce525993057"
   end
 
 end

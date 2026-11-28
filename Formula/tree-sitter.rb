@@ -60,7 +60,7 @@ class TreeSitter < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "398666756aa2fc87d39bf160429fd2086fe4a8fd1cc24ece93d9630a64235a47"
+    sha256 cellar: :any, tahoe: "9483bd6adf0b24bf337dabbf31be9c425faa5360217aa6d85fbcb36df48b20a0"
   end
 
 end

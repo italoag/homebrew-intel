@@ -125,7 +125,7 @@ class Go < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "6ff4763885c1e7c7bf85f37073ff1e72bb5901986df29c610eeb69c07fef2262"
+    sha256 cellar: :any_skip_relocation, tahoe: "37cfd76c1372ee3c62f3e8e13b2e2f52bf1c98e2f74aad7c6a5173e2b7a9612c"
   end
 
 end

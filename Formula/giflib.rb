@@ -31,7 +31,7 @@ class Giflib < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "3664fad7a5c499b7db8d2d603eefc3609a4e25797f320ad59b64914f868f58d1"
+    sha256 cellar: :any, tahoe: "99352b77f976fe56c41c1f101e7fee02facea1e25e164866e794a29c3d083908"
   end
 
 end

@@ -1,39 +1,27 @@
 class Llmfit < Formula
-  desc "Terminal tool that right-sizes LLM models to your system hardware"
+  desc "Find what models run on your hardware"
   homepage "https://github.com/AlexsJones/llmfit"
-  version "1.1.20"
+  url "https://static.crates.io/crates/llmfit/llmfit-1.1.21.crate"
+  sha256 "33b841786bde9c052a9e44aebeb0db143157303a1f60db71acd9bd7005153305"
   license "MIT"
+  head "https://github.com/AlexsJones/llmfit.git", branch: "main"
 
-  on_macos do
-    if Hardware::CPU.arm?
-      url "https://github.com/AlexsJones/llmfit/releases/download/v#{version}/llmfit-v#{version}-aarch64-apple-darwin.tar.gz"
-      sha256 "d95629660505debdd3d8086a020512600ae1e1fcc35d89dc716424788497a73b"
-    else
-      url "https://github.com/AlexsJones/llmfit/releases/download/v#{version}/llmfit-v#{version}-x86_64-apple-darwin.tar.gz"
-      sha256 "3fcce436bb6d34d5fd4e3e62ccd7232b8332ec3b91f8c47ec8a346df90cbde66"
-    end
-  end
 
-  on_linux do
-    if Hardware::CPU.arm?
-      url "https://github.com/AlexsJones/llmfit/releases/download/v#{version}/llmfit-v#{version}-aarch64-unknown-linux-musl.tar.gz"
-      sha256 "de9fcb030b19997a983a616c149d101a57b1a83556fe9be1740f88dc348e3ec7"
-    else
-      url "https://github.com/AlexsJones/llmfit/releases/download/v#{version}/llmfit-v#{version}-x86_64-unknown-linux-musl.tar.gz"
-      sha256 "64d71c876965fb883c175ff20558a26f4dd5ad1404b582a1922c496b16720421"
-    end
+  depends_on "italoag/intel/rust" => :build
+
+  allow_network_access! :test
+
+  def fetch
+    system "cargo", "fetch", "--locked"
   end
 
   def install
-    bin.install "llmfit"
+    system "cargo", "install", *std_cargo_args
   end
 
   test do
-    assert_match "llmfit", shell_output("#{bin}/llmfit --help")
-  end
-  bottle do
-    root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any_skip_relocation, tahoe: "490b206a8ac0761aefebdc9a4e3cd5f87b60f85e3222185832b24dec1127a27e"
+    assert_match version.to_s, shell_output("#{bin}/llmfit --version")
+    assert_match(/Found \d+ model\(s\)/i, shell_output("#{bin}/llmfit search llama"))
   end
 
 end

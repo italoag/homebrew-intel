@@ -38,7 +38,7 @@ class Mpg123 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 tahoe: "d29540369d2c12aa486edda3b3b38609c4cd64fcc3bb7f287303c42b3ced7961"
+    sha256 tahoe: "921ac0454ce477b08e2e77cd0584b8d869483f4c1706e783a3c5b1d0b4e6b8df"
   end
 
 end

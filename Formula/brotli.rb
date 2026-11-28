@@ -37,7 +37,7 @@ class Brotli < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "b2a890fdcb4e3b4899d8947d2f69dbbc084ca091937ab54a13743d1c24a648a4"
+    sha256 cellar: :any, tahoe: "8e49b4b8d771b844b893600b51d8aca968ae693979f09e5b888aaeac5e9abbce"
   end
 
 end

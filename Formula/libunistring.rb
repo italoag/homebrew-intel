@@ -45,7 +45,7 @@ class Libunistring < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "77a9b0f6cf6ffd69ad259aae6be20e6d3fd4e5d5101570a275cd42b510ad2e45"
+    sha256 cellar: :any, tahoe: "8af207d763351534d848bfc8559ab235ffeb521aa2c98c0ff41813a9cc94bcba"
   end
 
 end

@@ -51,7 +51,7 @@ class Llhttp < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "ee6dbc4dc7781a12ffc40f872de9b341fa62b2f6cb972f35b8317bf854b10cfa"
+    sha256 cellar: :any, tahoe: "21e03d0d7fd65d900d09898fcff4931c78c7c110883a3bf78dae3dc6db3f1f68"
   end
 
 end

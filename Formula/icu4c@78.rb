@@ -49,7 +49,7 @@ class Icu4cAT78 < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "a058d0966c30bd5a1c84e1afb81c7ff04dc67dcc93912dd8bce6ecd31ac2043d"
+    sha256 cellar: :any, tahoe: "b33a3071da5c1eb81fa66c3919388242430904f8576ea55fa9c6f2bdc9851eb0"
   end
 
 end

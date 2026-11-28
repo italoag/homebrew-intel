@@ -45,7 +45,7 @@ class Libksba < Formula
   end
   bottle do
     root_url "https://github.com/italoag/homebrew-intel/releases/download/tahoe-bottles"
-    sha256 cellar: :any, tahoe: "b0359e3df3c11e415ea3b6ac1c5e8f27d5ec0c733c5dd96d7e3ec6d889b5eb9c"
+    sha256 cellar: :any, tahoe: "34e4c5fd8f6943687a4a048205d8845f2600a2d33d2356773aba740ba427f5a5"
   end
 
 end
