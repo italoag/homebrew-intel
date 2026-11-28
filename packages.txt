@@ -286,3 +286,22 @@ lusingander/tap/serie
 ethereum-optimism/tap/supersim
 charmbracelet/tap/wishlist
 lucasgelfond/zerobrew/zerobrew
+
+# Detectadas no inventário local
+a2aproject/a2a-cli/a2a
+asciidoctor
+automake
+aws-shell
+bunster
+cffi
+dstp
+icu4c@79
+kapp
+kbld
+llmfit
+lstr
+maturin
+python@3.15
+ruby
+sqlite
+zstd
